@@ -7,6 +7,7 @@ import buildingIris from "@/assets/building-iris.jpg";
 import buildingJopena from "@/assets/building-jopena.jpg";
 import buildingMalbec from "@/assets/building-malbec.jpg";
 import buildingSantorini from "@/assets/building-santorini.jpg";
+import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Index,
