@@ -70,21 +70,16 @@ const perks = [
   "Acompanhamento técnico contínuo",
 ];
 
-function Logo() {
+function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
   return (
-    <a href="#top" className="flex items-center gap-3">
-      <div className="relative">
-        <div className="flex h-10 w-14 items-center justify-center bg-primary text-primary-foreground font-serif font-bold text-lg italic tracking-tight [clip-path:polygon(0_0,100%_0,85%_100%,0_100%)]">
-          RS
-        </div>
-        <div className="absolute inset-x-0 -bottom-1 h-1 bg-accent" />
-      </div>
-      <div className="hidden sm:block leading-tight">
-        <div className="font-serif font-semibold text-primary">Rezende Saback</div>
-        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          Construtora
-        </div>
-      </div>
+    <a href="#top" className="flex items-center">
+      <img
+        src={logoAsset.url}
+        alt="Rezende Saback Construtora"
+        width={220}
+        height={64}
+        className={`h-11 w-auto ${variant === "light" ? "brightness-0 invert" : ""}`}
+      />
     </a>
   );
 }
