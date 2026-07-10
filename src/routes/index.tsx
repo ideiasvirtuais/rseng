@@ -369,7 +369,8 @@ function Index() {
       {/* Footer */}
       <footer className="border-t border-border bg-primary text-primary-foreground">
         <div className="container-x flex flex-col items-start justify-between gap-6 py-10 sm:flex-row sm:items-center">
-          <Logo />
+          <Logo variant="light" />
+
           <div className="text-xs text-white/60">
             © {new Date().getFullYear()} Rezende Saback Construtora e Incorporadora. Todos os direitos reservados.
           </div>
