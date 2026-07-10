@@ -120,21 +120,21 @@ function Index() {
           <div className="absolute inset-0 bg-gradient-to-b from-primary/40 via-primary/30 to-background" />
           <div className="container-x relative flex h-full flex-col justify-end pb-16 pt-32">
             <div className="max-w-3xl text-primary-foreground">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 Desde 1988 · Betim, Minas Gerais
               </div>
               <h1 className="text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">
                 A cidade que <em className="font-serif italic text-accent">cresce</em> com quem constrói para durar.
               </h1>
-              <p className="mt-6 max-w-xl text-lg text-white/85">
+              <p className="mt-6 max-w-xl text-lg text-primary-foreground/85">
                 Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de mais de três décadas de engenharia.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#empreendimentos" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
                   Ver empreendimentos <ArrowUpRight className="h-4 w-4" />
                 </a>
-                <a href="#contato" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-medium text-white backdrop-blur hover:bg-white/10">
+                <a href="#contato" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-6 py-3 text-sm font-medium text-primary-foreground backdrop-blur hover:bg-primary-foreground/10">
                   Falar com um consultor
                 </a>
               </div>
@@ -142,10 +142,10 @@ function Index() {
 
             {/* Feature card */}
             <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-md lg:max-w-md">
+              <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-6 backdrop-blur-md lg:max-w-md">
                 <div className="text-xs uppercase tracking-[0.2em] text-accent">Lançamento</div>
-                <div className="mt-2 font-serif text-2xl text-white">Edifício Rosário</div>
-                <div className="mt-1 text-sm text-white/75">Business & Home · Angola</div>
+                <div className="mt-2 font-serif text-2xl text-primary-foreground">Edifício Rosário</div>
+                <div className="mt-1 text-sm text-primary-foreground/75">Business & Home · Angola</div>
                 <a href="#empreendimentos" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
                   Conheça o empreendimento <ArrowUpRight className="h-4 w-4" />
                 </a>
@@ -228,14 +228,14 @@ function Index() {
             <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
               Receba as chaves com o seu imóvel <em className="font-serif italic text-accent">já pronto</em>.
             </h2>
-            <p className="mt-6 text-white/80">
+            <p className="mt-6 text-primary-foreground/80">
               Planta customizada, instalações elétricas e hidráulicas sob medida e acabamentos diferenciados escolhidos antes mesmo da mudança. Você entra em um apartamento pensado exatamente do jeito que sempre quis.
             </p>
             <ul className="mt-8 space-y-4">
               {perks.map((perk) => (
                 <li key={perk} className="flex items-start gap-3">
                   <Diamond className="mt-0.5 h-4 w-4 flex-none fill-accent text-accent" />
-                  <span className="text-white/90">{perk}</span>
+                  <span className="text-primary-foreground/90">{perk}</span>
                 </li>
               ))}
             </ul>
@@ -371,7 +371,7 @@ function Index() {
         <div className="container-x flex flex-col items-start justify-between gap-6 py-10 sm:flex-row sm:items-center">
           <Logo variant="light" />
 
-          <div className="text-xs text-white/60">
+          <div className="text-xs text-primary-foreground/60">
             © {new Date().getFullYear()} Rezende Saback Construtora e Incorporadora. Todos os direitos reservados.
           </div>
         </div>
