@@ -124,8 +124,8 @@ function Index() {
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 Desde 1988 · Betim, Minas Gerais
               </div>
-              <h1 className="text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">
-                A cidade que <em className="font-serif italic text-accent">cresce</em> com quem constrói para durar.
+              <h1>
+                A cidade que <span className="text-accent">cresce</span> com quem constrói para durar.
               </h1>
               <p className="mt-6 max-w-xl text-lg text-primary-foreground/85">
                 Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de mais de três décadas de engenharia.
@@ -144,7 +144,7 @@ function Index() {
             <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
               <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-6 backdrop-blur-md lg:max-w-md">
                 <div className="text-xs uppercase tracking-[0.2em] text-accent">Lançamento</div>
-                <div className="mt-2 font-serif text-2xl text-primary-foreground">Edifício Rosário</div>
+                <div className="mt-2 text-xl font-semibold text-primary-foreground">Edifício Rosário</div>
                 <div className="mt-1 text-sm text-primary-foreground/75">Business & Home · Angola</div>
                 <a href="#empreendimentos" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
                   Conheça o empreendimento <ArrowUpRight className="h-4 w-4" />
@@ -159,7 +159,7 @@ function Index() {
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border shadow-xl lg:grid-cols-4">
             {stats.map((s) => (
               <div key={s.l} className="bg-card p-8">
-                <div className="font-serif text-4xl font-semibold text-primary">{s.n}</div>
+                <div className="text-4xl font-semibold text-primary tracking-tight">{s.n}</div>
                 <div className="mt-2 text-sm text-muted-foreground">{s.l}</div>
               </div>
             ))}
@@ -168,12 +168,12 @@ function Index() {
       </section>
 
       {/* Empreendimentos */}
-      <section id="empreendimentos" className="container-x py-28">
+      <section id="empreendimentos" className="container-x section-y">
         <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
           <div>
             <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Portfólio</div>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
-              Empreendimentos que formam <em className="font-serif italic text-primary/70">bairros inteiros</em>.
+            <h2 className="mt-4">
+              Empreendimentos que formam <span className="text-primary/70">bairros inteiros</span>.
             </h2>
           </div>
           <p className="text-muted-foreground">
@@ -198,7 +198,7 @@ function Index() {
                 </span>
               </div>
               <div className="p-6">
-                <h3 className="font-serif text-2xl text-primary">{p.name}</h3>
+                <h3 className="text-xl font-semibold text-primary">{p.name}</h3>
                 <div className="mt-1 text-sm text-muted-foreground">{p.type}</div>
                 <div className="mt-4 flex items-start justify-between gap-4 border-t border-border pt-4 text-sm">
                   <span className="text-muted-foreground">{p.address}</span>
@@ -212,7 +212,7 @@ function Index() {
 
       {/* Personalização */}
       <section id="personalizacao" className="bg-primary text-primary-foreground">
-        <div className="container-x grid gap-16 py-28 lg:grid-cols-2 lg:items-center">
+        <div className="container-x grid gap-16 section-y lg:grid-cols-2 lg:items-center">
           <div className="relative overflow-hidden rounded-2xl">
             <img
               src={interiorCustom}
@@ -225,8 +225,8 @@ function Index() {
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.25em] text-accent">Feito para você</div>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
-              Receba as chaves com o seu imóvel <em className="font-serif italic text-accent">já pronto</em>.
+            <h2 className="mt-4">
+              Receba as chaves com o seu imóvel <span className="text-accent">já pronto</span>.
             </h2>
             <p className="mt-6 text-primary-foreground/80">
               Planta customizada, instalações elétricas e hidráulicas sob medida e acabamentos diferenciados escolhidos antes mesmo da mudança. Você entra em um apartamento pensado exatamente do jeito que sempre quis.
@@ -244,11 +244,11 @@ function Index() {
       </section>
 
       {/* Sobre */}
-      <section id="sobre" className="container-x py-28">
+      <section id="sobre" className="container-x section-y">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
             <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Sobre a construtora</div>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
+            <h2 className="mt-4">
               Três décadas construindo o skyline de Betim — um empreendimento sólido de cada vez.
             </h2>
           </div>
@@ -265,10 +265,10 @@ function Index() {
 
       {/* Instagram */}
       <section id="instagram" className="border-y border-border bg-secondary">
-        <div className="container-x py-24 text-center">
+        <div className="container-x section-y text-center">
           <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Nas redes</div>
-          <h2 className="mt-4 text-4xl sm:text-5xl">
-            Acompanhe as obras no nosso <em className="font-serif italic text-primary/70">Instagram</em>.
+          <h2 className="mt-4">
+            Acompanhe as obras no nosso <span className="text-primary/70">Instagram</span>.
           </h2>
           <a
             href="https://www.instagram.com/rezendesabackengenharia/"
@@ -296,12 +296,12 @@ function Index() {
       </section>
 
       {/* Contato */}
-      <section id="contato" className="container-x py-28">
+      <section id="contato" className="container-x section-y">
         <div className="grid gap-16 lg:grid-cols-2">
           <div>
             <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Central de vendas</div>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
-              Cadastre-se e receba <em className="font-serif italic text-primary/70">os próximos lançamentos</em>.
+            <h2 className="mt-4">
+              Cadastre-se e receba <span className="text-primary/70">os próximos lançamentos</span>.
             </h2>
             <p className="mt-6 text-muted-foreground">
               Deixe seus dados abaixo ou fale diretamente com um consultor. Retornamos em até um dia útil.
