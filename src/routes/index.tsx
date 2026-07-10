@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Diamond, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
+import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import buildingRosario from "@/assets/building-rosario.jpg";
@@ -433,6 +433,27 @@ function Index() {
       <footer className="border-t border-border bg-primary text-primary-foreground">
         <div className="container-x flex flex-col items-start justify-between gap-6 py-10 sm:flex-row sm:items-center">
           <Logo variant="light" />
+
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.instagram.com/rezendesabackengenharia/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram da Rezende Saback"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href="https://www.facebook.com/rezendesaback"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook da Rezende Saback"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+          </div>
 
           <div className="text-xs text-primary-foreground/60">
             © {new Date().getFullYear()} Rezende Saback Construtora e Incorporadora. Todos os direitos reservados.
