@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowUpRight, Diamond, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, Diamond, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import buildingRosario from "@/assets/building-rosario.jpg";
@@ -85,27 +86,74 @@ function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
 }
 
 function Index() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navLinks = [
+    { href: "#empreendimentos", label: "Empreendimentos" },
+    { href: "#personalizacao", label: "Personalização" },
+    { href: "#sobre", label: "Sobre" },
+    { href: "#instagram", label: "Instagram" },
+    { href: "#contato", label: "Contato" },
+  ];
+
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur">
-        <div className="container-x flex h-20 items-center justify-between">
-          <Logo />
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur">
+        <div className="container-x grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 md:flex md:justify-between">
+          <div className="min-w-0">
+            <Logo />
+          </div>
           <nav className="hidden items-center gap-8 text-sm font-medium text-primary/80 md:flex">
-            <a href="#empreendimentos" className="hover:text-primary">Empreendimentos</a>
-            <a href="#personalizacao" className="hover:text-primary">Personalização</a>
-            <a href="#sobre" className="hover:text-primary">Sobre</a>
-            <a href="#instagram" className="hover:text-primary">Instagram</a>
-            <a href="#contato" className="hover:text-primary">Contato</a>
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
+            ))}
           </nav>
-          <a
-            href="#contato"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-          >
-            Central de vendas <ArrowUpRight className="h-4 w-4" />
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="#contato"
+              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+            >
+              Central de vendas <ArrowUpRight className="h-4 w-4" />
+            </a>
+            <button
+              type="button"
+              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary transition hover:bg-secondary md:hidden"
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+        {/* Mobile menu */}
+        <div
+          className={`md:hidden overflow-hidden border-t border-border/60 bg-background transition-[max-height,opacity] duration-300 ${
+            menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <nav className="container-x flex flex-col py-4 text-sm font-medium text-primary">
+            {navLinks.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className="border-b border-border/60 py-3 last:border-0 hover:text-primary/70"
+              >
+                {l.label}
+              </a>
+            ))}
+            <a
+              href="#contato"
+              onClick={() => setMenuOpen(false)}
+              className="mt-3 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground sm:hidden"
+            >
+              Central de vendas <ArrowUpRight className="h-4 w-4" />
+            </a>
+          </nav>
         </div>
       </header>
+
 
       {/* Hero */}
       <section className="relative overflow-hidden">
