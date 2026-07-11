@@ -468,9 +468,10 @@ function Index() {
             href="https://www.instagram.com/rezendesabackengenharia/"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Abrir o perfil @rezendesabackengenharia no Instagram (nova aba)"
             className="mt-6 inline-flex items-center gap-2 text-primary hover:underline"
           >
-            <Instagram className="h-4 w-4" /> @rezendesabackengenharia
+            <Instagram aria-hidden="true" focusable="false" className="h-4 w-4" /> @rezendesabackengenharia
           </a>
           <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-dashed border-border bg-card/60 p-8 text-sm text-muted-foreground">
             <div className="font-medium text-primary">Feed do Instagram em configuração</div>
@@ -481,11 +482,13 @@ function Index() {
               href="https://www.instagram.com/rezendesabackengenharia/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Ver o perfil da Rezende Saback no Instagram (nova aba)"
               className="mt-4 inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              Ver perfil enquanto isso <ArrowUpRight className="h-4 w-4" />
+              Ver perfil enquanto isso <ArrowUpRight aria-hidden="true" focusable="false" className="h-4 w-4" />
             </a>
           </div>
+
         </div>
       </section>
 
@@ -570,21 +573,26 @@ function Index() {
               href="https://www.instagram.com/rezendesabackengenharia/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram da Rezende Saback"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
+              aria-label="Seguir a Rezende Saback no Instagram (abre em nova aba)"
+              title="Instagram da Rezende Saback"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
             >
-              <Instagram className="h-4 w-4" />
+              <Instagram aria-hidden="true" focusable="false" className="h-4 w-4" />
+              <span className="sr-only">Instagram</span>
             </a>
             <a
               href="https://www.facebook.com/rezendesaback"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook da Rezende Saback"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
+              aria-label="Seguir a Rezende Saback no Facebook (abre em nova aba)"
+              title="Facebook da Rezende Saback"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
             >
-              <Facebook className="h-4 w-4" />
+              <Facebook aria-hidden="true" focusable="false" className="h-4 w-4" />
+              <span className="sr-only">Facebook</span>
             </a>
           </div>
+
 
           <div className="text-xs text-primary-foreground/60">
             © {new Date().getFullYear()} Rezende Saback Construtora e Incorporadora. Todos os direitos reservados.
