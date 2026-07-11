@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
 import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/client-error'
 
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +37,47 @@ const ApiPublicClientErrorRoute = ApiPublicClientErrorRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/obras/$slug' | '/api/public/client-error'
+  fullPaths: '/' | '/health' | '/obras/$slug' | '/api/public/client-error'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/obras/$slug' | '/api/public/client-error'
-  id: '__root__' | '/' | '/obras/$slug' | '/api/public/client-error'
+  to: '/' | '/health' | '/obras/$slug' | '/api/public/client-error'
+  id: '__root__' | '/' | '/health' | '/obras/$slug' | '/api/public/client-error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HealthRoute: typeof HealthRoute
   ObrasSlugRoute: typeof ObrasSlugRoute
   ApiPublicClientErrorRoute: typeof ApiPublicClientErrorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HealthRoute: HealthRoute,
   ObrasSlugRoute: ObrasSlugRoute,
   ApiPublicClientErrorRoute: ApiPublicClientErrorRoute,
 }
