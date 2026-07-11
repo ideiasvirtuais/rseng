@@ -7,6 +7,7 @@ import interiorCustom from "@/assets/interior-custom.jpg";
 import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
+import { ContactForm } from "@/components/ContactForm";
 
 const SITE_URL = "https://rseng.lovable.app";
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
