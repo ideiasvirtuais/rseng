@@ -7,6 +7,7 @@ import interiorCustom from "@/assets/interior-custom.jpg";
 import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
+import { ContactForm } from "@/components/ContactForm";
 
 const SITE_URL = "https://rseng.lovable.app";
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
@@ -531,41 +532,8 @@ function Index() {
             </div>
           </div>
 
-          <form
-            className="rounded-2xl border border-border bg-card p-8 shadow-sm"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <div className="grid gap-5">
-              <Field label="Nome" required>
-                <input type="text" required className="input" />
-              </Field>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Telefone" required>
-                  <input type="tel" required className="input" />
-                </Field>
-                <Field label="E-mail" required>
-                  <input type="email" required className="input" />
-                </Field>
-              </div>
-              <Field label="Interesse">
-                <select className="input">
-                  <option>Edifício Rosário (lançamento)</option>
-                  <option>Imóveis prontos para morar</option>
-                  <option>Personalização de plantas</option>
-                  <option>Outro assunto</option>
-                </select>
-              </Field>
-              <Field label="Mensagem">
-                <textarea rows={4} className="input resize-none" />
-              </Field>
-              <button
-                type="submit"
-                className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
-              >
-                Enviar mensagem <ArrowUpRight className="h-4 w-4" />
-              </button>
-            </div>
-          </form>
+          <ContactForm />
+
         </div>
       </section>
 
