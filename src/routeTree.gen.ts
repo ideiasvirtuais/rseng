@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/client-error'
 
 const HealthRoute = HealthRouteImport.update({
@@ -29,6 +30,11 @@ const ObrasSlugRoute = ObrasSlugRouteImport.update({
   path: '/obras/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicClientErrorRoute = ApiPublicClientErrorRouteImport.update({
   id: '/api/public/client-error',
   path: '/api/public/client-error',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,30 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/health' | '/obras/$slug' | '/api/public/client-error'
+  fullPaths:
+    | '/'
+    | '/health'
+    | '/obras/$slug'
+    | '/api/public/client-error'
+    | '/api/public/health'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/health' | '/obras/$slug' | '/api/public/client-error'
-  id: '__root__' | '/' | '/health' | '/obras/$slug' | '/api/public/client-error'
+  to:
+    | '/'
+    | '/health'
+    | '/obras/$slug'
+    | '/api/public/client-error'
+    | '/api/public/health'
+  id:
+    | '__root__'
+    | '/'
+    | '/health'
+    | '/obras/$slug'
+    | '/api/public/client-error'
+    | '/api/public/health'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +92,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   ObrasSlugRoute: typeof ObrasSlugRoute
   ApiPublicClientErrorRoute: typeof ApiPublicClientErrorRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObrasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/client-error': {
       id: '/api/public/client-error'
       path: '/api/public/client-error'
@@ -107,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   ObrasSlugRoute: ObrasSlugRoute,
   ApiPublicClientErrorRoute: ApiPublicClientErrorRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
