@@ -42,16 +42,45 @@ jobs:
       - name: "Rodar Build"
         run: bun run build
 
-      # 5. Localiza o shell SPA do TanStack Start (pode variar entre dist/ e dist/client/)
+      # 6. Localiza o shell SPA do TanStack Start (pode variar entre dist/ e dist/client/)
       - name: "Localizar shell do TanStack Start (SPA mode)"
         id: locate-shell
         run: |
+          set -u
+          echo "::group::Diagnóstico de saída do build"
+          if [ -d dist ]; then
+            echo "Conteúdo de dist/:"
+            ls -la dist/ || true
+          else
+            echo "⚠️  Pasta 'dist/' NÃO existe. O comando 'bun run build' pode ter falhado silenciosamente."
+          fi
+          if [ -d dist/client ]; then
+            echo ""
+            echo "Conteúdo de dist/client/:"
+            ls -la dist/client/ || true
+          fi
+          echo "::endgroup::"
+
           if [ -f dist/client/_shell.html ]; then
+            echo "✓ Encontrado dist/client/_shell.html — usando este diretório para deploy."
             echo "deploy_dir=dist/client" >> "$GITHUB_OUTPUT"
           elif [ -f dist/_shell.html ]; then
+            echo "✓ Encontrado dist/_shell.html — usando este diretório para deploy."
             echo "deploy_dir=dist" >> "$GITHUB_OUTPUT"
           else
-            echo "::error::_shell.html nao encontrado em dist/ ou dist/client/. Verifique se SPA mode esta habilitado em vite.config.ts: tanstackStart({ spa: { enabled: true } })"
+            echo ""
+            echo "::error title=_shell.html não encontrado::O build terminou mas não gerou o shell SPA do TanStack Start."
+            echo ""
+            echo "Possíveis causas e correções:"
+            echo "  1. SPA mode desligado em vite.config.ts."
+            echo "     Confirme o bloco: tanstackStart({ spa: { enabled: true, prerender: { enabled: true } } })"
+            echo "  2. O build falhou antes de emitir o cliente."
+            echo "     Reveja as linhas acima do step 'Rodar Build' procurando 'error' / 'ELIFECYCLE'."
+            echo "  3. Estrutura de saída mudou (ex.: dist/spa ou dist/static)."
+            echo "     Rode 'bun run build' localmente e ajuste o caminho neste step."
+            echo ""
+            echo "Procurando '_shell.html' em qualquer lugar do repo (últimos 20 resultados):"
+            find . -name '_shell.html' -not -path './node_modules/*' 2>/dev/null | head -20 || true
             exit 1
           fi
 
