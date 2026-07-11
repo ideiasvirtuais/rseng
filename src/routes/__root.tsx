@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { installClientErrorReporter, reportClientError } from "../lib/client-error-reporter";
 import { WhatsAppFloat } from "../components/WhatsAppFloat";
 
 function NotFoundComponent() {
@@ -41,6 +42,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportClientError(error, "react_error_boundary", { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -125,6 +127,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    installClientErrorReporter();
+  }, []);
+
+
 
   return (
     <QueryClientProvider client={queryClient}>
