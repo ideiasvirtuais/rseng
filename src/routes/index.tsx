@@ -468,9 +468,10 @@ function Index() {
             href="https://www.instagram.com/rezendesabackengenharia/"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Abrir o perfil @rezendesabackengenharia no Instagram (nova aba)"
             className="mt-6 inline-flex items-center gap-2 text-primary hover:underline"
           >
-            <Instagram className="h-4 w-4" /> @rezendesabackengenharia
+            <Instagram aria-hidden="true" focusable="false" className="h-4 w-4" /> @rezendesabackengenharia
           </a>
           <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-dashed border-border bg-card/60 p-8 text-sm text-muted-foreground">
             <div className="font-medium text-primary">Feed do Instagram em configuração</div>
@@ -481,11 +482,13 @@ function Index() {
               href="https://www.instagram.com/rezendesabackengenharia/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Ver o perfil da Rezende Saback no Instagram (nova aba)"
               className="mt-4 inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              Ver perfil enquanto isso <ArrowUpRight className="h-4 w-4" />
+              Ver perfil enquanto isso <ArrowUpRight aria-hidden="true" focusable="false" className="h-4 w-4" />
             </a>
           </div>
+
         </div>
       </section>
 
