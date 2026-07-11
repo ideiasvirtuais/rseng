@@ -10,25 +10,42 @@ import buildingJopena from "@/assets/building-jopena.jpg";
 import buildingMalbec from "@/assets/building-malbec.jpg";
 import buildingSantorini from "@/assets/building-santorini.jpg";
 import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
+import ogCover from "@/assets/og-cover.jpg";
 
 const SITE_URL = "https://rseng.lovable.app";
-const OG_IMAGE = `${SITE_URL}${logoAsset.url}`;
+const OG_IMAGE = `${SITE_URL}${ogCover}`;
+const OG_TITLE = "Rezende Saback Construtora — Empreendimentos em Betim/MG";
+const OG_DESCRIPTION =
+  "Construtora e incorporadora em Betim desde 1988. Lançamentos, imóveis prontos para morar e personalização de plantas com acabamento diferenciado.";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Rezende Saback Construtora — Empreendimentos em Betim/MG" },
-      { name: "description", content: "Construtora e incorporadora em Betim desde 1988. Lançamentos, imóveis prontos para morar e personalização de plantas com acabamento diferenciado." },
-      { property: "og:title", content: "Rezende Saback Construtora — Empreendimentos em Betim/MG" },
-      { property: "og:description", content: "Construtora e incorporadora em Betim desde 1988. Lançamentos, imóveis prontos para morar e personalização de plantas com acabamento diferenciado." },
+      { title: OG_TITLE },
+      { name: "description", content: OG_DESCRIPTION },
+      { property: "og:title", content: OG_TITLE },
+      { property: "og:description", content: OG_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Rezende Saback Construtora" },
+      { property: "og:locale", content: "pt_BR" },
       { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:secure_url", content: OG_IMAGE },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: OG_TITLE },
+      { name: "twitter:description", content: OG_DESCRIPTION },
       { name: "twitter:image", content: OG_IMAGE },
+      { name: "twitter:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],
   }),
 });
+
 
 const projects = [
   {
