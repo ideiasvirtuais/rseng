@@ -21,6 +21,67 @@ export const Route = createFileRoute("/obras/$slug")({
     const description = project.summary;
     const url = `${SITE_URL}/obras/${project.slug}`;
     const image = `${SITE_URL}${project.img}`;
+    const statusInfo = project.info.find((i) => i.label === "Status")?.value ?? "";
+    const yearInfo = project.info.find((i) => i.label.startsWith("Entrega"))?.value ?? project.year;
+
+    const residenceJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Residence",
+      name: project.name,
+      description,
+      url,
+      image: [image, ...project.gallery.map((g) => `${SITE_URL}${g.src}`)],
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: project.address,
+        addressLocality: "Betim",
+        addressRegion: "MG",
+        addressCountry: "BR",
+      },
+      additionalProperty: [
+        { "@type": "PropertyValue", name: "Tipologia", value: project.type },
+        { "@type": "PropertyValue", name: "Status", value: statusInfo },
+        { "@type": "PropertyValue", name: "Entrega", value: yearInfo },
+      ],
+      amenityFeature: project.highlights.map((h) => ({
+        "@type": "LocationFeatureSpecification",
+        name: h,
+      })),
+      provider: {
+        "@type": "Organization",
+        name: "Rezende Saback Construtora",
+        url: SITE_URL,
+      },
+    };
+
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
+        { "@type": "ListItem", position: 2, name: "Empreendimentos", item: `${SITE_URL}/#empreendimentos` },
+        { "@type": "ListItem", position: 3, name: project.name, item: url },
+      ],
+    };
+
+    const gallerySchemaImages = project.gallery.map((g) => ({
+      "@type": "ImageObject",
+      contentUrl: `${SITE_URL}${g.src}`,
+      description: g.alt,
+      keywords: g.category,
+    }));
+
+    const galleryJsonLd = gallerySchemaImages.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ImageGallery",
+          name: `Galeria — ${project.name}`,
+          description: `Fotos de ${project.name} organizadas por categoria: ${project.categories.join(", ")}.`,
+          url: `${url}#galeria`,
+          image: gallerySchemaImages,
+        }
+      : null;
+
     return {
       meta: [
         { title },
@@ -37,8 +98,14 @@ export const Route = createFileRoute("/obras/$slug")({
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
         { name: "twitter:image", content: image },
+        { name: "keywords", content: `${project.name}, ${project.type}, imóveis em Betim, ${project.categories.join(", ")}, Rezende Saback` },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(residenceJsonLd) },
+        { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
+        ...(galleryJsonLd ? [{ type: "application/ld+json", children: JSON.stringify(galleryJsonLd) }] : []),
+      ],
     };
   },
   component: ProjectDetail,
