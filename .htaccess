@@ -1,5 +1,5 @@
-# TanStack Start SPA (com prerender) hospedado em Apache
-DirectoryIndex index.html _shell.html
+# TanStack Start SPA hospedado em Apache
+DirectoryIndex _shell.html
 
 RewriteEngine On
 
