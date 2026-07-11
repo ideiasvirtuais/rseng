@@ -8,9 +8,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   tanstackStart: {
-    // Route SSR through src/server.ts so catastrophic failures render our
-    // branded fallback page instead of a raw h3 500 "didn't load" screen.
-    server: { entry: 'server' },
     spa: { enabled: true },
   },
   vite: {
@@ -19,9 +16,16 @@ export default defineConfig({
         '@': path.resolve(__dirname, './src'),
       },
     },
+    environments: {
+      server: {
+        build: {
+          rollupOptions: {
+            input: path.resolve(__dirname, './src/server.ts'),
+          },
+        },
+      },
+    },
     plugins: [
-      // Tailwind v4: precisa do plugin para processar @import "tailwindcss" source(none)
-      // e @source "../src". Sem ele o CSS sai envolto em @media source(none){...} (invalido).
       tailwindcss(),
       viteReact(),
     ],
