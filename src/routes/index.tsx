@@ -1,16 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
-import buildingRosario from "@/assets/building-rosario.jpg";
-import buildingIris from "@/assets/building-iris.jpg";
-import buildingJopena from "@/assets/building-jopena.jpg";
-import buildingMalbec from "@/assets/building-malbec.jpg";
-import buildingSantorini from "@/assets/building-santorini.jpg";
 import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
+import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 
 const SITE_URL = "https://rseng.lovable.app";
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
