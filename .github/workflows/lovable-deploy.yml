@@ -84,6 +84,76 @@ jobs:
             exit 1
           fi
 
+      # 5.05. Validação de artefatos essenciais antes do deploy
+      - name: "Validar artefatos do build"
+        run: |
+          set -u
+          DEPLOY_DIR="${{ steps.locate-shell.outputs.deploy_dir }}"
+          echo "::group::Validando artefatos em $DEPLOY_DIR"
+
+          if [ -z "$DEPLOY_DIR" ] || [ ! -d "$DEPLOY_DIR" ]; then
+            echo "::error title=Diretório de deploy inválido::'$DEPLOY_DIR' não existe ou não foi definido pelo step anterior."
+            exit 1
+          fi
+
+          missing=0
+          check_required() {
+            local path="$1"
+            local desc="$2"
+            if [ ! -e "$DEPLOY_DIR/$path" ]; then
+              echo "::error title=Arquivo obrigatório ausente::'$path' não encontrado em $DEPLOY_DIR ($desc)."
+              missing=1
+            else
+              echo "✓ $path ($desc)"
+            fi
+          }
+
+          check_required "index.html"    "página inicial prerendered"
+          check_required "assets"        "bundle JS/CSS gerado pelo Vite"
+
+          if [ -e "$DEPLOY_DIR/_shell.html" ]; then
+            if [ -s "$DEPLOY_DIR/_shell.html" ]; then
+              echo "✓ _shell.html presente e não-vazio (SPA fallback)"
+            else
+              echo "::error title=_shell.html vazio::O shell SPA existe mas está vazio — o SPA fallback vai servir uma página em branco."
+              missing=1
+            fi
+          else
+            echo "ℹ️  _shell.html não presente — deploy seguirá apenas com páginas prerendered (sem SPA fallback)."
+          fi
+
+          # Validação extra: assets/ deve conter pelo menos 1 arquivo JS e 1 CSS
+          if [ -d "$DEPLOY_DIR/assets" ]; then
+            js_count=$(find "$DEPLOY_DIR/assets" -maxdepth 2 -type f -name '*.js' | wc -l | tr -d ' ')
+            css_count=$(find "$DEPLOY_DIR/assets" -maxdepth 2 -type f -name '*.css' | wc -l | tr -d ' ')
+            echo "  → assets/: $js_count arquivo(s) .js, $css_count arquivo(s) .css"
+            if [ "$js_count" -eq 0 ]; then
+              echo "::error title=Nenhum JS em assets/::O build não gerou nenhum bundle JavaScript — algo quebrou no Vite."
+              missing=1
+            fi
+          fi
+
+          # Validação extra: index.html deve referenciar algum bundle de assets/
+          if [ -f "$DEPLOY_DIR/index.html" ]; then
+            if grep -q 'assets/' "$DEPLOY_DIR/index.html"; then
+              echo "✓ index.html referencia bundles em assets/"
+            else
+              echo "::warning title=index.html sem referência a assets::A página inicial não parece carregar nenhum bundle — verifique se o Vite emitiu links corretos."
+            fi
+          fi
+
+          echo "::endgroup::"
+
+          if [ "$missing" -ne 0 ]; then
+            echo ""
+            echo "::error title=Validação falhou::Um ou mais artefatos essenciais estão ausentes. Deploy abortado."
+            echo "Conteúdo completo de $DEPLOY_DIR:"
+            ls -la "$DEPLOY_DIR" || true
+            exit 1
+          fi
+
+          echo "✅ Todos os artefatos essenciais estão presentes. Pronto para deploy."
+
       # 5.1. Gera .htaccess para hospedagens Apache (DirectoryIndex + SPA fallback)
       - name: "Gerar .htaccess para Apache"
         run: |
