@@ -20,7 +20,19 @@ export default defineConfig({
     tanstackStart({
       spa: {
         enabled: true,
+        prerender: {
+          enabled: true,
+          crawlLinks: true,
+        },
       },
+      pages: [
+        { path: "/" },
+        { path: "/obras/edificio-rosario" },
+        { path: "/obras/edificio-iris" },
+        { path: "/obras/edificio-jo-pena-duarte" },
+        { path: "/obras/edificio-malbec" },
+        { path: "/obras/edificio-santorini" },
+      ],
     }),
     viteReact(),
   ],
