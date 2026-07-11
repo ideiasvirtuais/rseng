@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { WhatsAppFloat } from "../components/WhatsAppFloat";
 
 function NotFoundComponent() {
   return (
@@ -114,6 +115,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <WhatsAppFloat />
         <Toaster richColors position="top-right" />
         <Scripts />
       </body>
