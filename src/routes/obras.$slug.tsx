@@ -9,8 +9,9 @@ const SITE_URL = "https://rseng.lovable.app";
 export const Route = createFileRoute("/obras/$slug")({
   loader: ({ params }) => {
     const project = getProjectBySlug(params.slug);
-    console.log("[obras loader]", { slug: params.slug, found: !!project, count: projects.length });
-    if (!project) throw notFound();
+    if (!project) {
+      throw new Error(`SLUGDEBUG: slug=${JSON.stringify(params.slug)} count=${projects.length} first=${projects[0]?.slug}`);
+    }
     return { slug: project.slug };
   },
   head: ({ loaderData }) => {
