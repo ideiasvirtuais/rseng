@@ -87,6 +87,25 @@ const perks = [
   "Acompanhamento técnico contínuo",
 ];
 
+type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos";
+
+const galleryItems: { src: string; alt: string; project: string; category: GalleryCategory }[] = [
+  { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
+  { src: buildingIris, alt: "Fachada do Edifício Íris", project: "Edifício Íris", category: "Fachadas" },
+  { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", project: "Edifício Jó Pena Duarte", category: "Fachadas" },
+  { src: buildingMalbec, alt: "Fachada do Edifício Malbec", project: "Edifício Malbec", category: "Fachadas" },
+  { src: buildingSantorini, alt: "Fachada do Edifício Santorini", project: "Edifício Santorini", category: "Fachadas" },
+  { src: heroBuilding, alt: "Vista noturna de fachada residencial", project: "Portfólio Rezende Saback", category: "Fachadas" },
+  { src: interiorCustom, alt: "Interior personalizado com acabamento premium", project: "Personalização", category: "Interiores" },
+  { src: interiorCustom, alt: "Sala integrada com iluminação natural", project: "Edifício Íris", category: "Interiores" },
+  { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", project: "Edifício Rosário", category: "Áreas Comuns" },
+  { src: buildingMalbec, alt: "Área comum do Edifício Malbec", project: "Edifício Malbec", category: "Áreas Comuns" },
+];
+
+const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Interiores", "Áreas Comuns"] as const;
+type GalleryFilter = (typeof galleryCategories)[number];
+
+
 function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
   return (
     <a href="#top" className="flex items-center">
