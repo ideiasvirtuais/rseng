@@ -115,6 +115,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <WhatsAppFloat />
         <Toaster richColors position="top-right" />
         <Scripts />
       </body>
