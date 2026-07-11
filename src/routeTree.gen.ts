@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
+import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/client-error'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ObrasSlugRoute = ObrasSlugRouteImport.update({
   path: '/obras/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicClientErrorRoute = ApiPublicClientErrorRouteImport.update({
+  id: '/api/public/client-error',
+  path: '/api/public/client-error',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/obras/$slug': typeof ObrasSlugRoute
+  '/api/public/client-error': typeof ApiPublicClientErrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/obras/$slug': typeof ObrasSlugRoute
+  '/api/public/client-error': typeof ApiPublicClientErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/obras/$slug': typeof ObrasSlugRoute
+  '/api/public/client-error': typeof ApiPublicClientErrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/obras/$slug'
+  fullPaths: '/' | '/obras/$slug' | '/api/public/client-error'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/obras/$slug'
-  id: '__root__' | '/' | '/obras/$slug'
+  to: '/' | '/obras/$slug' | '/api/public/client-error'
+  id: '__root__' | '/' | '/obras/$slug' | '/api/public/client-error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ObrasSlugRoute: typeof ObrasSlugRoute
+  ApiPublicClientErrorRoute: typeof ApiPublicClientErrorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObrasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/client-error': {
+      id: '/api/public/client-error'
+      path: '/api/public/client-error'
+      fullPath: '/api/public/client-error'
+      preLoaderRoute: typeof ApiPublicClientErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ObrasSlugRoute: ObrasSlugRoute,
+  ApiPublicClientErrorRoute: ApiPublicClientErrorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
