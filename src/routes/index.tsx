@@ -227,29 +227,43 @@ function Index() {
 
         <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => (
-            <article key={p.name} className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={p.img}
-                  alt={p.name}
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary">
-                  {p.tag}
-                </span>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-primary">{p.name}</h3>
-                <div className="mt-1 text-sm text-muted-foreground">{p.type}</div>
-                <div className="mt-4 flex items-start justify-between gap-4 border-t border-border pt-4 text-sm">
-                  <span className="text-muted-foreground">{p.address}</span>
-                  <span className="font-medium text-primary">— {p.year}</span>
+            <Link
+              key={p.slug}
+              to="/obras/$slug"
+              params={{ slug: p.slug }}
+              aria-label={`Ver detalhes de ${p.name}`}
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+              <article>
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={p.img}
+                    alt={p.name}
+                    width={1200}
+                    height={900}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary">
+                    {p.tag}
+                  </span>
                 </div>
-              </div>
-            </article>
+                <div className="p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-xl font-semibold text-primary">{p.name}</h3>
+                    <ArrowUpRight className="mt-1 h-5 w-5 flex-none text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" aria-hidden="true" />
+                  </div>
+                  <div className="mt-1 text-sm text-muted-foreground">{p.type}</div>
+                  <div className="mt-4 flex items-start justify-between gap-4 border-t border-border pt-4 text-sm">
+                    <span className="text-muted-foreground">{p.address}</span>
+                    <span className="font-medium text-primary">— {p.year}</span>
+                  </div>
+                  <div className="mt-4 text-xs font-medium uppercase tracking-[0.2em] text-accent">
+                    Ver detalhes
+                  </div>
+                </div>
+              </article>
+            </Link>
           ))}
         </div>
       </section>
