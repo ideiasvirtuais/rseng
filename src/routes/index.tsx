@@ -39,6 +39,46 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ImageGallery",
+          name: "Galeria de obras — Rezende Saback",
+          description:
+            "Fachadas, áreas comuns e interiores dos empreendimentos entregues e em construção pela Rezende Saback em Betim/MG.",
+          url: `${SITE_URL}/#galeria`,
+          about: {
+            "@type": "Organization",
+            name: "Rezende Saback Construtora",
+            url: SITE_URL,
+          },
+          image: galleryItems.map((g) => ({
+            "@type": "ImageObject",
+            contentUrl: `${SITE_URL}${g.src}`,
+            description: g.alt,
+            keywords: g.category,
+            representativeOfPage: false,
+            creditText: `${g.project} — Rezende Saback`,
+          })),
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Empreendimentos Rezende Saback",
+          itemListElement: projects.map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `${SITE_URL}/obras/${p.slug}`,
+            name: p.name,
+          })),
+        }),
+      },
+    ],
   }),
 });
 
