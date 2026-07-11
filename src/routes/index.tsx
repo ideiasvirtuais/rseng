@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
+
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import buildingRosario from "@/assets/building-rosario.jpg";
