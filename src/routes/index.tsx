@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
+
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import buildingRosario from "@/assets/building-rosario.jpg";
@@ -86,6 +87,25 @@ const perks = [
   "Acompanhamento técnico contínuo",
 ];
 
+type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos";
+
+const galleryItems: { src: string; alt: string; project: string; category: GalleryCategory }[] = [
+  { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
+  { src: buildingIris, alt: "Fachada do Edifício Íris", project: "Edifício Íris", category: "Fachadas" },
+  { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", project: "Edifício Jó Pena Duarte", category: "Fachadas" },
+  { src: buildingMalbec, alt: "Fachada do Edifício Malbec", project: "Edifício Malbec", category: "Fachadas" },
+  { src: buildingSantorini, alt: "Fachada do Edifício Santorini", project: "Edifício Santorini", category: "Fachadas" },
+  { src: heroBuilding, alt: "Vista noturna de fachada residencial", project: "Portfólio Rezende Saback", category: "Fachadas" },
+  { src: interiorCustom, alt: "Interior personalizado com acabamento premium", project: "Personalização", category: "Interiores" },
+  { src: interiorCustom, alt: "Sala integrada com iluminação natural", project: "Edifício Íris", category: "Interiores" },
+  { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", project: "Edifício Rosário", category: "Áreas Comuns" },
+  { src: buildingMalbec, alt: "Área comum do Edifício Malbec", project: "Edifício Malbec", category: "Áreas Comuns" },
+];
+
+const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Interiores", "Áreas Comuns"] as const;
+type GalleryFilter = (typeof galleryCategories)[number];
+
+
 function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
   return (
     <a href="#top" className="flex items-center">
@@ -102,8 +122,17 @@ function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("Todas");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const filteredGallery = useMemo(
+    () => (galleryFilter === "Todas" ? galleryItems : galleryItems.filter((g) => g.category === galleryFilter)),
+    [galleryFilter],
+  );
+
   const navLinks = [
     { href: "#empreendimentos", label: "Empreendimentos" },
+    { href: "#galeria", label: "Galeria" },
+
     { href: "#personalizacao", label: "Personalização" },
     { href: "#sobre", label: "Sobre" },
     { href: "#instagram", label: "Instagram" },
@@ -306,8 +335,110 @@ function Index() {
         </div>
       </section>
 
+      {/* Galeria */}
+      <section id="galeria" className="container-x section-y">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
+          <div>
+            <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Galeria de obras</div>
+            <h2 className="mt-4">
+              Detalhes que só a <span className="text-primary/70">obra pronta</span> revela.
+            </h2>
+          </div>
+          <p className="text-muted-foreground">
+            Fachadas, áreas comuns e interiores dos nossos empreendimentos em Betim. Filtre por categoria para explorar cada aspecto do nosso padrão construtivo.
+          </p>
+        </div>
+
+        <div className="mt-10 flex flex-wrap gap-2">
+          {galleryCategories.map((cat) => {
+            const active = galleryFilter === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setGalleryFilter(cat)}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-primary hover:border-primary/50 hover:bg-secondary"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredGallery.map((item, i) => (
+            <button
+              key={`${item.src}-${i}`}
+              type="button"
+              onClick={() => setLightboxIndex(i)}
+              className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card text-left"
+              aria-label={`Ampliar ${item.alt}`}
+            >
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent opacity-0 transition group-hover:opacity-100" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground opacity-0 transition group-hover:opacity-100">
+                <div className="min-w-0">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-accent">{item.category}</div>
+                  <div className="truncate text-sm font-semibold">{item.project}</div>
+                </div>
+                <ZoomIn className="h-5 w-5 shrink-0" />
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {filteredGallery.length === 0 && (
+          <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            Nenhuma foto nesta categoria ainda.
+          </div>
+        )}
+      </section>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && filteredGallery[lightboxIndex] && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Visualização ampliada"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/95 p-4 backdrop-blur-sm"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            aria-label="Fechar"
+            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/30 text-primary-foreground transition hover:bg-primary-foreground/10"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIndex(null);
+            }}
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={filteredGallery[lightboxIndex].src}
+              alt={filteredGallery[lightboxIndex].alt}
+              className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl"
+            />
+            <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
+              <span className="text-accent">{filteredGallery[lightboxIndex].category}</span> · {filteredGallery[lightboxIndex].project}
+            </figcaption>
+          </figure>
+        </div>
+      )}
+
       {/* Sobre */}
       <section id="sobre" className="container-x section-y">
+
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
             <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Sobre a construtora</div>
