@@ -105,6 +105,8 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navLinks = [
     { href: "#empreendimentos", label: "Empreendimentos" },
+    { href: "#galeria", label: "Galeria" },
+
     { href: "#personalizacao", label: "Personalização" },
     { href: "#sobre", label: "Sobre" },
     { href: "#instagram", label: "Instagram" },
