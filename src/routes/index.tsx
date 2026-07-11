@@ -467,7 +467,7 @@ function Index() {
           <a
             href="https://www.instagram.com/rezendesabackengenharia/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="mt-6 inline-flex items-center gap-2 text-primary hover:underline"
           >
             <Instagram className="h-4 w-4" /> @rezendesabackengenharia
@@ -480,7 +480,7 @@ function Index() {
             <a
               href="https://www.instagram.com/rezendesabackengenharia/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
               Ver perfil enquanto isso <ArrowUpRight className="h-4 w-4" />
@@ -569,7 +569,7 @@ function Index() {
             <a
               href="https://www.instagram.com/rezendesabackengenharia/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               aria-label="Instagram da Rezende Saback"
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
             >
@@ -578,7 +578,7 @@ function Index() {
             <a
               href="https://www.facebook.com/rezendesaback"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               aria-label="Facebook da Rezende Saback"
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
             >
