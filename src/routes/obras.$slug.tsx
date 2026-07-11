@@ -346,7 +346,6 @@ function ProjectNotFound() {
 }
 
 function ProjectError({ error, reset }: { error: Error; reset: () => void }) {
-  const router = Route.useRouteContext ? null : null;
   console.error(error);
   return (
     <div className="container-x section-y text-center">
