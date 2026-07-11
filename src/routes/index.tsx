@@ -1,16 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
-import buildingRosario from "@/assets/building-rosario.jpg";
-import buildingIris from "@/assets/building-iris.jpg";
-import buildingJopena from "@/assets/building-jopena.jpg";
-import buildingMalbec from "@/assets/building-malbec.jpg";
-import buildingSantorini from "@/assets/building-santorini.jpg";
 import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
+import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 
 const SITE_URL = "https://rseng.lovable.app";
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
@@ -47,49 +43,6 @@ export const Route = createFileRoute("/")({
 });
 
 
-const projects = [
-  {
-    name: "Edifício Rosário",
-    tag: "Lançamento",
-    type: "Business & Home · Flat",
-    address: "Rua do Rosário, 446 — Angola",
-    year: "2025",
-    img: buildingRosario,
-  },
-  {
-    name: "Edifício Íris",
-    tag: "Pronto para morar",
-    type: "3 quartos",
-    address: "Rua José Augusto Borges, 801 — Angola",
-    year: "2024",
-    img: buildingIris,
-  },
-  {
-    name: "Edifício Jó Pena Duarte",
-    tag: "Pronto para morar",
-    type: "3 quartos",
-    address: "Rua Minas Gerais, 109 — Filadélfia",
-    year: "2023",
-    img: buildingJopena,
-  },
-  {
-    name: "Edifício Malbec",
-    tag: "Pronto para morar",
-    type: "3 quartos",
-    address: "Rua Olímpia Bueno Franco, 146 — Jardim da Cidade",
-    year: "2022",
-    img: buildingMalbec,
-  },
-  {
-    name: "Edifício Santorini",
-    tag: "Pronto para morar",
-    type: "3 quartos",
-    address: "Rua Santa Catarina, 570 — Espírito Santo",
-    year: "2021",
-    img: buildingSantorini,
-  },
-];
-
 const stats = [
   { n: "35+", l: "Anos de história" },
   { n: "40+", l: "Obras entregues" },
@@ -103,24 +56,6 @@ const perks = [
   "Instalações elétricas customizadas",
   "Acompanhamento técnico contínuo",
 ];
-
-type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos";
-
-const galleryItems: { src: string; alt: string; project: string; category: GalleryCategory }[] = [
-  { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
-  { src: buildingIris, alt: "Fachada do Edifício Íris", project: "Edifício Íris", category: "Fachadas" },
-  { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", project: "Edifício Jó Pena Duarte", category: "Fachadas" },
-  { src: buildingMalbec, alt: "Fachada do Edifício Malbec", project: "Edifício Malbec", category: "Fachadas" },
-  { src: buildingSantorini, alt: "Fachada do Edifício Santorini", project: "Edifício Santorini", category: "Fachadas" },
-  { src: heroBuilding, alt: "Vista noturna de fachada residencial", project: "Portfólio Rezende Saback", category: "Fachadas" },
-  { src: interiorCustom, alt: "Interior personalizado com acabamento premium", project: "Personalização", category: "Interiores" },
-  { src: interiorCustom, alt: "Sala integrada com iluminação natural", project: "Edifício Íris", category: "Interiores" },
-  { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", project: "Edifício Rosário", category: "Áreas Comuns" },
-  { src: buildingMalbec, alt: "Área comum do Edifício Malbec", project: "Edifício Malbec", category: "Áreas Comuns" },
-];
-
-const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Interiores", "Áreas Comuns"] as const;
-type GalleryFilter = (typeof galleryCategories)[number];
 
 
 function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
@@ -292,29 +227,43 @@ function Index() {
 
         <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => (
-            <article key={p.name} className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={p.img}
-                  alt={p.name}
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary">
-                  {p.tag}
-                </span>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-primary">{p.name}</h3>
-                <div className="mt-1 text-sm text-muted-foreground">{p.type}</div>
-                <div className="mt-4 flex items-start justify-between gap-4 border-t border-border pt-4 text-sm">
-                  <span className="text-muted-foreground">{p.address}</span>
-                  <span className="font-medium text-primary">— {p.year}</span>
+            <Link
+              key={p.slug}
+              to="/obras/$slug"
+              params={{ slug: p.slug }}
+              aria-label={`Ver detalhes de ${p.name}`}
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+              <article>
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={p.img}
+                    alt={p.name}
+                    width={1200}
+                    height={900}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary">
+                    {p.tag}
+                  </span>
                 </div>
-              </div>
-            </article>
+                <div className="p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-xl font-semibold text-primary">{p.name}</h3>
+                    <ArrowUpRight className="mt-1 h-5 w-5 flex-none text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" aria-hidden="true" />
+                  </div>
+                  <div className="mt-1 text-sm text-muted-foreground">{p.type}</div>
+                  <div className="mt-4 flex items-start justify-between gap-4 border-t border-border pt-4 text-sm">
+                    <span className="text-muted-foreground">{p.address}</span>
+                    <span className="font-medium text-primary">— {p.year}</span>
+                  </div>
+                  <div className="mt-4 text-xs font-medium uppercase tracking-[0.2em] text-accent">
+                    Ver detalhes
+                  </div>
+                </div>
+              </article>
+            </Link>
           ))}
         </div>
       </section>
