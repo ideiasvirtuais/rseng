@@ -9,13 +9,11 @@ const SITE_URL = "https://rseng.lovable.app";
 export const Route = createFileRoute("/obras/$slug")({
   loader: ({ params }) => {
     const project = getProjectBySlug(params.slug);
-    if (!project) {
-      throw new Error(`SLUGDEBUG: slug=${JSON.stringify(params.slug)} count=${projects.length} first=${projects[0]?.slug}`);
-    }
+    if (!project) throw notFound();
     return { slug: project.slug };
   },
-  head: ({ loaderData }) => {
-    const project = loaderData ? getProjectBySlug(loaderData.slug) : undefined;
+  head: ({ params }) => {
+    const project = getProjectBySlug(params.slug);
     if (!project) {
       return { meta: [{ title: "Obra não encontrada — Rezende Saback" }, { name: "robots", content: "noindex" }] };
     }
