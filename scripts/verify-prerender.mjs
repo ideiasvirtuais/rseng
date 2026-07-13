@@ -1,66 +1,42 @@
 #!/usr/bin/env node
 /**
- * Postbuild guard: falha se o prerender não gerou os HTMLs esperados.
- * Roda automaticamente após `vite build` via npm `postbuild`.
- *
- * Para adicionar/remover páginas, edite EXPECTED_PATHS abaixo ou
- * derive dinamicamente (ver lista de obras).
+ * Postbuild guard: falha se o build não gerou o pacote estático mínimo
+ * para FTP/Apache. Roda automaticamente após `vite build` via npm `postbuild`.
  */
-import { existsSync, statSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, readdirSync, statSync } from "node:fs";
+import { resolve } from "node:path";
 
 const DIST = resolve(process.cwd(), "dist/client");
-
-// Deriva os slugs das obras a partir do arquivo de dados (sem executar o TS).
-function readObrasSlugs() {
-  try {
-    const src = readFileSync(resolve("src/data/projects.ts"), "utf8");
-    const slugs = [...src.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1]);
-    // Descarta a primeira ocorrência se vier da definição de tipo.
-    return slugs.filter((s) => s && !s.includes(":"));
-  } catch {
-    return [];
-  }
-}
-
-const EXPECTED_PATHS = [
-  "/",
-  ...readObrasSlugs().map((s) => `/obras/${s}`),
-];
-
+const SHELL = resolve(DIST, "_shell.html");
+const ASSETS = resolve(DIST, "assets");
 const MIN_BYTES = 500; // HTML muito pequeno provavelmente é shell vazio/erro.
 
-const missing = [];
-const tooSmall = [];
+const errors = [];
 
-for (const p of EXPECTED_PATHS) {
-  const rel = p === "/" ? "index.html" : `${p.replace(/^\//, "")}/index.html`;
-  const full = join(DIST, rel);
-  if (!existsSync(full)) {
-    missing.push(rel);
-    continue;
+if (!existsSync(DIST)) errors.push("Diretório obrigatório ausente: dist/client/");
+if (!existsSync(SHELL)) {
+  errors.push("Arquivo obrigatório ausente: dist/client/_shell.html");
+} else if (statSync(SHELL).size < MIN_BYTES) {
+  errors.push(`_shell.html muito pequeno (${statSync(SHELL).size} bytes)`);
+}
+if (!existsSync(ASSETS)) {
+  errors.push("Pasta obrigatória ausente: dist/client/assets/");
+} else {
+  const assets = readdirSync(ASSETS);
+  if (!assets.some((name) => name.endsWith(".js"))) {
+    errors.push("Nenhum bundle .js encontrado em dist/client/assets/");
   }
-  const size = statSync(full).size;
-  if (size < MIN_BYTES) tooSmall.push(`${rel} (${size} bytes)`);
+  if (!assets.some((name) => name.endsWith(".css"))) {
+    errors.push("Nenhum bundle .css encontrado em dist/client/assets/");
+  }
 }
 
-if (missing.length === 0 && tooSmall.length === 0) {
-  console.log(
-    `✓ prerender ok — ${EXPECTED_PATHS.length} página(s) geradas em dist/client/`,
-  );
+if (errors.length === 0) {
+  console.log("✓ build FTP ok — dist/client contém _shell.html e assets JS/CSS");
   process.exit(0);
 }
 
-console.error("\n✗ Verificação de prerender FALHOU\n");
-if (missing.length) {
-  console.error("  Páginas esperadas mas não geradas:");
-  for (const m of missing) console.error(`    - ${m}`);
-}
-if (tooSmall.length) {
-  console.error("  Páginas geradas mas com HTML suspeito (muito pequeno):");
-  for (const t of tooSmall) console.error(`    - ${t}`);
-}
-console.error(
-  "\n  Verifique a config de prerender em vite.config.ts (spa.prerender / pages).\n",
-);
+console.error("\n✗ Verificação do build FTP FALHOU\n");
+for (const error of errors) console.error(`  - ${error}`);
+console.error("\n  Rode bun run build e confira se dist/client/ contém _shell.html, index.html, assets/ e .htaccess.\n");
 process.exit(1);
