@@ -4,12 +4,11 @@ import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, 
 
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
-import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
 
-const SITE_URL = "https://rseng.lovable.app";
+const SITE_URL = "https://rsengenharia.eng.br";
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
 const OG_TITLE = "Rezende Saback Construtora — Empreendimentos em Betim/MG";
 const OG_DESCRIPTION =
@@ -100,15 +99,28 @@ const perks = [
 
 
 function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
+  const isLight = variant === "light";
+
   return (
-    <a href="#top" className="flex items-center">
-      <img
-        src={logoAsset.url}
-        alt="Rezende Saback Construtora"
-        width={220}
-        height={64}
-        className={`h-11 w-auto ${variant === "light" ? "brightness-0 invert" : ""}`}
-      />
+    <a
+      href="#top"
+      aria-label="Rezende Saback Construtora — início"
+      className={`flex items-center gap-3 ${isLight ? "text-primary-foreground" : "text-primary"}`}
+    >
+      <span
+        aria-hidden="true"
+        className={`grid h-11 w-11 place-items-center rounded-sm border text-lg font-semibold ${
+          isLight ? "border-primary-foreground/70 text-primary-foreground" : "border-primary text-primary"
+        }`}
+      >
+        RS
+      </span>
+      <span className="grid leading-none">
+        <span className="font-serif text-xl font-semibold tracking-normal">Rezende Saback</span>
+        <span className={`mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] ${isLight ? "text-primary-foreground/75" : "text-muted-foreground"}`}>
+          Construtora
+        </span>
+      </span>
     </a>
   );
 }

@@ -1,21 +1,24 @@
 #!/usr/bin/env node
 /**
- * Gera .htaccess dentro de dist/client/ para deploy manual via FTP
- * em hospedagens Apache (KingHost / Napoleon).
+ * Prepara dist/client/ para deploy manual via FTP em hospedagens Apache
+ * (KingHost / Napoleon): garante index.html e gera .htaccess.
  *
  * Conteúdo idêntico ao gerado pelo workflow .github/workflows/lovable-deploy.yml
  * — mantenha os dois em sincronia se editar algum.
  *
  * Roda automaticamente após `bun run build` via npm `postbuild`.
  */
-import { writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 
 const OUT_DIR = resolve(process.cwd(), "dist/client");
 const OUT_FILE = resolve(OUT_DIR, ".htaccess");
+const SHELL_FILE = resolve(OUT_DIR, "_shell.html");
+const INDEX_FILE = resolve(OUT_DIR, "index.html");
 
 const HTACCESS = `# TanStack Start SPA hospedado em Apache (KingHost / Napoleon)
-DirectoryIndex index.html _shell.html
+# index.html deve vir antes de index.php para não cair no WordPress antigo.
+DirectoryIndex index.html _shell.html index.php
 
 RewriteEngine On
 
@@ -43,6 +46,15 @@ RewriteRule ^ _shell.html [L]
 
 if (!existsSync(OUT_DIR)) {
   mkdirSync(dirname(OUT_FILE), { recursive: true });
+}
+
+if (!existsSync(INDEX_FILE)) {
+  if (!existsSync(SHELL_FILE)) {
+    console.error("✗ Não foi possível gerar index.html: dist/client/_shell.html não existe.");
+    process.exit(1);
+  }
+  copyFileSync(SHELL_FILE, INDEX_FILE);
+  console.log(`✓ index.html gerado a partir de ${SHELL_FILE}`);
 }
 
 writeFileSync(OUT_FILE, HTACCESS, "utf8");
