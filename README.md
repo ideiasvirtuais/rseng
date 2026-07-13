@@ -186,5 +186,48 @@ Para simular o que o CI vê:
 
 ```bash
 bun run build
-ls -la dist/client/   # deve conter index.html, _shell.html, assets/
+ls -la dist/client/   # deve conter index.html, _shell.html, assets/, .htaccess
 ```
+
+---
+
+## Build e deploy manual via FTP
+
+### `bun run build`
+
+Gera o build de produção completo em `dist/client/`. Executa em ordem:
+
+1. `vite build` — compila a aplicação e prerenderiza as rotas
+2. `postbuild` (automático):
+   - `scripts/verify-prerender.mjs` — valida que todas as páginas esperadas foram geradas
+   - `scripts/generate-htaccess.mjs` — **cria o `.htaccess`** em `dist/client/.htaccess` com regras de SPA fallback, cache e gzip para o Apache da KingHost
+
+Resultado esperado em `dist/client/`:
+
+```text
+dist/client/
+├── .htaccess          ← gerado pelo postbuild (regras Apache)
+├── _shell.html        ← SPA fallback
+├── index.html         ← home prerendered
+├── obras/<slug>/index.html
+├── assets/*.js|css
+└── favicon.ico, robots.txt, ...
+```
+
+### `bun run build:ftp`
+
+Atalho para o fluxo de upload manual. Roda `vite build` e, por herdar o mesmo `postbuild`, também gera o `.htaccess` em `dist/client/.htaccess`. Use quando quiser deixar explícito que o build é para envio via FTP.
+
+Depois do build, os comandos disponíveis são:
+
+```bash
+bun run verify:ftp        # confere se dist/client/ está pronto (shell, htaccess, assets)
+bun run deploy:ftp        # envia dist/client/ via FTP (usa .env.ftp)
+bun run deploy:ftp:full   # build + deploy em um único comando
+```
+
+O log detalhado do upload (arquivos enviados e falhas destacadas) fica em `dist/deploy-ftp.log`.
+
+### Onde encontrar o `.htaccess`
+
+Sempre em **`dist/client/.htaccess`** após qualquer `bun run build` ou `bun run build:ftp`. Ele deve ser enviado para a **raiz do domínio** (mesmo diretório do `index.html`) — o `deploy:ftp` já faz isso automaticamente. No envio manual pelo cliente FTP, habilite a exibição de arquivos ocultos (começando com `.`) para não esquecê-lo.
