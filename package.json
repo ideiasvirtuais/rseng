@@ -10,6 +10,8 @@
     "build:dev": "vite build --mode development",
     "postbuild:dev": "node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
     "build:ftp": "vite build",
+    "deploy:ftp": "node scripts/deploy-ftp.mjs",
+    "deploy:ftp:full": "bun run build && node scripts/deploy-ftp.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
