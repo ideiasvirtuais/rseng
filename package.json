@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "postbuild": "node scripts/verify-prerender.mjs",
+    "postbuild": "node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
     "build:dev": "vite build --mode development",
-    "postbuild:dev": "node scripts/verify-prerender.mjs",
+    "postbuild:dev": "node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
+    "build:ftp": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
