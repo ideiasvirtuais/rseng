@@ -54,9 +54,14 @@ jobs:
       # 5.1. Gera .htaccess para hospedagens Apache (DirectoryIndex + SPA fallback)
       - name: "Gerar .htaccess para Apache"
         run: |
+          if [ ! -f "${{ steps.locate-shell.outputs.deploy_dir }}/index.html" ]; then
+            cp "${{ steps.locate-shell.outputs.deploy_dir }}/_shell.html" "${{ steps.locate-shell.outputs.deploy_dir }}/index.html"
+          fi
+
           cat > "${{ steps.locate-shell.outputs.deploy_dir }}/.htaccess" <<'HTACCESS'
           # TanStack Start SPA hospedado em Apache
-          DirectoryIndex _shell.html
+          # index.html deve vir antes de index.php para não cair no WordPress antigo.
+          DirectoryIndex index.html _shell.html index.php
 
           RewriteEngine On
 
@@ -67,6 +72,9 @@ jobs:
 
           <IfModule mod_headers.c>
             <FilesMatch "_shell\.html$">
+              Header set Cache-Control "no-cache, no-store, must-revalidate"
+            </FilesMatch>
+            <FilesMatch "index\.html$">
               Header set Cache-Control "no-cache, no-store, must-revalidate"
             </FilesMatch>
             <FilesMatch "\.(?:js|css|woff2|woff|svg|png|jpg|jpeg|webp|gif|ico)$">
