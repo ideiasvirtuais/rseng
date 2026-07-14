@@ -336,14 +336,51 @@ async function main() {
     client.trackProgress();
   }
 
+  /** @type {{rel: string, error?: string}[]} */
+  const deleted = [];
+  /** @type {{rel: string, error: string}[]} */
+  const deleteFailed = [];
+  if (DELETE_OBSOLETE) {
+    console.log(`\n${c.cyan}→${c.reset} Procurando arquivos obsoletos no remoto…`);
+    log(`→ Procurando arquivos obsoletos no remoto…`);
+    const { files: localFiles, managed } = localIndex();
+    const remoteFiles = await listRemoteManaged(FTP_REMOTE_DIR, managed);
+    const obsolete = pickObsolete(remoteFiles, localFiles);
+    if (obsolete.length === 0) {
+      console.log(`  ${c.dim}nada a remover${c.reset}`);
+      log(`  nada a remover`);
+    } else {
+      for (const o of obsolete) {
+        const remotePath = `${FTP_REMOTE_DIR}/${o.rel}`;
+        try {
+          await client.remove(remotePath);
+          deleted.push({ rel: o.rel });
+          console.log(`  ${c.red}✗${c.reset} ${o.rel} ${c.dim}(removido)${c.reset}`);
+          log(`  ✗ removido: ${o.rel}`);
+        } catch (err) {
+          const msg = err?.message || String(err);
+          deleteFailed.push({ rel: o.rel, error: msg });
+          console.log(`  ${c.red}! falha ao remover ${o.rel} — ${msg}${c.reset}`);
+          log(`  ! falha ao remover ${o.rel} — ${msg}`);
+        }
+      }
+    }
+  }
+
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   const summary =
     `\n${c.bold}Resumo:${c.reset} ` +
     `${c.green}${uploaded.length} enviados${c.reset}` +
     (failed.length ? `, ${c.red}${failed.length} falharam${c.reset}` : "") +
+    (DELETE_OBSOLETE ? `, ${c.red}${deleted.length} removidos${c.reset}` : "") +
+    (deleteFailed.length ? `, ${c.red}${deleteFailed.length} rem. falharam${c.reset}` : "") +
     ` — ${fmtBytes(totalBytes)} em ${elapsed}s`;
   console.log(summary);
-  log(`\nResumo: ${uploaded.length} enviados, ${failed.length} falharam — ${totalBytes} bytes em ${elapsed}s`);
+  log(
+    `\nResumo: ${uploaded.length} enviados, ${failed.length} falharam` +
+      (DELETE_OBSOLETE ? `, ${deleted.length} removidos, ${deleteFailed.length} rem. falharam` : "") +
+      ` — ${totalBytes} bytes em ${elapsed}s`,
+  );
 
   if (failed.length) {
     console.log(`\n${c.red}${c.bold}Falhas:${c.reset}`);
