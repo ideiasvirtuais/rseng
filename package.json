@@ -6,14 +6,13 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "postbuild": "node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
+    "build:ftp": "BUILD_TARGET=ftp vite build --mode ftp",
+    "postbuild:ftp": "node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
     "build:dev": "vite build --mode development",
-    "postbuild:dev": "node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
-    "build:ftp": "vite build",
     "deploy:ftp": "node scripts/deploy-ftp.mjs",
     "predeploy:ftp": "node scripts/preflight-ftp.mjs",
     "verify:ftp": "node scripts/preflight-ftp.mjs",
-    "deploy:ftp:full": "bun run build && node scripts/deploy-ftp.mjs",
+    "deploy:ftp:full": "bun run build:ftp && node scripts/deploy-ftp.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."

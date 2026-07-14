@@ -19,7 +19,7 @@ Fluxo em ordem:
 2. **Setup Node 22** — versão exigida pelas versões beta do TanStack/Vite
 3. **Setup Bun (latest)** — o projeto usa `bun.lock`; `npm install` falha por conflitos de peer deps
 4. **`bun install --frozen-lockfile`**
-5. **`bun run build`** — roda `vite build` + `postbuild: node scripts/verify-prerender.mjs`
+5. **`bun run build:ftp`** — roda `vite build --mode ftp` + `postbuild:ftp`
 6. **Localizar shell do TanStack Start** — descobre onde está o `_shell.html`
 7. **Validar artefatos do build** — abortar cedo se algo essencial faltar
 8. **Gerar `.htaccess`** — `DirectoryIndex`, SPA fallback, cache e gzip para Apache/KingHost
@@ -195,10 +195,14 @@ ls -la dist/client/   # deve conter index.html, _shell.html, assets/, .htaccess
 
 ### `bun run build`
 
-Gera o build de produção completo em `dist/client/`. Executa em ordem:
+Gera o build padrão para publicação pelo Lovable. Use este comando para validar o canal `.lovable.app`.
 
-1. `vite build` — compila a aplicação e prerenderiza as rotas
-2. `postbuild` (automático):
+### `bun run build:ftp`
+
+Gera o build estático para FTP/Apache em `dist/client/`. Executa em ordem:
+
+1. `vite build --mode ftp` — compila a aplicação em SPA mode e prerenderiza as rotas
+2. `postbuild:ftp` (automático):
    - `scripts/verify-prerender.mjs` — valida que todas as páginas esperadas foram geradas
    - `scripts/generate-htaccess.mjs` — **cria o `.htaccess`** em `dist/client/.htaccess` com regras de SPA fallback, cache e gzip para o Apache da KingHost
 
@@ -213,10 +217,6 @@ dist/client/
 ├── assets/*.js|css
 └── favicon.ico, robots.txt, ...
 ```
-
-### `bun run build:ftp`
-
-Atalho para o fluxo de upload manual. Roda `vite build` e, por herdar o mesmo `postbuild`, também gera o `.htaccess` em `dist/client/.htaccess`. Use quando quiser deixar explícito que o build é para envio via FTP.
 
 Depois do build, os comandos disponíveis são:
 
