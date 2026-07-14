@@ -136,6 +136,65 @@ function walk(dir) {
   return out;
 }
 
+/**
+ * Retorna o conjunto de arquivos locais (rel path, "/"), e o conjunto de
+ * diretórios "gerenciados" — pastas de topo que existem localmente e que
+ * podem ser podadas com segurança no remoto (ex.: "assets", "obras").
+ */
+function localIndex() {
+  const files = new Set(walk(LOCAL).map((f) => f.rel.split(/[\\/]/).join("/")));
+  const managed = new Set();
+  for (const rel of files) {
+    const parts = rel.split("/");
+    for (let i = 1; i < parts.length; i++) managed.add(parts.slice(0, i).join("/"));
+  }
+  return { files, managed };
+}
+
+/**
+ * Lista recursivamente o remoto, mas desce apenas em diretórios "gerenciados"
+ * (que existem localmente). Assim nunca tocamos árvores estranhas ao build
+ * (ex.: cgi-bin/, wp-content/) — só coletamos arquivos candidatos a remoção.
+ */
+async function listRemoteManaged(remoteBase, managedDirs) {
+  /** @type {{rel: string, dir: string, name: string}[]} */
+  const out = [];
+  async function recur(relDir) {
+    const remotePath = relDir ? `${remoteBase}/${relDir}` : remoteBase;
+    let entries;
+    try {
+      entries = await client.list(remotePath);
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (e.name === "." || e.name === "..") continue;
+      const childRel = relDir ? `${relDir}/${e.name}` : e.name;
+      if (e.isDirectory) {
+        if (managedDirs.has(childRel)) await recur(childRel);
+      } else if (e.isFile) {
+        out.push({ rel: childRel, dir: relDir, name: e.name });
+      }
+    }
+  }
+  await recur("");
+  return out;
+}
+
+/**
+ * Decide quais arquivos remotos remover. Regras de segurança:
+ *  - Raiz: só remove nomes na ROOT_ALLOWLIST (evita apagar index.php etc.).
+ *  - Subpastas: só as que existem localmente (managedDirs) são varridas;
+ *    dentro delas, remove tudo que não está no conjunto local.
+ */
+function pickObsolete(remoteFiles, localFiles) {
+  return remoteFiles.filter((r) => {
+    if (localFiles.has(r.rel)) return false;
+    if (r.dir === "") return ROOT_ALLOWLIST.has(r.name);
+    return true;
+  });
+}
+
 async function dryRun() {
   const started = Date.now();
   console.log(`${c.yellow}${c.bold}⚠ DRY-RUN${c.reset} — nada será enviado ao FTP.\n`);
