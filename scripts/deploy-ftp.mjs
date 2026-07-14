@@ -65,6 +65,8 @@ const {
   FTP_LOCAL_DIR = "dist/client",
   FTP_LOG_FILE = "dist/deploy-ftp.log",
   FTP_MANIFEST_NAME = ".deploy-manifest.json",
+  FTP_REPORT_FILE = "dist/deploy-report.json",
+  FTP_REPORT_MD = "dist/deploy-report.md",
 } = process.env;
 
 function flagValue(name) {
