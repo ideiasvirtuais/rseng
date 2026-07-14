@@ -5,8 +5,11 @@ import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, 
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import ogCover from "@/assets/og-cover.jpg";
+import logoAsset from "@/assets/logo-rezende-saback.png.asset.json";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
+
+const LOGO_URL = logoAsset.url;
 
 const SITE_URL = "https://rsengenharia.eng.br";
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
