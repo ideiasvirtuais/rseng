@@ -594,6 +594,7 @@ async function dryRun() {
   }
 
   let obsoleteCount = 0;
+  let obsoleteList = [];
   if (DELETE_OBSOLETE) {
     if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
       console.log(`\n${c.yellow}⚠ --delete em dry-run sem credenciais: pulando varredura remota.${c.reset}`);
@@ -604,6 +605,7 @@ async function dryRun() {
         const remoteList = await listRemoteManaged(cli, FTP_REMOTE_DIR, managed);
         const obsolete = pickObsolete(remoteList, files);
         obsoleteCount = obsolete.length;
+        obsoleteList = obsolete.map((o) => o.rel);
         if (!obsolete.length) console.log(`  ${c.dim}nada a remover${c.reset}`);
         else {
           console.log(`  ${c.yellow}Seriam removidos ${obsolete.length} arquivos:${c.reset}`);
@@ -622,6 +624,47 @@ async function dryRun() {
       (DELETE_OBSOLETE ? `, ${c.red}${obsoleteCount} obsoletos${c.reset}` : "") +
       ` — ${fmtBytes(totalBytes)} em ${elapsed}s`,
   );
+  const report = {
+    mode: "dry-run",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    durationSec: Number(elapsed),
+    target: {
+      host: FTP_HOST ?? null,
+      port: Number(FTP_PORT),
+      user: FTP_USER ?? null,
+      remoteDir: FTP_REMOTE_DIR,
+      localDir: LOCAL,
+    },
+    config: {
+      concurrency: CONCURRENCY,
+      retries: MAX_RETRIES,
+      retryDelayMs: RETRY_DELAY_MS,
+      force: FORCE,
+      delete: DELETE_OBSOLETE,
+      manifestFound,
+    },
+    totals: {
+      localFiles: sorted.length,
+      uploaded: 0,
+      skipped: skipped.length,
+      wouldUpload: toUpload.length,
+      uploadFailed: 0,
+      deleted: 0,
+      wouldDelete: obsoleteCount,
+      deleteFailed: 0,
+      bytesUploaded: 0,
+      bytesToUpload: totalBytes,
+    },
+    wouldUpload: toUpload.map((f) => ({ rel: f.rel, bytes: f.bytes })),
+    wouldDelete: obsoleteList,
+    uploaded: [],
+    deleted: [],
+    uploadFailed: [],
+    deleteFailed: [],
+  };
+  const paths = writeReport(report);
+  console.log(`${c.dim}Relatório: ${paths.jsonPath} e ${paths.mdPath}${c.reset}`);
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
 }
 
