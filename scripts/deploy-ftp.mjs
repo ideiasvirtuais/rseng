@@ -11,10 +11,16 @@
  *   FTP_REMOTE_DIR   (opcional, default "/www"). Ex.: "/www", "/public_html", "/"
  *   FTP_LOCAL_DIR    (opcional, default "dist/client")
  *   FTP_LOG_FILE     (opcional, default "dist/deploy-ftp.log")
+ *   FTP_DRY_RUN      (opcional: "true" para simular sem enviar nada)
+ *
+ * Flags:
+ *   --dry-run        Lista o que seria enviado (sem conectar ao FTP).
  *
  * Uso:
  *   FTP_HOST=... FTP_USER=... FTP_PASSWORD=... bun run deploy:ftp
+ *   bun run deploy:ftp -- --dry-run
  */
+import { readdirSync } from "node:fs";
 import { existsSync, mkdirSync, writeFileSync, appendFileSync, statSync } from "node:fs";
 import { resolve, dirname, relative } from "node:path";
 import { Client } from "basic-ftp";
