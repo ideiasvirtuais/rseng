@@ -101,7 +101,48 @@ function fmtBytes(n) {
   return `${(n / 1024 / 1024).toFixed(2)} MB`;
 }
 
+function walk(dir) {
+  /** @type {{abs: string, rel: string, bytes: number}[]} */
+  const out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const abs = resolve(dir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...walk(abs));
+    } else if (entry.isFile()) {
+      out.push({ abs, rel: relative(LOCAL, abs), bytes: statSync(abs).size });
+    }
+  }
+  return out;
+}
+
+async function dryRun() {
+  const started = Date.now();
+  console.log(`${c.yellow}${c.bold}⚠ DRY-RUN${c.reset} — nada será enviado ao FTP.\n`);
+  log(`⚠ DRY-RUN — nada será enviado ao FTP.`);
+  console.log(
+    `${c.cyan}→${c.reset} Simulando envio de ${c.bold}${LOCAL}${c.reset} → ` +
+      `${c.bold}${FTP_HOST ?? "<FTP_HOST>"}:${FTP_PORT}${FTP_REMOTE_DIR}${c.reset}\n`,
+  );
+  log(`→ Simulando envio de ${LOCAL} → ${FTP_HOST ?? "<FTP_HOST>"}:${FTP_PORT}${FTP_REMOTE_DIR}`);
+
+  const files = walk(LOCAL).sort((a, b) => a.rel.localeCompare(b.rel));
+  for (const f of files) {
+    totalBytes += f.bytes;
+    console.log(`  ${c.dim}↑${c.reset} ${f.rel} ${c.dim}(${fmtBytes(f.bytes)})${c.reset}`);
+    log(`  ↑ ${f.rel} (${f.bytes} bytes)`);
+  }
+
+  const elapsed = ((Date.now() - started) / 1000).toFixed(1);
+  console.log(
+    `\n${c.bold}Resumo (dry-run):${c.reset} ${c.yellow}${files.length} arquivos${c.reset}` +
+      ` — ${fmtBytes(totalBytes)} em ${elapsed}s`,
+  );
+  log(`\nResumo (dry-run): ${files.length} arquivos — ${totalBytes} bytes em ${elapsed}s`);
+  console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
+}
+
 async function main() {
+  if (DRY_RUN) return dryRun();
   const started = Date.now();
   console.log(`${c.cyan}→${c.reset} Conectando em ${c.bold}${FTP_HOST}:${FTP_PORT}${c.reset} (secure=${FTP_SECURE}) como ${FTP_USER}`);
   log(`→ Conectando em ${FTP_HOST}:${FTP_PORT} (secure=${FTP_SECURE}) como ${FTP_USER}`);
