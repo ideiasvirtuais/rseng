@@ -108,22 +108,17 @@ function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
     <a
       href="#top"
       aria-label="Rezende Saback Construtora — início"
-      className={`flex items-center gap-3 ${isLight ? "text-primary-foreground" : "text-primary"}`}
+      className="inline-flex items-center"
     >
-      <span
-        aria-hidden="true"
-        className={`grid h-11 w-11 place-items-center rounded-sm border text-lg font-semibold ${
-          isLight ? "border-primary-foreground/70 text-primary-foreground" : "border-primary text-primary"
-        }`}
-      >
-        RS
-      </span>
-      <span className="grid leading-none">
-        <span className="font-serif text-xl font-semibold tracking-normal">Rezende Saback</span>
-        <span className={`mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] ${isLight ? "text-primary-foreground/75" : "text-muted-foreground"}`}>
-          Construtora
-        </span>
-      </span>
+      <img
+        src={LOGO_URL}
+        alt="Rezende Saback Construtora"
+        width={470}
+        height={114}
+        className={`h-11 w-auto md:h-12 ${isLight ? "brightness-0 invert" : ""}`}
+        loading="eager"
+        decoding="async"
+      />
     </a>
   );
 }
