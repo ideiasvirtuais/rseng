@@ -36,14 +36,22 @@ const {
   FTP_LOG_FILE = "dist/deploy-ftp.log",
 } = process.env;
 
-const missing = ["FTP_HOST", "FTP_USER", "FTP_PASSWORD"].filter((k) => !process.env[k]);
+const DRY_RUN =
+  process.argv.includes("--dry-run") ||
+  process.env.FTP_DRY_RUN === "true" ||
+  process.env.FTP_DRY_RUN === "1";
+
+const missing = DRY_RUN
+  ? []
+  : ["FTP_HOST", "FTP_USER", "FTP_PASSWORD"].filter((k) => !process.env[k]);
 if (missing.length) {
   console.error(`\n✗ Variáveis de ambiente ausentes: ${missing.join(", ")}\n`);
   console.error("  Configure antes de rodar. Exemplo:");
   console.error("    export FTP_HOST=ftp.rsengenharia.eng.br");
   console.error("    export FTP_USER=seu_usuario");
   console.error("    export FTP_PASSWORD='sua_senha'");
-  console.error("    bun run deploy:ftp\n");
+  console.error("    bun run deploy:ftp");
+  console.error("  Ou simule sem credenciais: bun run deploy:ftp -- --dry-run\n");
   process.exit(1);
 }
 
