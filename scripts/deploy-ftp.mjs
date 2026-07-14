@@ -43,6 +43,25 @@ const DRY_RUN =
   process.env.FTP_DRY_RUN === "true" ||
   process.env.FTP_DRY_RUN === "1";
 
+const DELETE_OBSOLETE =
+  process.argv.includes("--delete") ||
+  process.env.FTP_DELETE_OBSOLETE === "true" ||
+  process.env.FTP_DELETE_OBSOLETE === "1";
+
+// Arquivos na raiz remota que podemos remover se sumirem do build local.
+// Fora dessa lista, arquivos na raiz (ex.: index.php, wp-*, cgi-bin/) são
+// ignorados para não quebrar sites legados hospedados no mesmo diretório.
+const ROOT_ALLOWLIST = new Set([
+  ".htaccess",
+  "_shell.html",
+  "index.html",
+  "favicon.png",
+  "favicon.ico",
+  "_headers",
+  "robots.txt",
+  "sitemap.xml",
+]);
+
 const missing = DRY_RUN
   ? []
   : ["FTP_HOST", "FTP_USER", "FTP_PASSWORD"].filter((k) => !process.env[k]);
