@@ -167,6 +167,63 @@ function fmtBytes(n) {
   return `${(n / 1024 / 1024).toFixed(2)} MB`;
 }
 
+function writeReport(report) {
+  const jsonPath = resolve(process.cwd(), FTP_REPORT_FILE);
+  const mdPath = resolve(process.cwd(), FTP_REPORT_MD);
+  mkdirSync(dirname(jsonPath), { recursive: true });
+  mkdirSync(dirname(mdPath), { recursive: true });
+  writeFileSync(jsonPath, JSON.stringify(report, null, 2));
+
+  const lines = [];
+  lines.push(`# Relatório de Deploy FTP`);
+  lines.push("");
+  lines.push(`- **Modo:** ${report.mode}`);
+  lines.push(`- **Data:** ${report.finishedAt}`);
+  lines.push(`- **Duração:** ${report.durationSec}s`);
+  lines.push(`- **Destino:** \`${report.target.user}@${report.target.host}:${report.target.port}${report.target.remoteDir}\``);
+  lines.push(`- **Origem:** \`${report.target.localDir}\``);
+  lines.push(`- **Configuração:** concurrency=${report.config.concurrency}, retries=${report.config.retries}, force=${report.config.force}, delete=${report.config.delete}`);
+  lines.push("");
+  lines.push(`## Totais`);
+  lines.push("");
+  lines.push(`| Métrica | Valor |`);
+  lines.push(`| --- | ---: |`);
+  lines.push(`| Arquivos locais | ${report.totals.localFiles} |`);
+  lines.push(`| Enviados | ${report.totals.uploaded} |`);
+  lines.push(`| Inalterados (checksum) | ${report.totals.skipped} |`);
+  lines.push(`| Falhas de upload | ${report.totals.uploadFailed} |`);
+  lines.push(`| Removidos | ${report.totals.deleted} |`);
+  lines.push(`| Falhas de remoção | ${report.totals.deleteFailed} |`);
+  lines.push(`| Bytes enviados | ${fmtBytes(report.totals.bytesUploaded)} (${report.totals.bytesUploaded}) |`);
+  lines.push("");
+  if (report.uploaded?.length) {
+    lines.push(`## Enviados (${report.uploaded.length})`);
+    lines.push("");
+    for (const u of report.uploaded) lines.push(`- \`${u.rel}\` — ${fmtBytes(u.bytes)}`);
+    lines.push("");
+  }
+  if (report.deleted?.length) {
+    lines.push(`## Removidos (${report.deleted.length})`);
+    lines.push("");
+    for (const d of report.deleted) lines.push(`- \`${d}\``);
+    lines.push("");
+  }
+  if (report.uploadFailed?.length) {
+    lines.push(`## Falhas de upload (${report.uploadFailed.length})`);
+    lines.push("");
+    for (const f of report.uploadFailed) lines.push(`- \`${f.rel}\` — ${f.error}`);
+    lines.push("");
+  }
+  if (report.deleteFailed?.length) {
+    lines.push(`## Falhas de remoção (${report.deleteFailed.length})`);
+    lines.push("");
+    for (const f of report.deleteFailed) lines.push(`- \`${f.rel}\` — ${f.error}`);
+    lines.push("");
+  }
+  writeFileSync(mdPath, lines.join("\n"));
+  return { jsonPath, mdPath };
+}
+
 function walk(dir) {
   /** @type {{abs: string, rel: string, bytes: number}[]} */
   const out = [];
