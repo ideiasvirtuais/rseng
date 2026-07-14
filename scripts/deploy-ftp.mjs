@@ -12,13 +12,15 @@
  *   FTP_LOCAL_DIR    (opcional, default "dist/client")
  *   FTP_LOG_FILE     (opcional, default "dist/deploy-ftp.log")
  *   FTP_DRY_RUN      (opcional: "true" para simular sem enviar nada)
+ *   FTP_DELETE_OBSOLETE (opcional: "true" para remover arquivos obsoletos no remoto)
  *
  * Flags:
- *   --dry-run        Lista o que seria enviado (sem conectar ao FTP).
+ *   --dry-run        Lista o que seria enviado/removido (sem alterar o FTP).
+ *   --delete         Remove no remoto os arquivos que não existem mais localmente.
  *
  * Uso:
  *   FTP_HOST=... FTP_USER=... FTP_PASSWORD=... bun run deploy:ftp
- *   bun run deploy:ftp -- --dry-run
+ *   bun run deploy:ftp -- --dry-run --delete
  */
 import { readdirSync } from "node:fs";
 import { existsSync, mkdirSync, writeFileSync, appendFileSync, statSync } from "node:fs";
@@ -40,6 +42,25 @@ const DRY_RUN =
   process.argv.includes("--dry-run") ||
   process.env.FTP_DRY_RUN === "true" ||
   process.env.FTP_DRY_RUN === "1";
+
+const DELETE_OBSOLETE =
+  process.argv.includes("--delete") ||
+  process.env.FTP_DELETE_OBSOLETE === "true" ||
+  process.env.FTP_DELETE_OBSOLETE === "1";
+
+// Arquivos na raiz remota que podemos remover se sumirem do build local.
+// Fora dessa lista, arquivos na raiz (ex.: index.php, wp-*, cgi-bin/) são
+// ignorados para não quebrar sites legados hospedados no mesmo diretório.
+const ROOT_ALLOWLIST = new Set([
+  ".htaccess",
+  "_shell.html",
+  "index.html",
+  "favicon.png",
+  "favicon.ico",
+  "_headers",
+  "robots.txt",
+  "sitemap.xml",
+]);
 
 const missing = DRY_RUN
   ? []
@@ -115,6 +136,65 @@ function walk(dir) {
   return out;
 }
 
+/**
+ * Retorna o conjunto de arquivos locais (rel path, "/"), e o conjunto de
+ * diretórios "gerenciados" — pastas de topo que existem localmente e que
+ * podem ser podadas com segurança no remoto (ex.: "assets", "obras").
+ */
+function localIndex() {
+  const files = new Set(walk(LOCAL).map((f) => f.rel.split(/[\\/]/).join("/")));
+  const managed = new Set();
+  for (const rel of files) {
+    const parts = rel.split("/");
+    for (let i = 1; i < parts.length; i++) managed.add(parts.slice(0, i).join("/"));
+  }
+  return { files, managed };
+}
+
+/**
+ * Lista recursivamente o remoto, mas desce apenas em diretórios "gerenciados"
+ * (que existem localmente). Assim nunca tocamos árvores estranhas ao build
+ * (ex.: cgi-bin/, wp-content/) — só coletamos arquivos candidatos a remoção.
+ */
+async function listRemoteManaged(remoteBase, managedDirs) {
+  /** @type {{rel: string, dir: string, name: string}[]} */
+  const out = [];
+  async function recur(relDir) {
+    const remotePath = relDir ? `${remoteBase}/${relDir}` : remoteBase;
+    let entries;
+    try {
+      entries = await client.list(remotePath);
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (e.name === "." || e.name === "..") continue;
+      const childRel = relDir ? `${relDir}/${e.name}` : e.name;
+      if (e.isDirectory) {
+        if (managedDirs.has(childRel)) await recur(childRel);
+      } else if (e.isFile) {
+        out.push({ rel: childRel, dir: relDir, name: e.name });
+      }
+    }
+  }
+  await recur("");
+  return out;
+}
+
+/**
+ * Decide quais arquivos remotos remover. Regras de segurança:
+ *  - Raiz: só remove nomes na ROOT_ALLOWLIST (evita apagar index.php etc.).
+ *  - Subpastas: só as que existem localmente (managedDirs) são varridas;
+ *    dentro delas, remove tudo que não está no conjunto local.
+ */
+function pickObsolete(remoteFiles, localFiles) {
+  return remoteFiles.filter((r) => {
+    if (localFiles.has(r.rel)) return false;
+    if (r.dir === "") return ROOT_ALLOWLIST.has(r.name);
+    return true;
+  });
+}
+
 async function dryRun() {
   const started = Date.now();
   console.log(`${c.yellow}${c.bold}⚠ DRY-RUN${c.reset} — nada será enviado ao FTP.\n`);
@@ -132,12 +212,52 @@ async function dryRun() {
     log(`  ↑ ${f.rel} (${f.bytes} bytes)`);
   }
 
+  let obsoleteCount = 0;
+  if (DELETE_OBSOLETE) {
+    if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
+      console.log(
+        `\n${c.yellow}⚠ --delete em dry-run sem credenciais: pulando varredura remota.${c.reset}`,
+      );
+      log(`⚠ --delete em dry-run sem credenciais: pulando varredura remota.`);
+    } else {
+      console.log(`\n${c.cyan}→${c.reset} Conectando para inspecionar remoto…`);
+      log(`→ Conectando para inspecionar remoto…`);
+      await client.access({
+        host: FTP_HOST,
+        port: Number(FTP_PORT),
+        user: FTP_USER,
+        password: FTP_PASSWORD,
+        secure,
+      });
+      await client.ensureDir(FTP_REMOTE_DIR);
+      const { files: localFiles, managed } = localIndex();
+      const remoteFiles = await listRemoteManaged(FTP_REMOTE_DIR, managed);
+      const obsolete = pickObsolete(remoteFiles, localFiles);
+      obsoleteCount = obsolete.length;
+      if (obsolete.length === 0) {
+        console.log(`  ${c.dim}nada a remover${c.reset}`);
+        log(`  nada a remover`);
+      } else {
+        console.log(`  ${c.yellow}Seriam removidos ${obsolete.length} arquivos:${c.reset}`);
+        for (const o of obsolete) {
+          console.log(`  ${c.red}✗${c.reset} ${o.rel}`);
+          log(`  ✗ (obsoleto) ${o.rel}`);
+        }
+      }
+    }
+  }
+
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   console.log(
     `\n${c.bold}Resumo (dry-run):${c.reset} ${c.yellow}${files.length} arquivos${c.reset}` +
+      (DELETE_OBSOLETE ? `, ${c.red}${obsoleteCount} obsoletos${c.reset}` : "") +
       ` — ${fmtBytes(totalBytes)} em ${elapsed}s`,
   );
-  log(`\nResumo (dry-run): ${files.length} arquivos — ${totalBytes} bytes em ${elapsed}s`);
+  log(
+    `\nResumo (dry-run): ${files.length} arquivos` +
+      (DELETE_OBSOLETE ? `, ${obsoleteCount} obsoletos` : "") +
+      ` — ${totalBytes} bytes em ${elapsed}s`,
+  );
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
 }
 
@@ -216,14 +336,51 @@ async function main() {
     client.trackProgress();
   }
 
+  /** @type {{rel: string, error?: string}[]} */
+  const deleted = [];
+  /** @type {{rel: string, error: string}[]} */
+  const deleteFailed = [];
+  if (DELETE_OBSOLETE) {
+    console.log(`\n${c.cyan}→${c.reset} Procurando arquivos obsoletos no remoto…`);
+    log(`→ Procurando arquivos obsoletos no remoto…`);
+    const { files: localFiles, managed } = localIndex();
+    const remoteFiles = await listRemoteManaged(FTP_REMOTE_DIR, managed);
+    const obsolete = pickObsolete(remoteFiles, localFiles);
+    if (obsolete.length === 0) {
+      console.log(`  ${c.dim}nada a remover${c.reset}`);
+      log(`  nada a remover`);
+    } else {
+      for (const o of obsolete) {
+        const remotePath = `${FTP_REMOTE_DIR}/${o.rel}`;
+        try {
+          await client.remove(remotePath);
+          deleted.push({ rel: o.rel });
+          console.log(`  ${c.red}✗${c.reset} ${o.rel} ${c.dim}(removido)${c.reset}`);
+          log(`  ✗ removido: ${o.rel}`);
+        } catch (err) {
+          const msg = err?.message || String(err);
+          deleteFailed.push({ rel: o.rel, error: msg });
+          console.log(`  ${c.red}! falha ao remover ${o.rel} — ${msg}${c.reset}`);
+          log(`  ! falha ao remover ${o.rel} — ${msg}`);
+        }
+      }
+    }
+  }
+
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   const summary =
     `\n${c.bold}Resumo:${c.reset} ` +
     `${c.green}${uploaded.length} enviados${c.reset}` +
     (failed.length ? `, ${c.red}${failed.length} falharam${c.reset}` : "") +
+    (DELETE_OBSOLETE ? `, ${c.red}${deleted.length} removidos${c.reset}` : "") +
+    (deleteFailed.length ? `, ${c.red}${deleteFailed.length} rem. falharam${c.reset}` : "") +
     ` — ${fmtBytes(totalBytes)} em ${elapsed}s`;
   console.log(summary);
-  log(`\nResumo: ${uploaded.length} enviados, ${failed.length} falharam — ${totalBytes} bytes em ${elapsed}s`);
+  log(
+    `\nResumo: ${uploaded.length} enviados, ${failed.length} falharam` +
+      (DELETE_OBSOLETE ? `, ${deleted.length} removidos, ${deleteFailed.length} rem. falharam` : "") +
+      ` — ${totalBytes} bytes em ${elapsed}s`,
+  );
 
   if (failed.length) {
     console.log(`\n${c.red}${c.bold}Falhas:${c.reset}`);
