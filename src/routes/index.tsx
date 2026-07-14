@@ -108,14 +108,14 @@ function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
     <a
       href="#top"
       aria-label="Rezende Saback Construtora — início"
-      className="inline-flex items-center"
+      className={`inline-flex items-center ${isLight ? "rounded-md bg-primary-foreground/95 px-3 py-2" : ""}`}
     >
       <img
         src={LOGO_URL}
         alt="Rezende Saback Construtora"
         width={470}
         height={114}
-        className={`h-11 w-auto md:h-12 ${isLight ? "brightness-0 invert" : ""}`}
+        className="h-10 w-auto md:h-12"
         loading="eager"
         decoding="async"
       />
