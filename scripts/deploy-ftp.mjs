@@ -12,13 +12,15 @@
  *   FTP_LOCAL_DIR    (opcional, default "dist/client")
  *   FTP_LOG_FILE     (opcional, default "dist/deploy-ftp.log")
  *   FTP_DRY_RUN      (opcional: "true" para simular sem enviar nada)
+ *   FTP_DELETE_OBSOLETE (opcional: "true" para remover arquivos obsoletos no remoto)
  *
  * Flags:
- *   --dry-run        Lista o que seria enviado (sem conectar ao FTP).
+ *   --dry-run        Lista o que seria enviado/removido (sem alterar o FTP).
+ *   --delete         Remove no remoto os arquivos que não existem mais localmente.
  *
  * Uso:
  *   FTP_HOST=... FTP_USER=... FTP_PASSWORD=... bun run deploy:ftp
- *   bun run deploy:ftp -- --dry-run
+ *   bun run deploy:ftp -- --dry-run --delete
  */
 import { readdirSync } from "node:fs";
 import { existsSync, mkdirSync, writeFileSync, appendFileSync, statSync } from "node:fs";
