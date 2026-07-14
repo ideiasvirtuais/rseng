@@ -65,6 +65,8 @@ const {
   FTP_LOCAL_DIR = "dist/client",
   FTP_LOG_FILE = "dist/deploy-ftp.log",
   FTP_MANIFEST_NAME = ".deploy-manifest.json",
+  FTP_REPORT_FILE = "dist/deploy-report.json",
+  FTP_REPORT_MD = "dist/deploy-report.md",
 } = process.env;
 
 function flagValue(name) {
@@ -163,6 +165,63 @@ function fmtBytes(n) {
   if (n < 1024) return `${n} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
   return `${(n / 1024 / 1024).toFixed(2)} MB`;
+}
+
+function writeReport(report) {
+  const jsonPath = resolve(process.cwd(), FTP_REPORT_FILE);
+  const mdPath = resolve(process.cwd(), FTP_REPORT_MD);
+  mkdirSync(dirname(jsonPath), { recursive: true });
+  mkdirSync(dirname(mdPath), { recursive: true });
+  writeFileSync(jsonPath, JSON.stringify(report, null, 2));
+
+  const lines = [];
+  lines.push(`# Relatório de Deploy FTP`);
+  lines.push("");
+  lines.push(`- **Modo:** ${report.mode}`);
+  lines.push(`- **Data:** ${report.finishedAt}`);
+  lines.push(`- **Duração:** ${report.durationSec}s`);
+  lines.push(`- **Destino:** \`${report.target.user}@${report.target.host}:${report.target.port}${report.target.remoteDir}\``);
+  lines.push(`- **Origem:** \`${report.target.localDir}\``);
+  lines.push(`- **Configuração:** concurrency=${report.config.concurrency}, retries=${report.config.retries}, force=${report.config.force}, delete=${report.config.delete}`);
+  lines.push("");
+  lines.push(`## Totais`);
+  lines.push("");
+  lines.push(`| Métrica | Valor |`);
+  lines.push(`| --- | ---: |`);
+  lines.push(`| Arquivos locais | ${report.totals.localFiles} |`);
+  lines.push(`| Enviados | ${report.totals.uploaded} |`);
+  lines.push(`| Inalterados (checksum) | ${report.totals.skipped} |`);
+  lines.push(`| Falhas de upload | ${report.totals.uploadFailed} |`);
+  lines.push(`| Removidos | ${report.totals.deleted} |`);
+  lines.push(`| Falhas de remoção | ${report.totals.deleteFailed} |`);
+  lines.push(`| Bytes enviados | ${fmtBytes(report.totals.bytesUploaded)} (${report.totals.bytesUploaded}) |`);
+  lines.push("");
+  if (report.uploaded?.length) {
+    lines.push(`## Enviados (${report.uploaded.length})`);
+    lines.push("");
+    for (const u of report.uploaded) lines.push(`- \`${u.rel}\` — ${fmtBytes(u.bytes)}`);
+    lines.push("");
+  }
+  if (report.deleted?.length) {
+    lines.push(`## Removidos (${report.deleted.length})`);
+    lines.push("");
+    for (const d of report.deleted) lines.push(`- \`${d}\``);
+    lines.push("");
+  }
+  if (report.uploadFailed?.length) {
+    lines.push(`## Falhas de upload (${report.uploadFailed.length})`);
+    lines.push("");
+    for (const f of report.uploadFailed) lines.push(`- \`${f.rel}\` — ${f.error}`);
+    lines.push("");
+  }
+  if (report.deleteFailed?.length) {
+    lines.push(`## Falhas de remoção (${report.deleteFailed.length})`);
+    lines.push("");
+    for (const f of report.deleteFailed) lines.push(`- \`${f.rel}\` — ${f.error}`);
+    lines.push("");
+  }
+  writeFileSync(mdPath, lines.join("\n"));
+  return { jsonPath, mdPath };
 }
 
 function walk(dir) {
@@ -535,6 +594,7 @@ async function dryRun() {
   }
 
   let obsoleteCount = 0;
+  let obsoleteList = [];
   if (DELETE_OBSOLETE) {
     if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
       console.log(`\n${c.yellow}⚠ --delete em dry-run sem credenciais: pulando varredura remota.${c.reset}`);
@@ -545,6 +605,7 @@ async function dryRun() {
         const remoteList = await listRemoteManaged(cli, FTP_REMOTE_DIR, managed);
         const obsolete = pickObsolete(remoteList, files);
         obsoleteCount = obsolete.length;
+        obsoleteList = obsolete.map((o) => o.rel);
         if (!obsolete.length) console.log(`  ${c.dim}nada a remover${c.reset}`);
         else {
           console.log(`  ${c.yellow}Seriam removidos ${obsolete.length} arquivos:${c.reset}`);
@@ -563,6 +624,47 @@ async function dryRun() {
       (DELETE_OBSOLETE ? `, ${c.red}${obsoleteCount} obsoletos${c.reset}` : "") +
       ` — ${fmtBytes(totalBytes)} em ${elapsed}s`,
   );
+  const report = {
+    mode: "dry-run",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    durationSec: Number(elapsed),
+    target: {
+      host: FTP_HOST ?? null,
+      port: Number(FTP_PORT),
+      user: FTP_USER ?? null,
+      remoteDir: FTP_REMOTE_DIR,
+      localDir: LOCAL,
+    },
+    config: {
+      concurrency: CONCURRENCY,
+      retries: MAX_RETRIES,
+      retryDelayMs: RETRY_DELAY_MS,
+      force: FORCE,
+      delete: DELETE_OBSOLETE,
+      manifestFound,
+    },
+    totals: {
+      localFiles: sorted.length,
+      uploaded: 0,
+      skipped: skipped.length,
+      wouldUpload: toUpload.length,
+      uploadFailed: 0,
+      deleted: 0,
+      wouldDelete: obsoleteCount,
+      deleteFailed: 0,
+      bytesUploaded: 0,
+      bytesToUpload: totalBytes,
+    },
+    wouldUpload: toUpload.map((f) => ({ rel: f.rel, bytes: f.bytes })),
+    wouldDelete: obsoleteList,
+    uploaded: [],
+    deleted: [],
+    uploadFailed: [],
+    deleteFailed: [],
+  };
+  const paths = writeReport(report);
+  console.log(`${c.dim}Relatório: ${paths.jsonPath} e ${paths.mdPath}${c.reset}`);
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
 }
 
@@ -719,6 +821,42 @@ async function runDeploy() {
     for (const f of deleteFailed) console.log(`  ${c.red}!${c.reset} ${f.rel} — ${f.error}`);
   }
 
+  const report = {
+    mode: "deploy",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    durationSec: Number(elapsed),
+    target: {
+      host: FTP_HOST,
+      port: Number(FTP_PORT),
+      user: FTP_USER,
+      remoteDir: FTP_REMOTE_DIR,
+      localDir: LOCAL,
+    },
+    config: {
+      concurrency: CONCURRENCY,
+      retries: MAX_RETRIES,
+      retryDelayMs: RETRY_DELAY_MS,
+      force: FORCE,
+      delete: DELETE_OBSOLETE,
+      manifestFound,
+    },
+    totals: {
+      localFiles: sorted.length,
+      uploaded: uploaded.length,
+      skipped: skipped.length,
+      uploadFailed: failed.length,
+      deleted: deleted.length,
+      deleteFailed: deleteFailed.length,
+      bytesUploaded: totalBytes,
+    },
+    uploaded,
+    deleted,
+    uploadFailed: failed,
+    deleteFailed,
+  };
+  const paths = writeReport(report);
+  console.log(`${c.dim}Relatório: ${paths.jsonPath} e ${paths.mdPath}${c.reset}`);
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
   if (failed.length || deleteFailed.length) process.exit(2);
   console.log(`${c.green}✓ Deploy concluído com sucesso.${c.reset}`);
