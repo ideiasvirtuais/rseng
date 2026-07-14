@@ -212,12 +212,52 @@ async function dryRun() {
     log(`  ↑ ${f.rel} (${f.bytes} bytes)`);
   }
 
+  let obsoleteCount = 0;
+  if (DELETE_OBSOLETE) {
+    if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
+      console.log(
+        `\n${c.yellow}⚠ --delete em dry-run sem credenciais: pulando varredura remota.${c.reset}`,
+      );
+      log(`⚠ --delete em dry-run sem credenciais: pulando varredura remota.`);
+    } else {
+      console.log(`\n${c.cyan}→${c.reset} Conectando para inspecionar remoto…`);
+      log(`→ Conectando para inspecionar remoto…`);
+      await client.access({
+        host: FTP_HOST,
+        port: Number(FTP_PORT),
+        user: FTP_USER,
+        password: FTP_PASSWORD,
+        secure,
+      });
+      await client.ensureDir(FTP_REMOTE_DIR);
+      const { files: localFiles, managed } = localIndex();
+      const remoteFiles = await listRemoteManaged(FTP_REMOTE_DIR, managed);
+      const obsolete = pickObsolete(remoteFiles, localFiles);
+      obsoleteCount = obsolete.length;
+      if (obsolete.length === 0) {
+        console.log(`  ${c.dim}nada a remover${c.reset}`);
+        log(`  nada a remover`);
+      } else {
+        console.log(`  ${c.yellow}Seriam removidos ${obsolete.length} arquivos:${c.reset}`);
+        for (const o of obsolete) {
+          console.log(`  ${c.red}✗${c.reset} ${o.rel}`);
+          log(`  ✗ (obsoleto) ${o.rel}`);
+        }
+      }
+    }
+  }
+
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   console.log(
     `\n${c.bold}Resumo (dry-run):${c.reset} ${c.yellow}${files.length} arquivos${c.reset}` +
+      (DELETE_OBSOLETE ? `, ${c.red}${obsoleteCount} obsoletos${c.reset}` : "") +
       ` — ${fmtBytes(totalBytes)} em ${elapsed}s`,
   );
-  log(`\nResumo (dry-run): ${files.length} arquivos — ${totalBytes} bytes em ${elapsed}s`);
+  log(
+    `\nResumo (dry-run): ${files.length} arquivos` +
+      (DELETE_OBSOLETE ? `, ${obsoleteCount} obsoletos` : "") +
+      ` — ${totalBytes} bytes em ${elapsed}s`,
+  );
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
 }
 
