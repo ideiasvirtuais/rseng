@@ -821,6 +821,42 @@ async function runDeploy() {
     for (const f of deleteFailed) console.log(`  ${c.red}!${c.reset} ${f.rel} — ${f.error}`);
   }
 
+  const report = {
+    mode: "deploy",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    durationSec: Number(elapsed),
+    target: {
+      host: FTP_HOST,
+      port: Number(FTP_PORT),
+      user: FTP_USER,
+      remoteDir: FTP_REMOTE_DIR,
+      localDir: LOCAL,
+    },
+    config: {
+      concurrency: CONCURRENCY,
+      retries: MAX_RETRIES,
+      retryDelayMs: RETRY_DELAY_MS,
+      force: FORCE,
+      delete: DELETE_OBSOLETE,
+      manifestFound,
+    },
+    totals: {
+      localFiles: sorted.length,
+      uploaded: uploaded.length,
+      skipped: skipped.length,
+      uploadFailed: failed.length,
+      deleted: deleted.length,
+      deleteFailed: deleteFailed.length,
+      bytesUploaded: totalBytes,
+    },
+    uploaded,
+    deleted,
+    uploadFailed: failed,
+    deleteFailed,
+  };
+  const paths = writeReport(report);
+  console.log(`${c.dim}Relatório: ${paths.jsonPath} e ${paths.mdPath}${c.reset}`);
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
   if (failed.length || deleteFailed.length) process.exit(2);
   console.log(`${c.green}✓ Deploy concluído com sucesso.${c.reset}`);
