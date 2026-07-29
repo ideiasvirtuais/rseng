@@ -1,4 +1,4 @@
-# TanStack Start SPA hospedado em Apache
+# TanStack Start SPA hospedado em Apache (KingHost / Napoleon)
 # index.html deve vir antes de index.php para não cair no WordPress antigo.
 DirectoryIndex index.html _shell.html index.php
 
