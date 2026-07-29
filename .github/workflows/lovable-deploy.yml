@@ -56,7 +56,7 @@ jobs:
             dist/deploy-ftp.log
             dist/deploy-report.json
             dist/deploy-report.md
-          if-no-found: ignore
+          if-no-files-found: ignore
           retention-days: 30
 
       # ── Espelho estatico na branch stable-website (backup) ──────────────────
