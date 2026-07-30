@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
-import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
@@ -209,13 +208,14 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="relative h-[92vh] min-h-[640px] w-full">
           <img
-            src={heroBuilding}
-            alt="Fachada residencial ao entardecer"
+            src="/hero-rosario.jpg"
+            alt="Edifício Rosário Business & Home e ambientes internos decorados"
             width={1920}
-            height={1280}
+            height={1391}
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/40 via-primary/30 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/75 via-primary/55 to-background" />
+
           <div className="container-x relative flex h-full flex-col justify-end pb-16 pt-32">
             <div className="max-w-3xl text-primary-foreground">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
