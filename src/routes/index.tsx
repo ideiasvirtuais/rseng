@@ -128,6 +128,7 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("Todas");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [houseIndex, setHouseIndex] = useState<number | null>(null);
   const filteredGallery = useMemo(
     () => (galleryFilter === "Todas" ? galleryItems : galleryItems.filter((g) => g.category === galleryFilter)),
     [galleryFilter],
