@@ -6,6 +6,7 @@ import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
+import { houses } from "@/data/houses";
 import { ContactForm } from "@/components/ContactForm";
 
 const LOGO_URL = "/logo-rezende-saback.png";
