@@ -137,6 +137,7 @@ function Index() {
   const navLinks = [
     { href: "#empreendimentos", label: "Empreendimentos" },
     { href: "#galeria", label: "Galeria" },
+    { href: "#casas", label: "Casas" },
 
     { href: "#personalizacao", label: "Personalização" },
     { href: "#sobre", label: "Sobre" },
