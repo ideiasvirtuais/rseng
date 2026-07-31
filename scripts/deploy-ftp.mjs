@@ -694,14 +694,16 @@ async function runDeploy() {
 
   /** @type {Record<string,{sha256:string,bytes:number}>} */
   let remoteFiles = {};
+  let remoteHistory = [];
   let manifestFound = false;
-  if (!FORCE) {
+  {
     const cli = await pool.acquire();
     try {
       const manifest = await downloadRemoteManifest(cli);
       pool.release(cli);
       if (manifest) {
         remoteFiles = manifest.files;
+        remoteHistory = Array.isArray(manifest.history) ? manifest.history : [];
         manifestFound = true;
         console.log(`  ${c.dim}manifesto remoto encontrado (${Object.keys(remoteFiles).length} entradas).${c.reset}`);
       } else {
@@ -711,9 +713,13 @@ async function runDeploy() {
       pool.drop(cli);
       throw err;
     }
-  } else {
+  }
+  if (FORCE) {
     console.log(`  ${c.yellow}⚠ --force ativo: ignorando manifesto e reenviando tudo.${c.reset}`);
   }
+  const previousFiles = { ...remoteFiles };
+  const history = remoteHistory.length ? remoteHistory : readLocalHistory();
+
 
   const toUpload = [];
   const skipped = [];
