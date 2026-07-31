@@ -53,6 +53,12 @@ import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import { Readable } from "node:stream";
 import { Client } from "basic-ftp";
+import {
+  computeDiff,
+  buildEntry,
+  writeChangelog,
+  readLocalHistory,
+} from "./deploy-changelog.mjs";
 
 // ── env & flags ──────────────────────────────────────────────────────────────
 const {
