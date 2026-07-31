@@ -861,6 +861,10 @@ async function runDeploy() {
 
   const report = {
     mode: "deploy",
+    version: entry.version,
+    build: entry.build,
+    git: entry.git,
+    changes: entry.changes,
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     durationSec: Number(elapsed),
