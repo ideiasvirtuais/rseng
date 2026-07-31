@@ -53,6 +53,12 @@ import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import { Readable } from "node:stream";
 import { Client } from "basic-ftp";
+import {
+  computeDiff,
+  buildEntry,
+  writeChangelog,
+  readLocalHistory,
+} from "./deploy-changelog.mjs";
 
 // ── env & flags ──────────────────────────────────────────────────────────────
 const {
@@ -551,24 +557,30 @@ async function dryRun() {
 
   /** @type {Record<string,{sha256:string,bytes:number}>} */
   let remoteFiles = {};
+  let remoteHistory = [];
   let manifestFound = false;
-  if (!FORCE && FTP_HOST && FTP_USER && FTP_PASSWORD) {
+  if (FTP_HOST && FTP_USER && FTP_PASSWORD) {
     console.log(`${c.cyan}→${c.reset} Baixando manifesto remoto para comparar checksums…`);
     const cli = await makeClient();
     try {
       const manifest = await downloadRemoteManifest(cli);
       if (manifest) {
         remoteFiles = manifest.files;
+        remoteHistory = Array.isArray(manifest.history) ? manifest.history : [];
         manifestFound = true;
       }
     } finally {
       cli.close();
     }
-  } else if (FORCE) {
-    console.log(`${c.yellow}⚠ --force ativo: ignorando manifesto e reenviando tudo.${c.reset}`);
   } else {
     console.log(`${c.yellow}⚠ Sem credenciais: pulando comparação de checksums.${c.reset}`);
   }
+  if (FORCE) {
+    console.log(`${c.yellow}⚠ --force ativo: ignorando manifesto e reenviando tudo.${c.reset}`);
+  }
+  const previousFiles = { ...remoteFiles };
+  const history = remoteHistory.length ? remoteHistory : readLocalHistory();
+
 
   const toUpload = [];
   const skipped = [];
@@ -617,6 +629,20 @@ async function dryRun() {
     }
   }
 
+  const diff = computeDiff(previousFiles, hashes, sorted, obsoleteList);
+  const entry = buildEntry({
+    diff,
+    history,
+    mode: "dry-run",
+    target: { host: FTP_HOST, remoteDir: FTP_REMOTE_DIR },
+    totals: { bytesUploaded: totalBytes },
+  });
+  console.log(
+    `\n${c.bold}Próxima versão:${c.reset} ${c.yellow}v${entry.version}${c.reset} ` +
+      `${c.dim}(build #${entry.build})${c.reset} — ` +
+      `${entry.summary.added} novo(s), ${entry.summary.modified} alterado(s), ${entry.summary.removed} removido(s)`,
+  );
+
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   console.log(
     `\n${c.bold}Resumo (dry-run):${c.reset} ${c.yellow}${toUpload.length} a enviar${c.reset}` +
@@ -626,6 +652,10 @@ async function dryRun() {
   );
   const report = {
     mode: "dry-run",
+    version: entry.version,
+    build: entry.build,
+    git: entry.git,
+    changes: entry.changes,
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     durationSec: Number(elapsed),
@@ -688,14 +718,16 @@ async function runDeploy() {
 
   /** @type {Record<string,{sha256:string,bytes:number}>} */
   let remoteFiles = {};
+  let remoteHistory = [];
   let manifestFound = false;
-  if (!FORCE) {
+  {
     const cli = await pool.acquire();
     try {
       const manifest = await downloadRemoteManifest(cli);
       pool.release(cli);
       if (manifest) {
         remoteFiles = manifest.files;
+        remoteHistory = Array.isArray(manifest.history) ? manifest.history : [];
         manifestFound = true;
         console.log(`  ${c.dim}manifesto remoto encontrado (${Object.keys(remoteFiles).length} entradas).${c.reset}`);
       } else {
@@ -705,9 +737,13 @@ async function runDeploy() {
       pool.drop(cli);
       throw err;
     }
-  } else {
+  }
+  if (FORCE) {
     console.log(`  ${c.yellow}⚠ --force ativo: ignorando manifesto e reenviando tudo.${c.reset}`);
   }
+  const previousFiles = { ...remoteFiles };
+  const history = remoteHistory.length ? remoteHistory : readLocalHistory();
+
 
   const toUpload = [];
   const skipped = [];
@@ -768,6 +804,29 @@ async function runDeploy() {
     }
   }
 
+  // ── changelog / versionamento ──────────────────────────────────────────────
+  const diff = computeDiff(previousFiles, hashes, sorted, deleted);
+  const entry = buildEntry({
+    diff,
+    history,
+    mode: "deploy",
+    target: { host: FTP_HOST, remoteDir: FTP_REMOTE_DIR },
+    totals: { bytesUploaded: totalBytes },
+  });
+  const changelog = writeChangelog(entry, history);
+  console.log(
+    `\n${c.bold}Versão do build:${c.reset} ${c.green}v${entry.version}${c.reset} ` +
+      `${c.dim}(build #${entry.build}${entry.git?.commit ? `, commit ${entry.git.commit}` : ""})${c.reset}`,
+  );
+  console.log(
+    `  ${c.dim}${entry.summary.added} novo(s), ${entry.summary.modified} alterado(s), ` +
+      `${entry.summary.removed} removido(s), ${entry.summary.unchanged} inalterado(s)${c.reset}`,
+  );
+  log(
+    `\nVersão v${entry.version} (build #${entry.build}) — ` +
+      `${entry.summary.added} novos, ${entry.summary.modified} alterados, ${entry.summary.removed} removidos`,
+  );
+
   // Envia o manifesto atualizado apenas se houve alguma mudança.
   const manifestChanged =
     uploaded.length > 0 || deleted.length > 0 || !manifestFound;
@@ -777,7 +836,10 @@ async function runDeploy() {
       try {
         await uploadManifest(cli, {
           generatedAt: new Date().toISOString(),
+          version: entry.version,
+          build: entry.build,
           files: nextManifestFiles,
+          history: changelog.history,
         });
         pool.release(cli);
         console.log(`  ${c.dim}manifesto atualizado (${Object.keys(nextManifestFiles).length} entradas).${c.reset}`);
@@ -823,6 +885,10 @@ async function runDeploy() {
 
   const report = {
     mode: "deploy",
+    version: entry.version,
+    build: entry.build,
+    git: entry.git,
+    changes: entry.changes,
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     durationSec: Number(elapsed),
@@ -857,6 +923,7 @@ async function runDeploy() {
   };
   const paths = writeReport(report);
   console.log(`${c.dim}Relatório: ${paths.jsonPath} e ${paths.mdPath}${c.reset}`);
+  console.log(`${c.dim}Changelog: ${changelog.mdPath} e ${changelog.jsonPath}${c.reset}`);
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
   if (failed.length || deleteFailed.length) process.exit(2);
   console.log(`${c.green}✓ Deploy concluído com sucesso.${c.reset}`);
