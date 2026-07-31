@@ -557,24 +557,30 @@ async function dryRun() {
 
   /** @type {Record<string,{sha256:string,bytes:number}>} */
   let remoteFiles = {};
+  let remoteHistory = [];
   let manifestFound = false;
-  if (!FORCE && FTP_HOST && FTP_USER && FTP_PASSWORD) {
+  if (FTP_HOST && FTP_USER && FTP_PASSWORD) {
     console.log(`${c.cyan}→${c.reset} Baixando manifesto remoto para comparar checksums…`);
     const cli = await makeClient();
     try {
       const manifest = await downloadRemoteManifest(cli);
       if (manifest) {
         remoteFiles = manifest.files;
+        remoteHistory = Array.isArray(manifest.history) ? manifest.history : [];
         manifestFound = true;
       }
     } finally {
       cli.close();
     }
-  } else if (FORCE) {
-    console.log(`${c.yellow}⚠ --force ativo: ignorando manifesto e reenviando tudo.${c.reset}`);
   } else {
     console.log(`${c.yellow}⚠ Sem credenciais: pulando comparação de checksums.${c.reset}`);
   }
+  if (FORCE) {
+    console.log(`${c.yellow}⚠ --force ativo: ignorando manifesto e reenviando tudo.${c.reset}`);
+  }
+  const previousFiles = { ...remoteFiles };
+  const history = remoteHistory.length ? remoteHistory : readLocalHistory();
+
 
   const toUpload = [];
   const skipped = [];
