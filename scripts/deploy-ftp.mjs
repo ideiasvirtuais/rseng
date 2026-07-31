@@ -899,6 +899,7 @@ async function runDeploy() {
   };
   const paths = writeReport(report);
   console.log(`${c.dim}Relatório: ${paths.jsonPath} e ${paths.mdPath}${c.reset}`);
+  console.log(`${c.dim}Changelog: ${changelog.mdPath} e ${changelog.jsonPath}${c.reset}`);
   console.log(`${c.dim}Log completo: ${LOG_PATH}${c.reset}`);
   if (failed.length || deleteFailed.length) process.exit(2);
   console.log(`${c.green}✓ Deploy concluído com sucesso.${c.reset}`);
