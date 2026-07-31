@@ -780,6 +780,29 @@ async function runDeploy() {
     }
   }
 
+  // ── changelog / versionamento ──────────────────────────────────────────────
+  const diff = computeDiff(previousFiles, hashes, sorted, deleted);
+  const entry = buildEntry({
+    diff,
+    history,
+    mode: "deploy",
+    target: { host: FTP_HOST, remoteDir: FTP_REMOTE_DIR },
+    totals: { bytesUploaded: totalBytes },
+  });
+  const changelog = writeChangelog(entry, history);
+  console.log(
+    `\n${c.bold}Versão do build:${c.reset} ${c.green}v${entry.version}${c.reset} ` +
+      `${c.dim}(build #${entry.build}${entry.git?.commit ? `, commit ${entry.git.commit}` : ""})${c.reset}`,
+  );
+  console.log(
+    `  ${c.dim}${entry.summary.added} novo(s), ${entry.summary.modified} alterado(s), ` +
+      `${entry.summary.removed} removido(s), ${entry.summary.unchanged} inalterado(s)${c.reset}`,
+  );
+  log(
+    `\nVersão v${entry.version} (build #${entry.build}) — ` +
+      `${entry.summary.added} novos, ${entry.summary.modified} alterados, ${entry.summary.removed} removidos`,
+  );
+
   // Envia o manifesto atualizado apenas se houve alguma mudança.
   const manifestChanged =
     uploaded.length > 0 || deleted.length > 0 || !manifestFound;
@@ -789,7 +812,10 @@ async function runDeploy() {
       try {
         await uploadManifest(cli, {
           generatedAt: new Date().toISOString(),
+          version: entry.version,
+          build: entry.build,
           files: nextManifestFiles,
+          history: changelog.history,
         });
         pool.release(cli);
         console.log(`  ${c.dim}manifesto atualizado (${Object.keys(nextManifestFiles).length} entradas).${c.reset}`);
