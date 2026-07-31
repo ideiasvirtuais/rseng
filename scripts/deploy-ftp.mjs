@@ -629,6 +629,20 @@ async function dryRun() {
     }
   }
 
+  const diff = computeDiff(previousFiles, hashes, sorted, obsoleteList);
+  const entry = buildEntry({
+    diff,
+    history,
+    mode: "dry-run",
+    target: { host: FTP_HOST, remoteDir: FTP_REMOTE_DIR },
+    totals: { bytesUploaded: totalBytes },
+  });
+  console.log(
+    `\n${c.bold}Próxima versão:${c.reset} ${c.yellow}v${entry.version}${c.reset} ` +
+      `${c.dim}(build #${entry.build})${c.reset} — ` +
+      `${entry.summary.added} novo(s), ${entry.summary.modified} alterado(s), ${entry.summary.removed} removido(s)`,
+  );
+
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);
   console.log(
     `\n${c.bold}Resumo (dry-run):${c.reset} ${c.yellow}${toUpload.length} a enviar${c.reset}` +
@@ -638,6 +652,10 @@ async function dryRun() {
   );
   const report = {
     mode: "dry-run",
+    version: entry.version,
+    build: entry.build,
+    git: entry.git,
+    changes: entry.changes,
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     durationSec: Number(elapsed),
