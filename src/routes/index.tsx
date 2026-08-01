@@ -175,7 +175,7 @@ function Index() {
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((v) => !v)}
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary transition hover:bg-secondary md:hidden"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary transition hover:bg-secondary lg:hidden"
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -183,12 +183,23 @@ function Index() {
         </div>
         {/* Mobile menu */}
         <div
-          className={`md:hidden overflow-hidden border-t border-border/60 bg-background transition-[max-height,opacity] duration-300 ${
-            menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          className={`lg:hidden overflow-hidden border-t border-border/60 bg-background transition-[max-height,opacity] duration-300 ${
+            menuOpen ? "max-h-[36rem] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <nav className="container-x flex flex-col py-4 text-sm font-medium text-primary">
+            {segmentNav.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setMenuOpen(false)}
+                className="border-b border-border/60 py-3 hover:text-primary/70"
+              >
+                {l.label}
+              </Link>
+            ))}
             {navLinks.map((l) => (
+
               <a
                 key={l.href}
                 href={l.href}
