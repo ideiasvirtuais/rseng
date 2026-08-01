@@ -13,6 +13,10 @@
     "predeploy:ftp": "node scripts/preflight-ftp.mjs",
     "verify:ftp": "node scripts/preflight-ftp.mjs",
     "deploy:ftp:full": "bun run build:ftp && node scripts/deploy-ftp.mjs",
+    "deploy:staging": "node scripts/deploy-env.mjs --env=staging",
+    "deploy:staging:full": "bun run build:ftp && node scripts/deploy-env.mjs --env=staging",
+    "deploy:prod": "node scripts/deploy-env.mjs --env=production",
+    "deploy:prod:full": "bun run build:ftp && node scripts/deploy-env.mjs --env=production",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
