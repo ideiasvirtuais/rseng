@@ -152,11 +152,15 @@ function Index() {
           <div className="min-w-0">
             <Logo />
           </div>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-primary/80 md:flex">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-primary/80 lg:flex">
+            {segmentNav.map((l) => (
+              <Link key={l.to} to={l.to} className="hover:text-primary">{l.label}</Link>
+            ))}
             {navLinks.map((l) => (
               <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
             ))}
           </nav>
+
           <div className="flex items-center gap-2">
             <a
               href="#contato"
