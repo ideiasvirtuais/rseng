@@ -8,6 +8,8 @@ import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@
 import { houses } from "@/data/houses";
 import { ContactForm } from "@/components/ContactForm";
 import { segmentNav } from "@/components/SiteHeader";
+import { segments } from "@/data/segments";
+
 
 
 const LOGO_URL = "/logo-rezende-saback.png";
