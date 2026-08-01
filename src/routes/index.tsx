@@ -7,6 +7,8 @@ import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { houses } from "@/data/houses";
 import { ContactForm } from "@/components/ContactForm";
+import { segmentNav } from "@/components/SiteHeader";
+
 
 const LOGO_URL = "/logo-rezende-saback.png";
 
