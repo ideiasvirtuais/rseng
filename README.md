@@ -231,3 +231,41 @@ O log detalhado do upload (arquivos enviados e falhas destacadas) fica em `dist/
 ### Onde encontrar o `.htaccess`
 
 Sempre em **`dist/client/.htaccess`** após qualquer `bun run build` ou `bun run build:ftp`. Ele deve ser enviado para a **raiz do domínio** (mesmo diretório do `index.html`) — o `deploy:ftp` já faz isso automaticamente. No envio manual pelo cliente FTP, habilite a exibição de arquivos ocultos (começando com `.`) para não esquecê-lo.
+
+---
+
+## Ambientes: staging e produção
+
+O mesmo build (`dist/client/`) pode ser publicado em dois destinos FTP distintos:
+
+| Ambiente | Comando | Destino padrão | Manifesto / relatórios |
+|---|---|---|---|
+| **Staging** | `bun run deploy:staging` | `/www/staging` | `.deploy-manifest-staging.json`, `dist/deploy-report-staging.md`, `CHANGELOG-DEPLOY-STAGING.md` |
+| **Produção** | `bun run deploy:prod` | `/www` | `.deploy-manifest.json`, `dist/deploy-report.md`, `CHANGELOG-DEPLOY.md` |
+
+```bash
+bun run deploy:staging:full            # build + envio para staging
+bun run deploy:staging -- --dry-run    # simula o envio para staging
+bun run deploy:prod -- --delete        # publica em produção e limpa obsoletos
+```
+
+Como cada ambiente tem manifesto próprio, um deploy de staging **nunca** invalida o cache de checksum da produção.
+
+Staging recebe automaticamente `robots.txt` com `Disallow: /` e o cabeçalho `X-Robots-Tag: noindex` no `.htaccess`, evitando indexação pelo Google. O deploy de produção reverte ambos.
+
+### Credenciais por ambiente
+
+Ordem de resolução (a primeira que existir vence):
+
+1. Variáveis com prefixo: `STAGING_FTP_*` / `PROD_FTP_*`
+2. Arquivo `.env.ftp.staging` ou `.env.ftp.production`
+3. Arquivo `.env.ftp` compartilhado / variáveis `FTP_*` já exportadas
+
+Se o servidor de staging for o mesmo da produção, basta definir `STAGING_FTP_REMOTE_DIR=/www/staging` (ou nem isso — é o default).
+
+### No GitHub Actions
+
+- **Push na `main`** → deploy automático em **staging**
+- **Run workflow (manual)** → escolha `staging` ou `production` no dropdown
+
+O espelho na branch `stable-website` só é atualizado em deploys de produção.

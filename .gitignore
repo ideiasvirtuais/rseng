@@ -33,3 +33,8 @@ dist-ssr
 
 # FTP deploy credentials (local only)
 .env.ftp
+
+# Credenciais de deploy FTP por ambiente
+.env.ftp
+.env.ftp.staging
+.env.ftp.production

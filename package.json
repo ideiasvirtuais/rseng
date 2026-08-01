@@ -13,6 +13,12 @@
     "predeploy:ftp": "node scripts/preflight-ftp.mjs",
     "verify:ftp": "node scripts/preflight-ftp.mjs",
     "deploy:ftp:full": "bun run build:ftp && node scripts/deploy-ftp.mjs",
+    "predeploy:staging": "node scripts/preflight-ftp.mjs",
+    "deploy:staging": "node scripts/deploy-env.mjs --env=staging",
+    "deploy:staging:full": "bun run build:ftp && node scripts/deploy-env.mjs --env=staging",
+    "predeploy:prod": "node scripts/preflight-ftp.mjs",
+    "deploy:prod": "node scripts/deploy-env.mjs --env=production",
+    "deploy:prod:full": "bun run build:ftp && node scripts/deploy-env.mjs --env=production",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
@@ -73,7 +79,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "2.8.3",
+    "@lovable.dev/vite-tanstack-config": "2.8.5",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

@@ -11,8 +11,11 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { execFileSync } from "node:child_process";
 
-export const CHANGELOG_MD = "CHANGELOG-DEPLOY.md";
-export const CHANGELOG_JSON = "dist/deploy-changelog.json";
+const IS_STAGING = process.env.DEPLOY_ENV === "staging";
+export const CHANGELOG_MD = IS_STAGING ? "CHANGELOG-DEPLOY-STAGING.md" : "CHANGELOG-DEPLOY.md";
+export const CHANGELOG_JSON = IS_STAGING
+  ? "dist/deploy-changelog-staging.json"
+  : "dist/deploy-changelog.json";
 const HISTORY_LIMIT = 50;
 
 function fmtBytes(n) {
