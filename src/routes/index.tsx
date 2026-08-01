@@ -7,6 +7,10 @@ import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { houses } from "@/data/houses";
 import { ContactForm } from "@/components/ContactForm";
+import { segmentNav } from "@/components/SiteHeader";
+import { segments } from "@/data/segments";
+
+
 
 const LOGO_URL = "/logo-rezende-saback.png";
 
@@ -152,11 +156,15 @@ function Index() {
           <div className="min-w-0">
             <Logo />
           </div>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-primary/80 md:flex">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-primary/80 lg:flex">
+            {segmentNav.map((l) => (
+              <Link key={l.to} to={l.to} className="hover:text-primary">{l.label}</Link>
+            ))}
             {navLinks.map((l) => (
               <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
             ))}
           </nav>
+
           <div className="flex items-center gap-2">
             <a
               href="#contato"
@@ -169,7 +177,7 @@ function Index() {
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((v) => !v)}
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary transition hover:bg-secondary md:hidden"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary transition hover:bg-secondary lg:hidden"
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -177,12 +185,23 @@ function Index() {
         </div>
         {/* Mobile menu */}
         <div
-          className={`md:hidden overflow-hidden border-t border-border/60 bg-background transition-[max-height,opacity] duration-300 ${
-            menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          className={`lg:hidden overflow-hidden border-t border-border/60 bg-background transition-[max-height,opacity] duration-300 ${
+            menuOpen ? "max-h-[36rem] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <nav className="container-x flex flex-col py-4 text-sm font-medium text-primary">
+            {segmentNav.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setMenuOpen(false)}
+                className="border-b border-border/60 py-3 hover:text-primary/70"
+              >
+                {l.label}
+              </Link>
+            ))}
             {navLinks.map((l) => (
+
               <a
                 key={l.href}
                 href={l.href}
@@ -265,7 +284,34 @@ function Index() {
         </div>
       </section>
 
+      {/* Segmentos */}
+      <section id="segmentos" className="container-x section-y">
+        <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Segmentos</div>
+        <h2 className="mt-4 max-w-2xl">O que construímos.</h2>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {segments.map((s) => (
+            <Link
+              key={s.slug}
+              to={`/${s.slug}`}
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={s.cover} alt={s.coverAlt} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+              </div>
+              <div className="p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-xl font-semibold text-primary">{s.label}</h3>
+                  <ArrowUpRight className="mt-1 h-5 w-5 flex-none text-muted-foreground transition group-hover:text-primary" aria-hidden="true" />
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground">{s.summary}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Empreendimentos */}
+
       <section id="empreendimentos" className="container-x section-y">
         <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
           <div>

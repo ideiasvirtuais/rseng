@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HealthRouteImport } from './routes/health'
+import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
+import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-comerciais'
+import { Route as CasasDeAltoPadraoRouteImport } from './routes/casas-de-alto-padrao'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
@@ -18,6 +21,21 @@ import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/cl
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdificiosResidenciaisRoute = EdificiosResidenciaisRouteImport.update({
+  id: '/edificios-residenciais',
+  path: '/edificios-residenciais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdificiosComerciaisRoute = EdificiosComerciaisRouteImport.update({
+  id: '/edificios-comerciais',
+  path: '/edificios-comerciais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasasDeAltoPadraoRoute = CasasDeAltoPadraoRouteImport.update({
+  id: '/casas-de-alto-padrao',
+  path: '/casas-de-alto-padrao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +61,9 @@ const ApiPublicClientErrorRoute = ApiPublicClientErrorRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
+  '/edificios-comerciais': typeof EdificiosComerciaisRoute
+  '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
@@ -50,6 +71,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
+  '/edificios-comerciais': typeof EdificiosComerciaisRoute
+  '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
@@ -58,6 +82,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
+  '/edificios-comerciais': typeof EdificiosComerciaisRoute
+  '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
@@ -67,6 +94,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/casas-de-alto-padrao'
+    | '/edificios-comerciais'
+    | '/edificios-residenciais'
     | '/health'
     | '/obras/$slug'
     | '/api/public/client-error'
@@ -74,6 +104,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/casas-de-alto-padrao'
+    | '/edificios-comerciais'
+    | '/edificios-residenciais'
     | '/health'
     | '/obras/$slug'
     | '/api/public/client-error'
@@ -81,6 +114,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/casas-de-alto-padrao'
+    | '/edificios-comerciais'
+    | '/edificios-residenciais'
     | '/health'
     | '/obras/$slug'
     | '/api/public/client-error'
@@ -89,6 +125,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CasasDeAltoPadraoRoute: typeof CasasDeAltoPadraoRoute
+  EdificiosComerciaisRoute: typeof EdificiosComerciaisRoute
+  EdificiosResidenciaisRoute: typeof EdificiosResidenciaisRoute
   HealthRoute: typeof HealthRoute
   ObrasSlugRoute: typeof ObrasSlugRoute
   ApiPublicClientErrorRoute: typeof ApiPublicClientErrorRoute
@@ -102,6 +141,27 @@ declare module '@tanstack/react-router' {
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edificios-residenciais': {
+      id: '/edificios-residenciais'
+      path: '/edificios-residenciais'
+      fullPath: '/edificios-residenciais'
+      preLoaderRoute: typeof EdificiosResidenciaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edificios-comerciais': {
+      id: '/edificios-comerciais'
+      path: '/edificios-comerciais'
+      fullPath: '/edificios-comerciais'
+      preLoaderRoute: typeof EdificiosComerciaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/casas-de-alto-padrao': {
+      id: '/casas-de-alto-padrao'
+      path: '/casas-de-alto-padrao'
+      fullPath: '/casas-de-alto-padrao'
+      preLoaderRoute: typeof CasasDeAltoPadraoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -137,6 +197,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CasasDeAltoPadraoRoute: CasasDeAltoPadraoRoute,
+  EdificiosComerciaisRoute: EdificiosComerciaisRoute,
+  EdificiosResidenciaisRoute: EdificiosResidenciaisRoute,
   HealthRoute: HealthRoute,
   ObrasSlugRoute: ObrasSlugRoute,
   ApiPublicClientErrorRoute: ApiPublicClientErrorRoute,
