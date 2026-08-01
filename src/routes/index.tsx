@@ -282,7 +282,34 @@ function Index() {
         </div>
       </section>
 
+      {/* Segmentos */}
+      <section id="segmentos" className="container-x section-y">
+        <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Segmentos</div>
+        <h2 className="mt-4 max-w-2xl">O que construímos.</h2>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {segments.map((s) => (
+            <Link
+              key={s.slug}
+              to={`/${s.slug}`}
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={s.cover} alt={s.coverAlt} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+              </div>
+              <div className="p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-xl font-semibold text-primary">{s.label}</h3>
+                  <ArrowUpRight className="mt-1 h-5 w-5 flex-none text-muted-foreground transition group-hover:text-primary" aria-hidden="true" />
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground">{s.summary}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Empreendimentos */}
+
       <section id="empreendimentos" className="container-x section-y">
         <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
           <div>
