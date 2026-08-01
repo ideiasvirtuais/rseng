@@ -1,10 +1,19 @@
-name: "Build e Deploy FTP (KingHost) + stable-website"
+name: "Build e Deploy FTP (KingHost) — staging + produção"
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Ambiente de deploy"
+        type: choice
+        required: true
+        default: staging
+        options:
+          - staging
+          - production
 
 permissions:
   contents: write
@@ -12,6 +21,9 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # Push na main → staging. Produção só por execução manual (workflow_dispatch).
+    env:
+      DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'staging' }}
 
     steps:
       - name: "Checkout do Repositorio"
@@ -34,8 +46,8 @@ jobs:
       - name: "Validar artefatos (preflight FTP)"
         run: bun run verify:ftp
 
-      # ── Deploy automatico via FTP para a KingHost ───────────────────────────
-      - name: "Deploy via FTP (KingHost)"
+      # ── Deploy FTP no ambiente selecionado ──────────────────────────────────
+      - name: "Deploy via FTP (${{ env.DEPLOY_ENV }})"
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
@@ -45,23 +57,33 @@ jobs:
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
           FTP_CONCURRENCY: ${{ secrets.FTP_CONCURRENCY }}
           FTP_MAX_RETRIES: ${{ secrets.FTP_MAX_RETRIES }}
-        run: bun run deploy:ftp -- --delete
+          # Overrides opcionais por ambiente (se existirem nos secrets)
+          STAGING_FTP_HOST: ${{ secrets.STAGING_FTP_HOST }}
+          STAGING_FTP_USER: ${{ secrets.STAGING_FTP_USER }}
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_FTP_REMOTE_DIR: ${{ secrets.STAGING_FTP_REMOTE_DIR }}
+          PROD_FTP_HOST: ${{ secrets.PROD_FTP_HOST }}
+          PROD_FTP_USER: ${{ secrets.PROD_FTP_USER }}
+          PROD_FTP_PASSWORD: ${{ secrets.PROD_FTP_PASSWORD }}
+          PROD_FTP_REMOTE_DIR: ${{ secrets.PROD_FTP_REMOTE_DIR }}
+        run: node scripts/deploy-env.mjs --env=${{ env.DEPLOY_ENV }} --delete
 
       - name: "Upload relatorio de deploy"
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: deploy-ftp-report
+          name: deploy-ftp-report-${{ env.DEPLOY_ENV }}
           path: |
-            dist/deploy-ftp.log
-            dist/deploy-report.json
-            dist/deploy-report.md
+            dist/deploy-ftp*.log
+            dist/deploy-report*.json
+            dist/deploy-report*.md
+            dist/deploy-changelog*.json
           if-no-files-found: ignore
           retention-days: 30
 
-      # ── Espelho estatico na branch stable-website (backup) ──────────────────
+      # ── Espelho estatico na branch stable-website (somente produção) ────────
       - name: "Deploy para a Branch stable-website"
-        if: always()
+        if: env.DEPLOY_ENV == 'production'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
