@@ -1,5 +1,6 @@
-import { galleryItems, projects, type Project } from "./projects";
+import { projects, type Project } from "./projects";
 import { houses } from "./houses";
+import { commercialWorks } from "./commercial";
 
 export type SegmentSlug =
   | "edificios-residenciais"
@@ -46,9 +47,12 @@ const residenciaisPhotos: SegmentPhoto[] = residenciais.flatMap((p) =>
     .map((g) => ({ src: g.src, alt: g.alt, title: p.name, caption: g.category })),
 );
 
-const comerciaisPhotos: SegmentPhoto[] = galleryItems
-  .filter((g) => g.category === "Comerciais")
-  .map((g) => ({ src: g.src, alt: g.alt, title: g.project, caption: "Comercial" }));
+const comerciaisPhotos: SegmentPhoto[] = commercialWorks.map((w) => ({
+  src: w.src,
+  alt: w.alt,
+  title: w.name,
+  caption: w.type,
+}));
 
 const casasPhotos: SegmentPhoto[] = houses.map((h) => ({
   src: h.src,
