@@ -84,8 +84,8 @@ export const segments: Segment[] = [
       "Áreas comuns: gourmet, fitness e playground",
       "Vagas cobertas e portaria 24h",
     ],
-    cover: residenciais[0]?.img ?? "",
-    coverAlt: "Fachada de edifício residencial entregue pela Rezende Saback em Betim",
+    cover: residentialWorks[0]?.src ?? residenciais[0]?.img ?? "",
+    coverAlt: "Perspectiva de edifício residencial da Rezende Saback em Betim",
     seoTitle: "Edifícios Residenciais em Betim — Rezende Saback Construtora",
     seoDescription:
       "Apartamentos de 3 quartos, áreas comuns completas e planta personalizável. Conheça os edifícios residenciais entregues e em construção pela Rezende Saback em Betim/MG.",
