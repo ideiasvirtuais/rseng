@@ -42,11 +42,14 @@ const bySlug = (slugs: string[]) =>
 const residenciais = bySlug(RESIDENCIAIS);
 const comerciais = bySlug(COMERCIAIS);
 
-const residenciaisPhotos: SegmentPhoto[] = residenciais.flatMap((p) =>
-  p.gallery
-    .filter((g) => g.category !== "Comerciais")
-    .map((g) => ({ src: g.src, alt: g.alt, title: p.name, caption: g.category })),
-);
+const residenciaisPhotos: SegmentPhoto[] = [
+  ...residentialWorks.map((w) => ({ src: w.src, alt: w.alt, title: w.name, caption: w.type })),
+  ...residenciais.flatMap((p) =>
+    p.gallery
+      .filter((g) => g.category !== "Comerciais")
+      .map((g) => ({ src: g.src, alt: g.alt, title: p.name, caption: g.category })),
+  ),
+];
 
 const comerciaisPhotos: SegmentPhoto[] = commercialWorks.map((w) => ({
   src: w.src,
