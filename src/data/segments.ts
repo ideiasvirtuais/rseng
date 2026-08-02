@@ -1,6 +1,7 @@
 import { projects, type Project } from "./projects";
 import { houses } from "./houses";
 import { commercialWorks } from "./commercial";
+import { residentialWorks } from "./residential";
 
 export type SegmentSlug =
   | "edificios-residenciais"
@@ -41,11 +42,14 @@ const bySlug = (slugs: string[]) =>
 const residenciais = bySlug(RESIDENCIAIS);
 const comerciais = bySlug(COMERCIAIS);
 
-const residenciaisPhotos: SegmentPhoto[] = residenciais.flatMap((p) =>
-  p.gallery
-    .filter((g) => g.category !== "Comerciais")
-    .map((g) => ({ src: g.src, alt: g.alt, title: p.name, caption: g.category })),
-);
+const residenciaisPhotos: SegmentPhoto[] = [
+  ...residentialWorks.map((w) => ({ src: w.src, alt: w.alt, title: w.name, caption: w.type })),
+  ...residenciais.flatMap((p) =>
+    p.gallery
+      .filter((g) => g.category !== "Comerciais")
+      .map((g) => ({ src: g.src, alt: g.alt, title: p.name, caption: g.category })),
+  ),
+];
 
 const comerciaisPhotos: SegmentPhoto[] = commercialWorks.map((w) => ({
   src: w.src,
@@ -80,8 +84,8 @@ export const segments: Segment[] = [
       "Áreas comuns: gourmet, fitness e playground",
       "Vagas cobertas e portaria 24h",
     ],
-    cover: residenciais[0]?.img ?? "",
-    coverAlt: "Fachada de edifício residencial entregue pela Rezende Saback em Betim",
+    cover: residentialWorks[0]?.src ?? residenciais[0]?.img ?? "",
+    coverAlt: "Perspectiva de edifício residencial da Rezende Saback em Betim",
     seoTitle: "Edifícios Residenciais em Betim — Rezende Saback Construtora",
     seoDescription:
       "Apartamentos de 3 quartos, áreas comuns completas e planta personalizável. Conheça os edifícios residenciais entregues e em construção pela Rezende Saback em Betim/MG.",
