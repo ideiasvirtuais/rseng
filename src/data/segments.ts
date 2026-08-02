@@ -1,5 +1,6 @@
-import { galleryItems, projects, type Project } from "./projects";
+import { projects, type Project } from "./projects";
 import { houses } from "./houses";
+import { commercialWorks } from "./commercial";
 
 export type SegmentSlug =
   | "edificios-residenciais"
@@ -46,9 +47,12 @@ const residenciaisPhotos: SegmentPhoto[] = residenciais.flatMap((p) =>
     .map((g) => ({ src: g.src, alt: g.alt, title: p.name, caption: g.category })),
 );
 
-const comerciaisPhotos: SegmentPhoto[] = galleryItems
-  .filter((g) => g.category === "Comerciais")
-  .map((g) => ({ src: g.src, alt: g.alt, title: g.project, caption: "Comercial" }));
+const comerciaisPhotos: SegmentPhoto[] = commercialWorks.map((w) => ({
+  src: w.src,
+  alt: w.alt,
+  title: w.name,
+  caption: w.type,
+}));
 
 const casasPhotos: SegmentPhoto[] = houses.map((h) => ({
   src: h.src,
@@ -88,25 +92,25 @@ export const segments: Segment[] = [
     slug: "edificios-comerciais",
     label: "Edifícios Comerciais",
     eyebrow: "Segmento comercial",
-    headline: "Salas e edifícios comerciais para",
+    headline: "Obras comerciais para",
     headlineAccent: "o seu negócio crescer",
     summary:
-      "Lajes, salas e empreendimentos de uso misto em pontos estratégicos de Betim, com infraestrutura pronta para escritórios, clínicas e comércio.",
+      "Centros comerciais, showrooms, galpões, clínicas e salas em pontos estratégicos de Betim — executados pela Rezende Saback com equipe própria.",
     intro: [
-      "Os empreendimentos comerciais da Rezende Saback nascem em endereços de alta circulação, com fachadas de identidade forte, acessos independentes e infraestrutura elétrica e de dados dimensionada para uso profissional.",
-      "Do escritório compacto à laje corporativa, as unidades podem ser combinadas e adaptadas ao formato do seu negócio.",
+      "O portfólio comercial da Rezende Saback reúne centros comerciais, lojas âncora, showrooms automotivos, galpões e edifícios de salas em endereços de alta circulação de Betim e região.",
+      "Cada obra é planejada para o uso: vãos livres, acessos independentes, infraestrutura elétrica e de dados dimensionada e fachadas com identidade forte para a marca do cliente.",
     ],
     features: [
-      "Salas comerciais e lajes adaptáveis",
-      "Acesso independente do uso residencial",
+      "Centros comerciais, lojas e salas para locação",
+      "Galpões com vãos livres e pátio de manobra",
+      "Showrooms e clínicas com fachada personalizada",
       "Infraestrutura elétrica e de dados reforçada",
-      "Elevadores de alta performance",
     ],
-    cover: comerciais[0]?.img ?? "",
-    coverAlt: "Fachada de edifício comercial da Rezende Saback em Betim",
+    cover: comerciaisPhotos[0]?.src ?? "",
+    coverAlt: "Fachada do Edifício Scala Centro Comercial, obra comercial da Rezende Saback em Betim",
     seoTitle: "Edifícios Comerciais em Betim — Rezende Saback Construtora",
     seoDescription:
-      "Salas comerciais, lajes corporativas e empreendimentos de uso misto em Betim/MG, com infraestrutura pronta para escritórios, clínicas e comércio.",
+      "Centros comerciais, lojas, galpões, showrooms e salas comerciais construídos pela Rezende Saback em Betim/MG. Veja o portfólio de obras comerciais entregues.",
     projects: comerciais,
     photos: comerciaisPhotos,
   },

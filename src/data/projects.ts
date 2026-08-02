@@ -5,6 +5,7 @@ import buildingIris from "@/assets/building-iris.jpg";
 import buildingJopena from "@/assets/building-jopena.jpg";
 import buildingMalbec from "@/assets/building-malbec.jpg";
 import buildingSantorini from "@/assets/building-santorini.jpg";
+import { commercialWorks } from "./commercial";
 
 export type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos" | "Comerciais";
 
@@ -215,8 +216,12 @@ export const galleryItems: GalleryItem[] = [
   { src: interiorCustom, alt: "Sala integrada com iluminação natural", project: "Edifício Íris", category: "Interiores" },
   { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", project: "Edifício Rosário", category: "Áreas Comuns" },
   { src: buildingMalbec, alt: "Área comum do Edifício Malbec", project: "Edifício Malbec", category: "Áreas Comuns" },
-  { src: buildingRosario, alt: "Salas comerciais no térreo do Edifício Rosário", project: "Edifício Rosário", category: "Comerciais" },
-  { src: heroBuilding, alt: "Fachada de edifício comercial da Rezende Saback", project: "Edifícios Comerciais", category: "Comerciais" },
+  ...commercialWorks.slice(0, 6).map((w) => ({
+    src: w.src,
+    alt: w.alt,
+    project: w.name,
+    category: "Comerciais" as GalleryCategory,
+  })),
 ];
 
 export const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Interiores", "Áreas Comuns", "Comerciais"] as const;
