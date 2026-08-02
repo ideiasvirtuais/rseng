@@ -1,6 +1,7 @@
 import { projects, type Project } from "./projects";
 import { houses } from "./houses";
 import { commercialWorks } from "./commercial";
+import { residentialWorks } from "./residential";
 
 export type SegmentSlug =
   | "edificios-residenciais"
