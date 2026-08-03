@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { installClientErrorReporter, reportClientError } from "../lib/client-error-reporter";
 import { WhatsAppFloat } from "../components/WhatsAppFloat";
+import { SiteNotice } from "../components/SiteNotice";
 
 function NotFoundComponent() {
   return (
@@ -116,6 +117,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <SiteNotice />
         {children}
         <WhatsAppFloat />
         <Toaster richColors position="top-right" />
