@@ -1,7 +1,9 @@
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
 import buildingRosario from "@/assets/building-rosario.jpg";
-import buildingIris from "@/assets/building-iris.jpg";
+import irisPhoto from "@/assets/residenciais/edificio-iris.jpg.asset.json";
+
+const buildingIris = irisPhoto.url;
 import buildingJopena from "@/assets/building-jopena.jpg";
 import buildingMalbec from "@/assets/building-malbec.jpg";
 import buildingSantorini from "@/assets/building-santorini.jpg";
@@ -73,7 +75,7 @@ export const projects: Project[] = [
     slug: "edificio-iris",
     name: "Edifício Íris",
     tag: "Pronto para morar",
-    type: "3 quartos",
+    type: "3 quartos + cobertura duplex",
     address: "Rua José Augusto Borges, 801 — Angola",
     year: "2024",
     img: buildingIris,
@@ -85,15 +87,17 @@ export const projects: Project[] = [
     ],
     info: [
       { label: "Status", value: "Pronto para morar" },
-      { label: "Tipologia", value: "3 quartos" },
+      { label: "Tipologia", value: "3 quartos e cobertura duplex" },
+      { label: "Vagas", value: "2 vagas por unidade" },
       { label: "Endereço", value: "Rua José Augusto Borges, 801 — Angola, Betim/MG" },
       { label: "Entrega", value: "2024" },
     ],
     highlights: [
+      "Cobertura duplex com área gourmet",
       "Suíte master com closet",
       "Sacada integrada com churrasqueira",
       "Vaga privativa em garagem coberta",
-      "Playground e salão de festas",
+      "Água, luz e gás individualizados",
     ],
     categories: ["Fachadas", "Interiores"],
     gallery: [
