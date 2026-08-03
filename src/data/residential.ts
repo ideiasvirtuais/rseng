@@ -8,6 +8,7 @@ import everest from "@/assets/residenciais/everest.jpg.asset.json";
 import alcides from "@/assets/residenciais/alcides-guilherme.jpg.asset.json";
 import altaVista from "@/assets/residenciais/alta-vista.jpg.asset.json";
 import atenas from "@/assets/residenciais/atenas.jpg.asset.json";
+import iris from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 
 export type ResidentialWork = {
   src: string;
