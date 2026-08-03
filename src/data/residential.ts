@@ -19,6 +19,12 @@ export type ResidentialWork = {
 
 export const residentialWorks: ResidentialWork[] = [
   {
+    src: iris.url,
+    name: "Edifício Íris",
+    type: "Cobertura duplex · 3 quartos",
+    alt: "Fachada do Edifício Íris em Betim, com revestimento branco e placa de vendas da Rezende Saback",
+  },
+  {
     src: perspectiva.url,
     name: "Novo empreendimento — perspectiva",
     type: "Em construção",
