@@ -1,14 +1,15 @@
 import heroBuilding from "@/assets/hero-building.jpg";
 import interiorCustom from "@/assets/interior-custom.jpg";
-import buildingRosario from "@/assets/building-rosario.jpg";
+import rosarioPhoto from "@/assets/residenciais/edificio-rosario.jpg.asset.json";
 import irisPhoto from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
 import buildingMalbec from "@/assets/building-malbec.jpg";
 import buildingSantorini from "@/assets/building-santorini.jpg";
+import { commercialWorks } from "./commercial";
 
+const buildingRosario = rosarioPhoto.url;
 const buildingIris = irisPhoto.url;
 const buildingJopena = jopenaPhoto.url;
-import { commercialWorks } from "./commercial";
 
 export type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos" | "Comerciais";
 
