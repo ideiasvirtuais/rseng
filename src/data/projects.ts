@@ -4,13 +4,14 @@ import rosarioPhoto from "@/assets/residenciais/edificio-rosario.jpg.asset.json"
 import irisPhoto from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
 import malbecPhoto from "@/assets/residenciais/edificio-malbec.jpg.asset.json";
-import buildingSantorini from "@/assets/building-santorini.jpg";
+import santoriniPhoto from "@/assets/residenciais/edificio-santorini.png.asset.json";
 import { commercialWorks } from "./commercial";
 
 const buildingRosario = rosarioPhoto.url;
 const buildingMalbec = malbecPhoto.url;
 const buildingIris = irisPhoto.url;
 const buildingJopena = jopenaPhoto.url;
+const buildingSantorini = santoriniPhoto.url;
 
 export type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos" | "Comerciais";
 
@@ -202,7 +203,7 @@ export const projects: Project[] = [
     ],
     categories: ["Fachadas"],
     gallery: [
-      { src: buildingSantorini, alt: "Fachada do Edifício Santorini", category: "Fachadas" },
+      { src: buildingSantorini, alt: "Fachada branca e cinza do Edifício Santorini com varandas e faixas em pastilha preta", category: "Fachadas" },
       { src: heroBuilding, alt: "Vista do entorno do Edifício Santorini", category: "Fachadas" },
     ],
   },

@@ -10,6 +10,7 @@ import altaVista from "@/assets/residenciais/alta-vista.jpg.asset.json";
 import atenas from "@/assets/residenciais/atenas.jpg.asset.json";
 import iris from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 import joPena from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
+import santorini from "@/assets/residenciais/edificio-santorini.png.asset.json";
 
 export type ResidentialWork = {
   src: string;
@@ -30,6 +31,12 @@ export const residentialWorks: ResidentialWork[] = [
     name: "Edifício Jó Pena Duarte",
     type: "3 quartos · Filadélfia",
     alt: "Fachada do Edifício Jó Pena Duarte em Betim, com revestimento branco e cinza e varandas envidraçadas",
+  },
+  {
+    src: santorini.url,
+    name: "Edifício Santorini",
+    type: "3 quartos · Espírito Santo",
+    alt: "Fachada branca e cinza do Edifício Santorini em Betim, com varandas e faixas verticais em pastilha preta",
   },
   {
     src: perspectiva.url,
