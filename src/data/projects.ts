@@ -220,10 +220,6 @@ export const galleryItems: GalleryItem[] = [
   { src: buildingMalbec, alt: "Fachada do Edifício Malbec", project: "Edifício Malbec", category: "Fachadas" },
   { src: buildingSantorini, alt: "Fachada do Edifício Santorini", project: "Edifício Santorini", category: "Fachadas" },
   { src: heroBuilding, alt: "Vista noturna de fachada residencial", project: "Portfólio Rezende Saback", category: "Fachadas" },
-  { src: interiorCustom, alt: "Interior personalizado com acabamento premium", project: "Personalização", category: "Interiores" },
-  { src: interiorCustom, alt: "Sala integrada com iluminação natural", project: "Edifício Íris", category: "Interiores" },
-  { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", project: "Edifício Rosário", category: "Áreas Comuns" },
-  { src: buildingMalbec, alt: "Área comum do Edifício Malbec", project: "Edifício Malbec", category: "Áreas Comuns" },
   ...commercialWorks.slice(0, 6).map((w) => ({
     src: w.src,
     alt: w.alt,
@@ -232,5 +228,5 @@ export const galleryItems: GalleryItem[] = [
   })),
 ];
 
-export const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Interiores", "Áreas Comuns", "Comerciais"] as const;
+export const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Comerciais"] as const;
 export type GalleryFilter = (typeof galleryCategories)[number];
