@@ -28,7 +28,7 @@ export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light
 export const segmentNav = [
   { to: "/edificios-residenciais", label: "Residenciais" },
   { to: "/edificios-comerciais", label: "Comerciais" },
-  { to: "/casas-de-alto-padrao", label: "Casas de Alto Padrão" },
+  { to: "/casas-de-alto-padrao", label: "Casas" },
 ];
 
 export function SiteHeader() {
