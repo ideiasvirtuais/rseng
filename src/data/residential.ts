@@ -11,6 +11,7 @@ import atenas from "@/assets/residenciais/atenas.jpg.asset.json";
 import iris from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 import joPena from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
 import santorini from "@/assets/residenciais/edificio-santorini.png.asset.json";
+import eros from "@/assets/residenciais/edificio-eros.jpg.asset.json";
 
 export type ResidentialWork = {
   src: string;
