@@ -22,6 +22,12 @@ export type ResidentialWork = {
 
 export const residentialWorks: ResidentialWork[] = [
   {
+    src: eros.url,
+    name: "Edifício Eros",
+    type: "Apartamentos · Centro, Betim",
+    alt: "Fachada do Edifício Eros no Centro de Betim, com revestimento cinza, faixas vermelhas e varandas envidraçadas",
+  },
+  {
     src: iris.url,
     name: "Edifício Íris",
     type: "Cobertura duplex · 3 quartos",
