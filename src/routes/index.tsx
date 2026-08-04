@@ -141,12 +141,10 @@ function Index() {
     { href: "#empreendimentos", label: "Empreendimentos" },
     { href: "#galeria", label: "Galeria" },
     { href: "#casas", label: "Casas" },
-
-    { href: "#personalizacao", label: "Personalização" },
     { href: "#sobre", label: "Sobre" },
-    { href: "#instagram", label: "Instagram" },
     { href: "#contato", label: "Contato" },
   ];
+
 
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
