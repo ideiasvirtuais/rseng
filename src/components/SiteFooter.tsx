@@ -13,7 +13,7 @@ export function SiteFooter() {
             <h2 className="mt-3 text-3xl font-semibold text-primary-foreground sm:text-4xl">
               Acompanhe cada etapa das nossas obras.
             </h2>
-            <p className="mt-4 max-w-md text-primary-foreground/75">
+            <p className="mt-4 max-w-md text-primary-foreground/90">
               Bastidores do canteiro, lançamentos e detalhes de acabamento — publicamos primeiro nas nossas redes.
             </p>
           </div>
@@ -32,7 +32,7 @@ export function SiteFooter() {
                 <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Instagram</span>
                 <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">@rezendesabackengenharia</span>
               </span>
-              <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/70 transition group-hover:text-accent" />
+              <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
             </a>
             <a
               href="https://www.facebook.com/rezendesaback"
@@ -48,12 +48,12 @@ export function SiteFooter() {
                 <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Facebook</span>
                 <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">/rezendesaback</span>
               </span>
-              <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/70 transition group-hover:text-accent" />
+              <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
             </a>
           </div>
         </div>
 
-        <nav className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-primary-foreground/80">
+        <nav className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-primary-foreground/90">
           {segmentNav.map((l) => (
             <Link key={l.to} to={l.to} className="hover:text-accent">
               {l.label}

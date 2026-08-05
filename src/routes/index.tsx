@@ -260,7 +260,7 @@ function Index() {
               <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-6 backdrop-blur-md lg:max-w-md">
                 <div className="text-xs uppercase tracking-[0.2em] text-accent">Lançamento</div>
                 <div className="mt-2 text-xl font-semibold text-primary-foreground">Edifício Rosário</div>
-                <div className="mt-1 text-sm text-primary-foreground/75">Business & Home · Angola</div>
+                <div className="mt-1 text-sm text-primary-foreground/90">Business & Home · Angola</div>
                 <a href="#empreendimentos" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
                   Conheça o empreendimento <ArrowUpRight className="h-4 w-4" />
                 </a>
@@ -384,7 +384,7 @@ function Index() {
             <h2 className="mt-4">
               Receba as chaves com o seu imóvel <span className="text-accent">já pronto</span>.
             </h2>
-            <p className="mt-6 text-primary-foreground/80">
+            <p className="mt-6 text-primary-foreground/90">
               Planta customizada, instalações elétricas e hidráulicas sob medida e acabamentos diferenciados escolhidos antes mesmo da mudança. Você entra em um apartamento pensado exatamente do jeito que sempre quis.
             </p>
             <ul className="mt-8 space-y-4">
@@ -684,7 +684,7 @@ function Index() {
               <h2 className="mt-3 text-3xl font-semibold text-primary-foreground sm:text-4xl">
                 Acompanhe cada etapa das nossas obras.
               </h2>
-              <p className="mt-4 max-w-md text-primary-foreground/75">
+              <p className="mt-4 max-w-md text-primary-foreground/90">
                 Bastidores do canteiro, lançamentos e detalhes de acabamento — publicamos primeiro nas nossas redes.
               </p>
             </div>
@@ -703,7 +703,7 @@ function Index() {
                   <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Instagram</span>
                   <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">@rezendesabackengenharia</span>
                 </span>
-                <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/70 transition group-hover:text-accent" />
+                <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
               </a>
               <a
                 href="https://www.facebook.com/rezendesaback"
@@ -719,7 +719,7 @@ function Index() {
                   <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Facebook</span>
                   <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">/rezendesaback</span>
                 </span>
-                <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/70 transition group-hover:text-accent" />
+                <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
               </a>
             </div>
           </div>

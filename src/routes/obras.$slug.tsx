@@ -335,7 +335,7 @@ function ProjectDetail() {
             <h2 className="mt-4">
               Agende uma visita ao <span className="text-accent">{project.name}</span>.
             </h2>
-            <p className="mt-4 max-w-xl text-primary-foreground/80">
+            <p className="mt-4 max-w-xl text-primary-foreground/90">
               Nosso time comercial acompanha você em cada etapa — do primeiro contato à entrega das chaves.
             </p>
           </div>

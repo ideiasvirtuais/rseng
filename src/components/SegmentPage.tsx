@@ -29,7 +29,7 @@ export function SegmentPage({ segment }: { segment: Segment }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-primary/85 via-primary/70 to-primary/90" />
           <div className="container-x relative flex min-h-[52vh] flex-col justify-end pb-14 pt-24 text-primary-foreground">
-            <nav aria-label="Trilha de navegação" className="mb-6 text-xs text-primary-foreground/70">
+            <nav aria-label="Trilha de navegação" className="mb-6 text-xs text-primary-foreground/90">
               <Link to="/" className="hover:text-accent">Início</Link>
               <span className="mx-2">/</span>
               <span className="text-primary-foreground">{segment.label}</span>
