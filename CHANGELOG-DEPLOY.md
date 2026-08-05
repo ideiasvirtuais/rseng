@@ -1,6 +1,35 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.08.05-2 — 2026-08-05T03:22:10.854Z
+
+- **Commit:** `36c7f23` (edit/edt-af86f2b1-3541-402c-9241-f04f1a423b63) — Revisou galerias por categoria
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 0 novo(s), 0 alterado(s), 18 removido(s), 35 inalterado(s) — 0 B enviados
+
+**Removidos (18)**
+
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/health-2Uea5SCb.js`
+- `assets/health-CTFqHcrq.js`
+- `assets/index-COYKMsfk.js`
+- `assets/index-CabEd1Wv.js`
+- `assets/obras._slug-BcffAiqj.js`
+- `assets/obras._slug-CEGexurE.js`
+- `assets/obras._slug-CJbhlM7f.js`
+- `assets/obras._slug-CO8BH_PV.js`
+- `assets/routes-BMmCsqZZ.js`
+- `assets/routes-CfUfZosH.js`
+- `assets/styles-5_6zmjoj.css`
+- `assets/styles-Cb5Wvq6P.css`
+- `assets/zoom-in-mZ_7olm5.js`
+
+---
+
 ## v2026.08.05-1 — 2026-08-05T03:05:32.271Z
 
 - **Commit:** `2e43d04` (edit/edt-a1e1aa7f-c8fc-4702-b45e-f39e53ba6bcb) — Melhorou contraste de textos
