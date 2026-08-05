@@ -215,18 +215,25 @@ export function getProjectBySlug(slug: string): Project | undefined {
 
 export const galleryItems: GalleryItem[] = [
   { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
-  { src: buildingIris, alt: "Fachada do Edifício Íris", project: "Edifício Íris", category: "Fachadas" },
-  { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", project: "Edifício Jó Pena Duarte", category: "Fachadas" },
-  { src: buildingMalbec, alt: "Fachada do Edifício Malbec", project: "Edifício Malbec", category: "Fachadas" },
-  { src: buildingSantorini, alt: "Fachada do Edifício Santorini", project: "Edifício Santorini", category: "Fachadas" },
-  { src: heroBuilding, alt: "Vista noturna de fachada residencial", project: "Portfólio Rezende Saback", category: "Fachadas" },
-  ...commercialWorks.slice(0, 6).map((w) => ({
+  ...residentialWorks.map((w) => ({
+    src: w.src,
+    alt: w.alt,
+    project: w.name,
+    category: "Residenciais" as GalleryCategory,
+  })),
+  ...commercialWorks.map((w) => ({
     src: w.src,
     alt: w.alt,
     project: w.name,
     category: "Comerciais" as GalleryCategory,
   })),
+  ...houses.map((h) => ({
+    src: h.src,
+    alt: h.alt,
+    project: h.name,
+    category: "Casas" as GalleryCategory,
+  })),
 ];
 
-export const galleryCategories = ["Todas", "Lançamentos", "Comerciais"] as const;
+export const galleryCategories = ["Todas", "Lançamentos", "Residenciais", "Comerciais", "Casas"] as const;
 export type GalleryFilter = (typeof galleryCategories)[number];
