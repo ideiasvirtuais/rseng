@@ -228,5 +228,5 @@ export const galleryItems: GalleryItem[] = [
   })),
 ];
 
-export const galleryCategories = ["Todas", "Lançamentos", "Fachadas", "Comerciais"] as const;
+export const galleryCategories = ["Todas", "Lançamentos", "Comerciais"] as const;
 export type GalleryFilter = (typeof galleryCategories)[number];
