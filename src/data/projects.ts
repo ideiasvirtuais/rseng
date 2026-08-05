@@ -6,6 +6,8 @@ import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset
 import malbecPhoto from "@/assets/residenciais/edificio-malbec.jpg.asset.json";
 import santoriniPhoto from "@/assets/residenciais/edificio-santorini.png.asset.json";
 import { commercialWorks } from "./commercial";
+import { residentialWorks } from "./residential";
+import { houses } from "./houses";
 
 const buildingRosario = rosarioPhoto.url;
 const buildingMalbec = malbecPhoto.url;
