@@ -1,32 +1,65 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
-## v2026.08.05-2 — 2026-08-05T03:22:10.854Z
+## v2026.08.05-2 — 2026-08-05T03:22:56.659Z
 
-- **Commit:** `36c7f23` (edit/edt-af86f2b1-3541-402c-9241-f04f1a423b63) — Revisou galerias por categoria
+- **Commit:** `3b19ade` (edit/edt-af86f2b1-3541-402c-9241-f04f1a423b63) — Changes
 - **Destino:** `ftp.rsengenharia.eng.br/www`
-- **Resumo:** 0 novo(s), 0 alterado(s), 18 removido(s), 35 inalterado(s) — 0 B enviados
+- **Resumo:** 12 novo(s), 2 alterado(s), 31 removido(s), 20 inalterado(s) — 564.8 KB enviados
 
-**Removidos (18)**
+**Adicionados (12)**
 
+- `assets/casas-de-alto-padrao-DLUstp-w.js`
+- `assets/ContactForm-DE8l9ENL.js`
+- `assets/edificios-comerciais-DvKT71Cq.js`
+- `assets/edificios-residenciais-DxIFRiuW.js`
+- `assets/health-BYIrlipd.js`
+- `assets/index-CIvkNNbX.js`
+- `assets/obras._slug-Cuxs_n0c.js`
+- `assets/obras._slug-DNsaq3zq.js`
+- `assets/phone-DYGp8l1j.js`
+- `assets/routes-Bas5JR-Y.js`
+- `assets/SegmentPage-D_ztKd5c.js`
+- `assets/zoom-in-Bzi655Jj.js`
+
+**Modificados (2)**
+
+- `_shell.html`
+- `index.html`
+
+**Removidos (31)**
+
+- `assets/ContactForm-WKlFa7ts.js`
+- `assets/SegmentPage-BkzXGIs5.js`
 - `assets/building-iris-oUQQoZy8.jpg`
 - `assets/building-jopena-Cwn6C_D1.jpg`
 - `assets/building-malbec-D_mxWdeG.jpg`
 - `assets/building-rosario-hbmMCdYh.jpg`
 - `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/casas-de-alto-padrao-CP0n65nA.js`
+- `assets/edificios-comerciais-2rRxc1Uy.js`
+- `assets/edificios-residenciais-BeGx0oD_.js`
 - `assets/health-2Uea5SCb.js`
+- `assets/health-BxDBw7n9.js`
 - `assets/health-CTFqHcrq.js`
+- `assets/index-Bhfo_SQW.js`
 - `assets/index-COYKMsfk.js`
 - `assets/index-CabEd1Wv.js`
 - `assets/obras._slug-BcffAiqj.js`
 - `assets/obras._slug-CEGexurE.js`
 - `assets/obras._slug-CJbhlM7f.js`
 - `assets/obras._slug-CO8BH_PV.js`
+- `assets/obras._slug-Ckcg0wVR.js`
+- `assets/obras._slug-D7ZCAVUA.js`
+- `assets/phone-Cty4XKUi.js`
 - `assets/routes-BMmCsqZZ.js`
 - `assets/routes-CfUfZosH.js`
+- `assets/routes-Dj38f_uS.js`
 - `assets/styles-5_6zmjoj.css`
 - `assets/styles-Cb5Wvq6P.css`
+- `assets/zoom-in-DGM_hSto.js`
 - `assets/zoom-in-mZ_7olm5.js`
+- `robots.txt`
 
 ---
 
