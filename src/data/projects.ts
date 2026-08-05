@@ -15,7 +15,7 @@ const buildingIris = irisPhoto.url;
 const buildingJopena = jopenaPhoto.url;
 const buildingSantorini = santoriniPhoto.url;
 
-export type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos" | "Comerciais";
+export type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos" | "Comerciais" | "Residenciais" | "Casas";
 
 export type GalleryItem = {
   src: string;
