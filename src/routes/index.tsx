@@ -5,7 +5,6 @@ import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, 
 import interiorCustom from "@/assets/interior-custom.jpg";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
-import { houses } from "@/data/houses";
 import { ContactForm } from "@/components/ContactForm";
 import { segmentNav } from "@/components/SiteHeader";
 import { segments } from "@/data/segments";
@@ -131,16 +130,13 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("Todas");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [houseIndex, setHouseIndex] = useState<number | null>(null);
   const filteredGallery = useMemo(
     () => (galleryFilter === "Todas" ? galleryItems : galleryItems.filter((g) => g.category === galleryFilter)),
     [galleryFilter],
   );
 
   const navLinks = [
-    { href: "#empreendimentos", label: "Empreendimentos" },
     { href: "#galeria", label: "Galeria" },
-    { href: "#casas", label: "Casas" },
     { href: "#sobre", label: "Sobre" },
     { href: "#contato", label: "Contato" },
   ];
@@ -246,7 +242,7 @@ function Index() {
                 Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de mais de três décadas de engenharia.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#empreendimentos" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
+                <a href="#galeria" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
                   Ver empreendimentos <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a href="#contato" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-6 py-3 text-sm font-medium text-primary-foreground backdrop-blur hover:bg-primary-foreground/10">
@@ -261,7 +257,7 @@ function Index() {
                 <div className="text-xs uppercase tracking-[0.2em] text-accent">Lançamento</div>
                 <div className="mt-2 text-xl font-semibold text-primary-foreground">Edifício Rosário</div>
                 <div className="mt-1 text-sm text-primary-foreground/90">Business & Home · Angola</div>
-                <a href="#empreendimentos" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+                <a href="#galeria" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
                   Conheça o empreendimento <ArrowUpRight className="h-4 w-4" />
                 </a>
               </div>
