@@ -1,6 +1,82 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.08.06-1 — 2026-08-06T03:55:38.165Z
+
+- **Commit:** `1c9f62d` (edit/edt-c98e31fe-d8c4-4314-a45f-0e13202f6bf7) — Changes
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 27 novo(s), 2 alterado(s), 30 removido(s), 33 inalterado(s) — 13.66 MB enviados
+
+**Adicionados (27)**
+
+- `__l5e/assets-v1/0ce366e0-3e55-496b-ae2b-445d9f6e9adf/ed-scala.jpg`
+- `__l5e/assets-v1/15e7db8d-e60e-4e63-992b-baa0f3e38725/edificio-eros.jpg`
+- `__l5e/assets-v1/184d6018-4758-4e32-8089-ec11796b5f3f/janio.jpg`
+- `__l5e/assets-v1/1beb8fb4-b9f8-4f8f-b2ee-1d4277b4d909/edificio-santorini.png`
+- `__l5e/assets-v1/1c977615-85d7-4362-8330-96428653452a/inovatta.jpg`
+- `__l5e/assets-v1/1d538d62-036d-4dfe-b76a-44c26272147a/centro-comercial-niteroi.jpg`
+- `__l5e/assets-v1/2452c737-d4f0-4164-a732-033e2ec49591/nilza.jpg`
+- `__l5e/assets-v1/2575c280-7ee0-4bfd-84c5-b6d9a0853f11/alta-vista.jpg`
+- `__l5e/assets-v1/2dcac089-3f6b-42b9-9025-891917f4beb0/alcides-guilherme.jpg`
+- `__l5e/assets-v1/3c157c09-935d-40ba-96f0-d6ab90073bdd/beatriz-ribeiro.jpg`
+- `__l5e/assets-v1/4a1e9ed3-3fd4-47e5-aa4c-9c3958fa8f9f/atenas.jpg`
+- `__l5e/assets-v1/4e123112-c86e-426d-b756-12a819dea4b9/edificio-rosario.jpg`
+- `__l5e/assets-v1/6a106189-3942-453a-b811-314dfa186aad/odila-zabel.jpg`
+- `__l5e/assets-v1/750e5b96-beb0-4aac-8fd6-2d09af382643/jayme-brasileia.jpg`
+- `__l5e/assets-v1/7cdc8628-d505-4c03-bb88-948e4baf8c73/reauto-betim.jpg`
+- `__l5e/assets-v1/855928b1-0ddd-4e56-b4fb-8ea6137b842c/galpao-marco-tulio.jpg`
+- `__l5e/assets-v1/8d201ded-06e3-4b99-96ac-bc878e0e4c88/edificio-iris.jpg`
+- `__l5e/assets-v1/94ed5af9-edf8-4e5a-b287-23ba4a907095/raimundo-rezende.jpg`
+- `__l5e/assets-v1/9f32d471-831d-4617-8917-5369314eda08/edificio-jo-pena-duarte.jpg`
+- `__l5e/assets-v1/9fe49c1f-87a0-4b9e-aab5-6d474d3daab2/perspectiva.jpg`
+- `__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png`
+- `__l5e/assets-v1/cec2c3ff-d74e-4d86-af1c-5f71d77aadce/portal.jpg`
+- `__l5e/assets-v1/d7bdbe8d-5e58-498a-a7e0-3acd7d815cb9/marcelo-av-amazonas.jpg`
+- `__l5e/assets-v1/da992648-2342-4207-972e-4e87f1ce0840/edificio-malbec.jpg`
+- `__l5e/assets-v1/e35231e6-8fd6-4035-8d11-fb3978b0ce8b/epa.jpg`
+- `__l5e/assets-v1/e3e35843-593b-4ac9-8e30-058d6c443e31/sao-jorge.jpg`
+- `__l5e/assets-v1/e68bbe55-2e5a-441d-b4ef-8bfb37036f5a/everest.jpg`
+
+**Modificados (2)**
+
+- `_shell.html`
+- `index.html`
+
+**Removidos (30)**
+
+- `assets/ContactForm-WKlFa7ts.js`
+- `assets/SegmentPage-BkzXGIs5.js`
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/casas-de-alto-padrao-CP0n65nA.js`
+- `assets/edificios-comerciais-2rRxc1Uy.js`
+- `assets/edificios-residenciais-BeGx0oD_.js`
+- `assets/health-2Uea5SCb.js`
+- `assets/health-BxDBw7n9.js`
+- `assets/health-CTFqHcrq.js`
+- `assets/index-Bhfo_SQW.js`
+- `assets/index-COYKMsfk.js`
+- `assets/index-CabEd1Wv.js`
+- `assets/obras._slug-BcffAiqj.js`
+- `assets/obras._slug-CEGexurE.js`
+- `assets/obras._slug-CJbhlM7f.js`
+- `assets/obras._slug-CO8BH_PV.js`
+- `assets/obras._slug-Ckcg0wVR.js`
+- `assets/obras._slug-D7ZCAVUA.js`
+- `assets/phone-Cty4XKUi.js`
+- `assets/routes-BMmCsqZZ.js`
+- `assets/routes-CfUfZosH.js`
+- `assets/routes-Dj38f_uS.js`
+- `assets/styles-5_6zmjoj.css`
+- `assets/styles-Cb5Wvq6P.css`
+- `assets/zoom-in-DGM_hSto.js`
+- `assets/zoom-in-mZ_7olm5.js`
+
+---
+
 ## v2026.08.05-2 — 2026-08-05T03:22:56.659Z
 
 - **Commit:** `3b19ade` (edit/edt-af86f2b1-3541-402c-9241-f04f1a423b63) — Changes
