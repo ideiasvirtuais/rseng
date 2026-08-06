@@ -5,7 +5,6 @@ import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, 
 import interiorCustom from "@/assets/interior-custom.jpg";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
-import { houses } from "@/data/houses";
 import { ContactForm } from "@/components/ContactForm";
 import { segmentNav } from "@/components/SiteHeader";
 import { segments } from "@/data/segments";
@@ -131,16 +130,13 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("Todas");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [houseIndex, setHouseIndex] = useState<number | null>(null);
   const filteredGallery = useMemo(
     () => (galleryFilter === "Todas" ? galleryItems : galleryItems.filter((g) => g.category === galleryFilter)),
     [galleryFilter],
   );
 
   const navLinks = [
-    { href: "#empreendimentos", label: "Empreendimentos" },
     { href: "#galeria", label: "Galeria" },
-    { href: "#casas", label: "Casas" },
     { href: "#sobre", label: "Sobre" },
     { href: "#contato", label: "Contato" },
   ];
@@ -246,7 +242,7 @@ function Index() {
                 Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de mais de três décadas de engenharia.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#empreendimentos" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
+                <a href="#galeria" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
                   Ver empreendimentos <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a href="#contato" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-6 py-3 text-sm font-medium text-primary-foreground backdrop-blur hover:bg-primary-foreground/10">
@@ -261,7 +257,7 @@ function Index() {
                 <div className="text-xs uppercase tracking-[0.2em] text-accent">Lançamento</div>
                 <div className="mt-2 text-xl font-semibold text-primary-foreground">Edifício Rosário</div>
                 <div className="mt-1 text-sm text-primary-foreground/90">Business & Home · Angola</div>
-                <a href="#empreendimentos" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+                <a href="#galeria" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
                   Conheça o empreendimento <ArrowUpRight className="h-4 w-4" />
                 </a>
               </div>
@@ -308,63 +304,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Empreendimentos */}
-
-      <section id="empreendimentos" className="container-x section-y">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
-          <div>
-            <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Portfólio</div>
-            <h2 className="mt-4">
-              Empreendimentos que formam <span className="text-primary/70">bairros inteiros</span>.
-            </h2>
-          </div>
-          <p className="text-muted-foreground">
-            De lançamentos a imóveis prontos para morar. Cada projeto assinado pela Rezende Saback carrega o mesmo padrão de acabamento e a mesma preocupação com a vizinhança.
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
-            <Link
-              key={p.slug}
-              to="/obras/$slug"
-              params={{ slug: p.slug }}
-              aria-label={`Ver detalhes de ${p.name}`}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-            >
-              <article>
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={p.img}
-                    alt={p.name}
-                    width={1200}
-                    height={900}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-                  <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary">
-                    {p.tag}
-                  </span>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-xl font-semibold text-primary">{p.name}</h3>
-                    <ArrowUpRight className="mt-1 h-5 w-5 flex-none text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" aria-hidden="true" />
-                  </div>
-                  <div className="mt-1 text-sm text-muted-foreground">{p.type}</div>
-                  <div className="mt-4 flex items-start justify-between gap-4 border-t border-border pt-4 text-sm">
-                    <span className="text-muted-foreground">{p.address}</span>
-                    <span className="font-medium text-primary">— {p.year}</span>
-                  </div>
-                  <div className="mt-4 text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                    Ver detalhes
-                  </div>
-                </div>
-              </article>
-            </Link>
-          ))}
-        </div>
-      </section>
 
       {/* Personalização */}
       <section id="personalizacao" className="bg-primary text-primary-foreground">
@@ -500,83 +439,6 @@ function Index() {
         </div>
       )}
 
-      {/* Portfólio de casas */}
-      <section id="casas" className="border-y border-border bg-secondary">
-        <div className="container-x section-y">
-          <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
-            <div>
-              <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Portfólio de casas</div>
-              <h2 className="mt-4">
-                Casas construídas pela <span className="text-primary/70">Rezende Saback</span>.
-              </h2>
-            </div>
-            <p className="text-muted-foreground">
-              Residências unifamiliares entregues em Betim e região — de projetos modernistas de alto padrão a casas em
-              condomínio, cada uma executada com o mesmo rigor construtivo.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {houses.map((house, i) => (
-              <button
-                key={house.src}
-                type="button"
-                onClick={() => setHouseIndex(i)}
-                className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card text-left"
-                aria-label={`Ampliar foto da ${house.name}`}
-              >
-                <img
-                  src={house.src}
-                  alt={house.alt}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/15 to-transparent opacity-0 transition group-hover:opacity-100" />
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground opacity-0 transition group-hover:opacity-100">
-                  <div className="min-w-0">
-                    <div className="text-[11px] uppercase tracking-[0.2em] text-accent">{house.style}</div>
-                    <div className="truncate text-sm font-semibold">{house.name}</div>
-                  </div>
-                  <ZoomIn className="h-5 w-5 shrink-0" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox casas */}
-      {houseIndex !== null && houses[houseIndex] && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Visualização ampliada da casa"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/95 p-4 backdrop-blur-sm"
-          onClick={() => setHouseIndex(null)}
-        >
-          <button
-            type="button"
-            aria-label="Fechar"
-            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/30 text-primary-foreground transition hover:bg-primary-foreground/10"
-            onClick={(e) => {
-              e.stopPropagation();
-              setHouseIndex(null);
-            }}
-          >
-            <X className="h-5 w-5" />
-          </button>
-          <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={houses[houseIndex].src}
-              alt={houses[houseIndex].alt}
-              className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl"
-            />
-            <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
-              <span className="text-accent">{houses[houseIndex].style}</span> · {houses[houseIndex].name}
-            </figcaption>
-          </figure>
-        </div>
-      )}
 
 
 

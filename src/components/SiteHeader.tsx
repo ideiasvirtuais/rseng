@@ -35,7 +35,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const hashLinks = [
-    { href: "/#empreendimentos", label: "Empreendimentos" },
+    
     { href: "/#galeria", label: "Galeria" },
     { href: "/#sobre", label: "Sobre" },
     { href: "/#contato", label: "Contato" },
