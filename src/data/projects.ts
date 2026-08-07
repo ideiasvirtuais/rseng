@@ -1,5 +1,4 @@
 import heroBuilding from "@/assets/hero-building.jpg";
-import interiorCustom from "@/assets/interior-custom.jpg";
 import rosarioPhoto from "@/assets/residenciais/edificio-rosario.jpg.asset.json";
 import irisPhoto from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
