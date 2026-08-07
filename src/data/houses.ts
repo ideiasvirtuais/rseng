@@ -1,3 +1,4 @@
+import casaModernista from "@/assets/casas/casa-modernista-condominio.png.asset.json";
 import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg";
 import casaJoelma from "@/assets/casas/joelma.jpg";
 import casaJoseMaria from "@/assets/casas/jose-maria.jpg";
@@ -17,6 +18,13 @@ export type House = {
 
 export const houses: House[] = [
   {
+    src: casaModernista.url,
+    name: "Residência Modernista em Condomínio",
+    style: "Casa de alto padrão · Arquitetura modernista",
+    alt: "Casa de alto padrão branca com volumes geométricos, varanda envidraçada e garagem coberta",
+  },
+  {
+
     src: casaJoaoBosco,
     name: "Residência João Bosco",
     style: "Casa em condomínio · Alvenaria contemporânea",

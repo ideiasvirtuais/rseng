@@ -136,8 +136,9 @@ export const segments: Segment[] = [
       "Áreas de lazer, piscina e paisagismo integrados",
       "Acompanhamento técnico e assistência pós-obra",
     ],
-    cover: casasPhotos[1]?.src ?? casasPhotos[0]?.src ?? "",
-    coverAlt: "Fachada de casa de alto padrão construída pela Rezende Saback",
+    cover: casasPhotos[0]?.src ?? "",
+    coverAlt: casasPhotos[0]?.alt ?? "Fachada de casa de alto padrão construída pela Rezende Saback",
+
     seoTitle: "Casas de Alto Padrão em Betim — Rezende Saback Construtora",
     seoDescription:
       "Residências unifamiliares de alto padrão construídas em Betim e região: arquitetura contemporânea, acabamento premium e execução com equipe própria.",
