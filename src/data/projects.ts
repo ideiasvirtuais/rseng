@@ -1,5 +1,4 @@
 import heroBuilding from "@/assets/hero-building.jpg";
-import interiorCustom from "@/assets/interior-custom.jpg";
 import rosarioPhoto from "@/assets/residenciais/edificio-rosario.jpg.asset.json";
 import irisPhoto from "@/assets/residenciais/edificio-iris.jpg.asset.json";
 import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
@@ -15,7 +14,7 @@ const buildingIris = irisPhoto.url;
 const buildingJopena = jopenaPhoto.url;
 const buildingSantorini = santoriniPhoto.url;
 
-export type GalleryCategory = "Fachadas" | "Interiores" | "Áreas Comuns" | "Lançamentos" | "Comerciais" | "Residenciais" | "Casas";
+export type GalleryCategory = "Fachadas" | "Áreas Comuns" | "Lançamentos" | "Comerciais" | "Residenciais" | "Casas";
 
 export type GalleryItem = {
   src: string;
@@ -74,7 +73,6 @@ export const projects: Project[] = [
       { src: buildingRosario, alt: "Fachada do Edifício Rosário", category: "Lançamentos" },
       { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", category: "Áreas Comuns" },
       { src: heroBuilding, alt: "Vista noturna do Edifício Rosário", category: "Fachadas" },
-      { src: interiorCustom, alt: "Interior padrão do Edifício Rosário", category: "Interiores" },
     ],
   },
   {
@@ -105,11 +103,9 @@ export const projects: Project[] = [
       "Vaga privativa em garagem coberta",
       "Água, luz e gás individualizados",
     ],
-    categories: ["Fachadas", "Interiores"],
+    categories: ["Fachadas"],
     gallery: [
       { src: buildingIris, alt: "Fachada do Edifício Íris", category: "Fachadas" },
-      { src: interiorCustom, alt: "Sala integrada do Edifício Íris", category: "Interiores" },
-      { src: interiorCustom, alt: "Suíte master do Edifício Íris", category: "Interiores" },
     ],
   },
   {
@@ -138,10 +134,9 @@ export const projects: Project[] = [
       "Portaria 24h",
       "2 vagas por unidade",
     ],
-    categories: ["Fachadas", "Interiores"],
+    categories: ["Fachadas"],
     gallery: [
       { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", category: "Fachadas" },
-      { src: interiorCustom, alt: "Living do Edifício Jó Pena Duarte", category: "Interiores" },
     ],
   },
   {
@@ -174,7 +169,6 @@ export const projects: Project[] = [
     gallery: [
       { src: buildingMalbec, alt: "Fachada do Edifício Malbec", category: "Fachadas" },
       { src: buildingMalbec, alt: "Área comum do Edifício Malbec", category: "Áreas Comuns" },
-      { src: interiorCustom, alt: "Interior padrão do Edifício Malbec", category: "Interiores" as GalleryCategory },
     ],
   },
   {
