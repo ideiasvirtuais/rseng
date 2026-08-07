@@ -18,6 +18,13 @@ export type House = {
 
 export const houses: House[] = [
   {
+    src: casaModernista.url,
+    name: "Residência Modernista em Condomínio",
+    style: "Casa de alto padrão · Arquitetura modernista",
+    alt: "Casa de alto padrão branca com volumes geométricos, varanda envidraçada e garagem coberta",
+  },
+  {
+
     src: casaJoaoBosco,
     name: "Residência João Bosco",
     style: "Casa em condomínio · Alvenaria contemporânea",
