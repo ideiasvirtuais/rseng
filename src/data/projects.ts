@@ -103,6 +103,7 @@ export const projects: Project[] = [
       "Vaga privativa em garagem coberta",
       "Água, luz e gás individualizados",
     ],
+    categories: ["Fachadas"],
     gallery: [
       { src: buildingIris, alt: "Fachada do Edifício Íris", category: "Fachadas" },
     ],
@@ -133,6 +134,7 @@ export const projects: Project[] = [
       "Portaria 24h",
       "2 vagas por unidade",
     ],
+    categories: ["Fachadas"],
     gallery: [
       { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", category: "Fachadas" },
     ],
