@@ -1,6 +1,92 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.08.07-2 — 2026-08-07T13:11:44.269Z
+
+- **Commit:** `77e3b8b` (edit/edt-87e9e9f8-8db7-4ee1-8726-145f34513596) — Removeu fotos de interiores
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 12 novo(s), 2 alterado(s), 55 removido(s), 48 inalterado(s) — 559.0 KB enviados
+
+**Adicionados (12)**
+
+- `assets/casas-de-alto-padrao-OwU73Hbe.js`
+- `assets/ContactForm-DLKLEMdd.js`
+- `assets/edificios-comerciais-DGx4x6XN.js`
+- `assets/edificios-residenciais-CAb6SmYF.js`
+- `assets/health-CYrV1ubO.js`
+- `assets/index-B-7ZxKb3.js`
+- `assets/obras._slug-BpRYc22l.js`
+- `assets/obras._slug-D0oT-Jal.js`
+- `assets/phone-0785levB.js`
+- `assets/routes-C58QHaB7.js`
+- `assets/SegmentPage-Colrh5Ti.js`
+- `assets/zoom-in-C3APSIgc.js`
+
+**Modificados (2)**
+
+- `_shell.html`
+- `index.html`
+
+**Removidos (55)**
+
+- `assets/ContactForm-DE8l9ENL.js`
+- `assets/ContactForm-Ql64ZRYP.js`
+- `assets/ContactForm-WKlFa7ts.js`
+- `assets/SegmentPage-BkzXGIs5.js`
+- `assets/SegmentPage-C-DmBdYr.js`
+- `assets/SegmentPage-D_ztKd5c.js`
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/casas-de-alto-padrao-BPHvfMyn.js`
+- `assets/casas-de-alto-padrao-CP0n65nA.js`
+- `assets/casas-de-alto-padrao-DLUstp-w.js`
+- `assets/edificios-comerciais-2rRxc1Uy.js`
+- `assets/edificios-comerciais-DvKT71Cq.js`
+- `assets/edificios-comerciais-t-mtghLq.js`
+- `assets/edificios-residenciais-BeGx0oD_.js`
+- `assets/edificios-residenciais-DxIFRiuW.js`
+- `assets/edificios-residenciais-XcWnyhKN.js`
+- `assets/health-2Uea5SCb.js`
+- `assets/health-BYIrlipd.js`
+- `assets/health-BxDBw7n9.js`
+- `assets/health-CTFqHcrq.js`
+- `assets/health-Dt0XWTjU.js`
+- `assets/index-Bhfo_SQW.js`
+- `assets/index-CIvkNNbX.js`
+- `assets/index-COYKMsfk.js`
+- `assets/index-CabEd1Wv.js`
+- `assets/index-ih8dsURV.js`
+- `assets/obras._slug-BcffAiqj.js`
+- `assets/obras._slug-CEGexurE.js`
+- `assets/obras._slug-CJbhlM7f.js`
+- `assets/obras._slug-CO8BH_PV.js`
+- `assets/obras._slug-CUG7oImf.js`
+- `assets/obras._slug-Ckcg0wVR.js`
+- `assets/obras._slug-Cuxs_n0c.js`
+- `assets/obras._slug-D7ZCAVUA.js`
+- `assets/obras._slug-DNsaq3zq.js`
+- `assets/obras._slug-DZvcduBM.js`
+- `assets/phone-CRu0i5yl.js`
+- `assets/phone-Cty4XKUi.js`
+- `assets/phone-DYGp8l1j.js`
+- `assets/routes-B1Z3d7bx.js`
+- `assets/routes-BMmCsqZZ.js`
+- `assets/routes-Bas5JR-Y.js`
+- `assets/routes-CfUfZosH.js`
+- `assets/routes-Dj38f_uS.js`
+- `assets/styles-5_6zmjoj.css`
+- `assets/styles-CB5GcyT5.css`
+- `assets/styles-Cb5Wvq6P.css`
+- `assets/zoom-in-Bzi655Jj.js`
+- `assets/zoom-in-CQR2jlen.js`
+- `assets/zoom-in-DGM_hSto.js`
+- `assets/zoom-in-mZ_7olm5.js`
+
+---
+
 ## v2026.08.07-1 — 2026-08-07T13:03:15.952Z
 
 - **Commit:** `e647126` (edit/edt-c429b5ac-8b49-4744-8c45-21f7507f7226) — Work in progress
