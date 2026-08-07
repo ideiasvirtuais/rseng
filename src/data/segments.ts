@@ -33,7 +33,7 @@ export type Segment = {
 };
 
 /** Quais empreendimentos aparecem em cada segmento. */
-const RESIDENCIAIS = ["edificio-iris", "edificio-jo-pena-duarte", "edificio-malbec", "edificio-santorini", "edificio-rosario"];
+const RESIDENCIAIS = ["edificio-iris", "edificio-jo-pena-duarte", "edificio-malbec", "edificio-santorini"];
 const COMERCIAIS = ["edificio-rosario"];
 
 const bySlug = (slugs: string[]) =>
