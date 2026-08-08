@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
-import interiorCustom from "@/assets/interior-custom.jpg";
+import interiorCustomPhoto from "@/assets/interiores/interior-flat-01.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
