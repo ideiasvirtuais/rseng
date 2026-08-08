@@ -446,13 +446,27 @@ function Index() {
       {/* Sobre */}
       <section id="sobre" className="container-x section-y">
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
-          <div>
-            <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Sobre a construtora</div>
-            <h2 className="mt-4">
-              Três décadas construindo o skyline de Betim — um empreendimento sólido de cada vez.
-            </h2>
-          </div>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Sobre a construtora</div>
+          <h2 className="mt-4">
+            Três décadas construindo o skyline de Betim — um empreendimento sólido de cada vez.
+          </h2>
+        </div>
+
+        <div className="mt-14 grid items-center gap-12 lg:grid-cols-2">
+          <figure className="overflow-hidden rounded-2xl border border-border bg-card">
+            <img
+              src={sedePhoto.url}
+              alt="Sede da Rezende Saback Construtora — Edifício Londres, fachada em pastilha azul e branca em Betim/MG"
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+            <figcaption className="px-5 py-3 text-sm text-muted-foreground">
+              Sede da Rezende Saback — Edifício Londres, Betim/MG.
+            </figcaption>
+          </figure>
+
           <div className="space-y-6 text-lg text-muted-foreground">
             <p>
               A Rezende Saback nasceu com o compromisso de entregar residências duráveis, com técnica apurada e acabamento honesto. Trabalhamos com equipe própria, fornecedores auditados e um padrão de qualidade que se vê no detalhe.
@@ -460,20 +474,9 @@ function Index() {
             <p>
               Nosso portfólio combina lançamentos comerciais e residenciais, sempre em localizações estratégicas. Cada projeto é acompanhado da concepção à entrega das chaves, e continua com o cliente através da nossa assistência pós-obra.
             </p>
-            <figure className="overflow-hidden rounded-2xl border border-border bg-card">
-              <img
-                src={sedePhoto.url}
-                alt="Sede da Rezende Saback Construtora — Edifício Londres, fachada em pastilha azul e branca em Betim/MG"
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover"
-              />
-              <figcaption className="px-5 py-3 text-sm text-muted-foreground">
-                Sede da Rezende Saback — Edifício Londres, Betim/MG.
-              </figcaption>
-            </figure>
           </div>
         </div>
+
       </section>
 
 
