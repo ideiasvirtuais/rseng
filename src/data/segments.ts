@@ -79,7 +79,7 @@ export const segments: Segment[] = [
       "Cada torre é acompanhada da concepção à entrega das chaves por equipe própria, com possibilidade de personalização de planta antes da obra ser concluída.",
     ],
     features: [
-      "Apartamentos de 3 quartos com suíte",
+      "Apartamentos de 1, 2 ou 3 quartos com suíte",
       "Planta personalizável antes da entrega",
       "Áreas comuns: gourmet, fitness e playground",
       "Vagas cobertas e portaria 24h",
