@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
 import interiorCustomPhoto from "@/assets/interiores/interior-flat-01.png.asset.json";
+import sedePhoto from "@/assets/sede-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
@@ -459,9 +460,22 @@ function Index() {
             <p>
               Nosso portfólio combina lançamentos comerciais e residenciais, sempre em localizações estratégicas. Cada projeto é acompanhado da concepção à entrega das chaves, e continua com o cliente através da nossa assistência pós-obra.
             </p>
+            <figure className="overflow-hidden rounded-2xl border border-border bg-card">
+              <img
+                src={sedePhoto.url}
+                alt="Sede da Rezende Saback Construtora — Edifício Londres, fachada em pastilha azul e branca em Betim/MG"
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+              <figcaption className="px-5 py-3 text-sm text-muted-foreground">
+                Sede da Rezende Saback — Edifício Londres, Betim/MG.
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
+
 
       {/* Instagram */}
       <section id="instagram" className="border-y border-border bg-secondary">
