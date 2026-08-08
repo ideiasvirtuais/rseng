@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
-import interiorCustom from "@/assets/interior-custom.jpg";
+import interiorCustomPhoto from "@/assets/interiores/interior-flat-01.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
@@ -310,8 +310,8 @@ function Index() {
         <div className="container-x grid gap-16 section-y lg:grid-cols-2 lg:items-center">
           <div className="relative overflow-hidden rounded-2xl">
             <img
-              src={interiorCustom}
-              alt="Interior de apartamento personalizado"
+              src={interiorCustomPhoto.url}
+              alt="Sala integrada com cozinha planejada, painel ripado de madeira e dormitório de apartamento entregue pronto"
               width={1400}
               height={1000}
               loading="lazy"
