@@ -310,8 +310,8 @@ function Index() {
         <div className="container-x grid gap-16 section-y lg:grid-cols-2 lg:items-center">
           <div className="relative overflow-hidden rounded-2xl">
             <img
-              src={interiorCustom}
-              alt="Interior de apartamento personalizado"
+              src={interiorCustomPhoto.url}
+              alt="Sala integrada com cozinha planejada, painel ripado de madeira e dormitório de apartamento entregue pronto"
               width={1400}
               height={1000}
               loading="lazy"
