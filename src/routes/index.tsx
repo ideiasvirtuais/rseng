@@ -9,6 +9,7 @@ import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@
 import { ContactForm } from "@/components/ContactForm";
 import { segmentNav } from "@/components/SiteHeader";
 import { segments } from "@/data/segments";
+import { goldenMallCover } from "@/data/goldenMall";
 
 
 
@@ -222,10 +223,10 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="relative h-[92vh] min-h-[640px] w-full">
           <img
-            src="/hero-rosario.jpg"
-            alt="Edifício Rosário Business & Home e ambientes internos decorados"
-            width={1920}
-            height={1391}
+            src={goldenMallCover}
+            alt="Fachada do Golden Mall Rosário, lançamento comercial em Betim"
+            width={1200}
+            height={675}
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-primary/75 via-primary/55 to-background" />
@@ -256,11 +257,15 @@ function Index() {
             <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
               <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-6 backdrop-blur-md lg:max-w-md">
                 <div className="text-xs uppercase tracking-[0.2em] text-accent">Lançamento</div>
-                <div className="mt-2 text-xl font-semibold text-primary-foreground">Edifício Rosário</div>
-                <div className="mt-1 text-sm text-primary-foreground/90">Business & Home · Angola</div>
-                <a href="#galeria" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+                <div className="mt-2 text-xl font-semibold text-primary-foreground">Golden Mall – Rosário</div>
+                <div className="mt-1 text-sm text-primary-foreground/90">12 lojas · Módulos de 90 m² a 140 m² · Angola</div>
+                <Link
+                  to="/obras/$slug"
+                  params={{ slug: "golden-mall-rosario" }}
+                  className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent"
+                >
                   Conheça o empreendimento <ArrowUpRight className="h-4 w-4" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
