@@ -1,6 +1,7 @@
-import { ArrowUpRight, Facebook, Instagram } from "lucide-react";
+import { ArrowUpRight, Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
+import { COMPANY } from "@/data/company";
 import { Logo, segmentNav } from "./SiteHeader";
 
 export function SiteFooter() {
@@ -19,7 +20,7 @@ export function SiteFooter() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <a
-              href="https://www.instagram.com/rezendesabackengenharia/"
+              href={COMPANY.social.instagram.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Seguir a Rezende Saback no Instagram (abre em nova aba)"
@@ -30,12 +31,12 @@ export function SiteFooter() {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Instagram</span>
-                <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">@rezendesabackengenharia</span>
+                <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">{COMPANY.social.instagram.handle}</span>
               </span>
               <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
             </a>
             <a
-              href="https://www.facebook.com/rezendesaback"
+              href={COMPANY.social.facebook.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Seguir a Rezende Saback no Facebook (abre em nova aba)"
@@ -46,11 +47,31 @@ export function SiteFooter() {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Facebook</span>
-                <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">/rezendesaback</span>
+                <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">{COMPANY.social.facebook.handle}</span>
               </span>
               <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
             </a>
           </div>
+        </div>
+
+        <div className="mt-8 grid gap-6 border-b border-primary-foreground/15 pb-8 text-sm text-primary-foreground/85 md:grid-cols-3">
+          <a href={COMPANY.address.mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 hover:text-accent">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{COMPANY.address.street}, {COMPANY.address.district}, {COMPANY.address.city}/{COMPANY.address.state} · CEP {COMPANY.address.cep}</span>
+          </a>
+          <div className="flex flex-col gap-1">
+            {COMPANY.phones.map((p) => (
+              <a key={p.href} href={p.href} className="inline-flex items-center gap-2 hover:text-accent">
+                <Phone className="h-4 w-4" /> {p.label}
+              </a>
+            ))}
+            <a href={COMPANY.whatsapp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-accent">
+              <Phone className="h-4 w-4" /> {COMPANY.whatsapp.display} (WhatsApp)
+            </a>
+          </div>
+          <a href={COMPANY.email.href} className="inline-flex items-start gap-2 hover:text-accent">
+            <Mail className="mt-0.5 h-4 w-4 shrink-0" /> {COMPANY.email.address}
+          </a>
         </div>
 
         <nav className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-primary-foreground/90">
@@ -65,7 +86,7 @@ export function SiteFooter() {
         <div className="mt-8 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <Logo variant="light" />
           <div className="text-xs text-primary-foreground/60">
-            © {new Date().getFullYear()} Rezende Saback Construtora e Incorporadora. Todos os direitos reservados.
+            © {new Date().getFullYear()} {COMPANY.name} e Incorporadora · {COMPANY.hours}. Todos os direitos reservados.
           </div>
         </div>
       </div>

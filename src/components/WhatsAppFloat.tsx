@@ -1,5 +1,7 @@
-const WHATSAPP_NUMBER = "5531993040342";
-const DEFAULT_MESSAGE = "Olá! Vim pelo site e gostaria de mais informações.";
+import { COMPANY } from "@/data/company";
+
+const WHATSAPP_NUMBER = COMPANY.whatsapp.number;
+const DEFAULT_MESSAGE = COMPANY.whatsapp.defaultMessage;
 
 export function WhatsAppFloat() {
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`;

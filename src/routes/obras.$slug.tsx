@@ -2,9 +2,10 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowLeft, MapPin, Phone, ZoomIn, X, Diamond } from "lucide-react";
 
-import { getProjectBySlug, projects, type GalleryCategory } from "@/data/projects";
-
-const SITE_URL = "https://rsengenharia.eng.br";
+import { getProjectBySlug, projects, type GalleryCategory, type Project } from "@/data/projects";
+import { COMPANY, SITE_URL } from "@/data/company";
+import { SmartImage } from "@/components/SmartImage";
+import { resolveImage } from "@/lib/images";
 
 export const Route = createFileRoute("/obras/$slug")({
   loader: ({ params }) => {
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/obras/$slug")({
     if (!project) {
       return { meta: [{ title: "Obra não encontrada — Rezende Saback" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `${project.name} — Rezende Saback Construtora`;
+    const title = `${project.name} — ${COMPANY.name}`;
     const description = project.summary;
     const url = `${SITE_URL}/obras/${project.slug}`;
     const image = `${SITE_URL}${project.img}`;
@@ -49,7 +50,7 @@ export const Route = createFileRoute("/obras/$slug")({
       })),
       provider: {
         "@type": "Organization",
-        name: "Rezende Saback Construtora",
+        name: COMPANY.name,
         url: SITE_URL,
       },
     };
@@ -89,7 +90,7 @@ export const Route = createFileRoute("/obras/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
-        { property: "og:site_name", content: "Rezende Saback Construtora" },
+        { property: "og:site_name", content: COMPANY.name },
         { property: "og:locale", content: "pt_BR" },
         { property: "og:url", content: url },
         { property: "og:image", content: image },
@@ -114,7 +115,7 @@ export const Route = createFileRoute("/obras/$slug")({
 });
 
 function ProjectDetail() {
-  const project = Route.useLoaderData();
+  const project = Route.useLoaderData() as Project;
 
   const filters = useMemo(
     () => ["Todas", ...project.categories] as ("Todas" | GalleryCategory)[],
@@ -195,12 +196,12 @@ function ProjectDetail() {
       {/* Cover */}
       <section className="container-x mt-12">
         <div className="overflow-hidden rounded-2xl border border-border">
-          <img
+          <SmartImage
             src={project.img}
             alt={`Imagem principal do ${project.name}`}
-            width={1600}
-            height={1000}
+            wrapperClassName="block w-full"
             className="h-full w-full object-cover"
+            loading="eager"
           />
         </div>
       </section>
@@ -273,10 +274,10 @@ function ProjectDetail() {
               className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border bg-card text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               aria-label={`Ampliar: ${item.alt}`}
             >
-              <img
+              <SmartImage
                 src={item.src}
                 alt={item.alt}
-                loading="lazy"
+                wrapperClassName="absolute inset-0"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="pointer-events-none absolute inset-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/70 via-black/10 to-transparent p-3 text-primary-foreground opacity-0 transition group-hover:opacity-100">
@@ -315,7 +316,7 @@ function ProjectDetail() {
           </button>
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <img
-              src={filteredGallery[lightbox].src}
+              src={resolveImage(filteredGallery[lightbox].src)}
               alt={filteredGallery[lightbox].alt}
               className="max-h-[80vh] w-auto rounded-xl object-contain"
             />
@@ -370,10 +371,10 @@ function ProjectDetail() {
                 className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
+                  <SmartImage
                     src={r.img}
                     alt={r.name}
-                    loading="lazy"
+                    wrapperClassName="h-full w-full"
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   />
                 </div>
@@ -411,7 +412,7 @@ function ProjectNotFound() {
   );
 }
 
-function ProjectError({ error, reset }: { error: Error; reset: () => void }) {
+function ProjectError({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   return (
     <div className="container-x section-y text-center">

@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SegmentPage } from "@/components/SegmentPage";
+import { COMPANY, SITE_URL } from "@/data/company";
 import { getSegment } from "@/data/segments";
 
 const segment = getSegment("casas-de-alto-padrao");
-const SITE_URL = "https://rsengenharia.eng.br";
 const URL = `${SITE_URL}/casas-de-alto-padrao`;
 
 export const Route = createFileRoute("/casas-de-alto-padrao")({
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/casas-de-alto-padrao")({
           name: segment.label,
           description: segment.seoDescription,
           url: URL,
-          about: { "@type": "Organization", name: "Rezende Saback Construtora", url: SITE_URL },
+          about: { "@type": "Organization", name: COMPANY.name, url: SITE_URL },
         }),
       },
     ],

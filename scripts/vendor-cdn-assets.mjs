@@ -1,21 +1,19 @@
 /**
- * Copia os assets do CDN (src/assets/**\/*.asset.json) para dentro de dist/client,
- * preservando o mesmo caminho da URL (/__l5e/assets-v1/<id>/<arquivo>).
+ * Vendorisa os assets do CDN Lovable (src/assets/**/*.asset.json)
+ * para public/__l5e/... de modo que as imagens funcionem em
+ * qualquer ambiente: `vite dev`, preview, build estático e FTP.
  *
- * Necessário para hospedagens estáticas (Apache/KingHost), onde o CDN do Lovable
- * não existe e as imagens cairiam no fallback do index.html.
+ * Uso: node scripts/vendor-cdn-assets.mjs
+ *      (ou: CDN_SOURCE_BASE=https://xxx.lovable.app node scripts/vendor-cdn-assets.mjs)
  */
-import { readdirSync, statSync, readFileSync, mkdirSync, writeFileSync, existsSync, copyFileSync } from "node:fs";
+import { readdirSync, statSync, readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname, join } from "node:path";
 
 const SRC_DIR = resolve(process.cwd(), "src/assets");
 const PUBLIC_DIR = resolve(process.cwd(), "public");
-const OUT_DIR = resolve(process.cwd(), "dist/client");
-const SOURCES = [
-  process.env.CDN_SOURCE_BASE,
-  "http://localhost:8080",
-  "https://rseng.lovable.app",
-].filter(Boolean);
+const SOURCES = [process.env.CDN_SOURCE_BASE, "http://localhost:8080", "https://rseng.lovable.app"].filter(
+  Boolean,
+);
 
 function walk(dir) {
   if (!existsSync(dir)) return [];
@@ -32,9 +30,7 @@ async function download(url) {
     try {
       const res = await fetch(base + url);
       const type = res.headers.get("content-type") || "";
-      if (res.ok && !type.includes("text/html")) {
-        return Buffer.from(await res.arrayBuffer());
-      }
+      if (res.ok && !type.includes("text/html")) return Buffer.from(await res.arrayBuffer());
       lastError = new Error(`${res.status} ${type} em ${base}`);
     } catch (error) {
       lastError = error;
@@ -44,42 +40,29 @@ async function download(url) {
 }
 
 const pointers = walk(SRC_DIR);
-if (!existsSync(OUT_DIR)) {
-  console.error("✗ dist/client não existe — rode o build antes.");
-  process.exit(1);
-}
-
-let copied = 0;
+let ok = 0;
 const failures = [];
 
 for (const file of pointers) {
   const { url } = JSON.parse(readFileSync(file, "utf8"));
-  if (!url || !url.startsWith("/")) continue;
-  const target = join(OUT_DIR, url);
+  if (!url?.startsWith("/")) continue;
+  const target = join(PUBLIC_DIR, url);
   if (existsSync(target)) {
-    copied += 1;
-    continue;
-  }
-  // 1º: cópia local vendorada em public/__l5e (funciona offline, sem depender do Lovable)
-  const localVendor = join(PUBLIC_DIR, url);
-  if (existsSync(localVendor)) {
-    mkdirSync(dirname(target), { recursive: true });
-    copyFileSync(localVendor, target);
-    copied += 1;
+    ok += 1;
     continue;
   }
   try {
     const buffer = await download(url);
     mkdirSync(dirname(target), { recursive: true });
     writeFileSync(target, buffer);
-    copied += 1;
+    ok += 1;
     console.log(`✓ ${url} (${(buffer.length / 1024).toFixed(0)} KB)`);
   } catch (error) {
     failures.push(`${url} — ${error.message}`);
   }
 }
 
-console.log(`\n${copied}/${pointers.length} assets do CDN incluídos no build.`);
+console.log(`\n${ok}/${pointers.length} assets vendorados em public/.`);
 if (failures.length) {
   console.error("✗ Falhas:\n  " + failures.join("\n  "));
   process.exit(1);

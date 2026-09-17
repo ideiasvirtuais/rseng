@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Diamond, X, ZoomIn } from "lucide-react";
+import { ArrowUpRight, Diamond, Mail, MapPin, Phone, X, ZoomIn } from "lucide-react";
+
+import { COMPANY } from "@/data/company";
 
 import { SiteHeader, segmentNav } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { ContactForm } from "./ContactForm";
+import { SmartImage } from "./SmartImage";
+import { resolveImage } from "@/lib/images";
 import type { Segment } from "@/data/segments";
 
 export function SegmentPage({ segment }: { segment: Segment }) {
@@ -19,12 +23,12 @@ export function SegmentPage({ segment }: { segment: Segment }) {
       <section className="relative overflow-hidden border-b border-border">
         <div className="relative min-h-[52vh] w-full">
           {segment.cover && (
-            <img
+            <SmartImage
               src={segment.cover}
               alt={segment.coverAlt}
-              className="absolute inset-0 h-full w-full object-cover"
+              wrapperClassName="absolute inset-0"
+              className="h-full w-full object-cover"
               loading="eager"
-              decoding="async"
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-primary/85 via-primary/70 to-primary/90" />
@@ -98,10 +102,10 @@ export function SegmentPage({ segment }: { segment: Segment }) {
                 >
                   <article>
                     <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
+                      <SmartImage
                         src={p.img}
                         alt={p.name}
-                        loading="lazy"
+                        wrapperClassName="h-full w-full"
                         className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                       />
                       <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary">
@@ -142,10 +146,10 @@ export function SegmentPage({ segment }: { segment: Segment }) {
                 className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card text-left"
                 aria-label={`Ampliar ${item.alt}`}
               >
-                <img
+                <SmartImage
                   src={item.src}
                   alt={item.alt}
-                  loading="lazy"
+                  wrapperClassName="absolute inset-0"
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/15 to-transparent opacity-0 transition group-hover:opacity-100" />
@@ -186,7 +190,7 @@ export function SegmentPage({ segment }: { segment: Segment }) {
             <X className="h-5 w-5" />
           </button>
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img src={photo.src} alt={photo.alt} className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl" />
+            <img src={resolveImage(photo.src)} alt={photo.alt} className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl" />
             <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
               <span className="text-accent">{photo.caption}</span> · {photo.title}
             </figcaption>
@@ -224,8 +228,25 @@ export function SegmentPage({ segment }: { segment: Segment }) {
               Tem interesse em <span className="text-primary/70">{segment.label.toLowerCase()}</span>?
             </h2>
             <p className="mt-6 text-muted-foreground">
-              Deixe seus dados e um consultor da Rezende Saback retorna em até um dia útil com disponibilidade, plantas e condições.
+              Deixe seus dados e um consultor da {COMPANY.name} retorna em até um dia útil com disponibilidade, plantas e condições.
             </p>
+            <div className="mt-8 space-y-3 text-sm">
+              <a href={COMPANY.whatsapp.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-medium text-primary hover:underline">
+                <Phone className="h-4 w-4" /> {COMPANY.whatsapp.display} (WhatsApp)
+              </a>
+              {COMPANY.phones.map((p) => (
+                <a key={p.href} href={p.href} className="flex items-center gap-2 text-primary hover:underline">
+                  <Phone className="h-4 w-4" /> {p.label}
+                </a>
+              ))}
+              <a href={COMPANY.email.href} className="flex items-center gap-2 text-primary hover:underline">
+                <Mail className="h-4 w-4" /> {COMPANY.email.address}
+              </a>
+              <a href={COMPANY.address.mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-muted-foreground hover:text-primary">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{COMPANY.address.street}, {COMPANY.address.district}, {COMPANY.address.city}/{COMPANY.address.state} · CEP {COMPANY.address.cep}</span>
+              </a>
+            </div>
           </div>
           <ContactForm />
         </div>

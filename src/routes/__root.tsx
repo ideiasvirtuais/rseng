@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
+import { COMPANY } from "../data/company";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { installClientErrorReporter, reportClientError } from "../lib/client-error-reporter";
 import { WhatsAppFloat } from "../components/WhatsAppFloat";
@@ -38,13 +39,14 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
+  const normalized = error instanceof Error ? error : new Error("Erro desconhecido ao carregar a página");
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-    reportClientError(error, "react_error_boundary", { boundary: "tanstack_root_error_component" });
-  }, [error]);
+    reportLovableError(normalized, { boundary: "tanstack_root_error_component" });
+    reportClientError(normalized, "react_error_boundary", { boundary: "tanstack_root_error_component" });
+  }, [normalized]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -82,18 +84,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Rezende Saback Construtora — Empreendimentos em Betim/MG" },
-      { name: "description", content: "Desde 1988, a Rezende Saback constrói empreendimentos residenciais e comerciais em Betim/MG com acabamento diferenciado e planta customizável." },
+      { title: `${COMPANY.name} — ${COMPANY.tagline}` },
+      { name: "description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
       { name: "author", content: "Rezende Saback Engenharia" },
       { name: "theme-color", content: "#2E3192" },
-      { property: "og:site_name", content: "Rezende Saback Construtora" },
-      { property: "og:title", content: "Rezende Saback Construtora — Empreendimentos em Betim/MG" },
-      { property: "og:description", content: "Desde 1988, a Rezende Saback constrói empreendimentos residenciais e comerciais em Betim/MG com acabamento diferenciado e planta customizável." },
+      { property: "og:site_name", content: COMPANY.name },
+      { property: "og:title", content: `${COMPANY.name} — ${COMPANY.tagline}` },
+      { property: "og:description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Rezende Saback Construtora — Empreendimentos em Betim/MG" },
-      { name: "twitter:description", content: "Desde 1988, a Rezende Saback constrói empreendimentos residenciais e comerciais em Betim/MG com acabamento diferenciado e planta customizável." },
+      { name: "twitter:title", content: `${COMPANY.name} — ${COMPANY.tagline}` },
+      { name: "twitter:description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

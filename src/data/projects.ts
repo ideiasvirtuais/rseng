@@ -104,11 +104,9 @@ export const projects: Project[] = [
       "Salas comerciais no térreo",
       "Elevadores de alta performance",
     ],
-    categories: ["Lançamentos", "Fachadas", "Áreas Comuns"],
+    categories: ["Lançamentos"],
     gallery: [
       { src: buildingRosario, alt: "Fachada do Edifício Rosário", category: "Lançamentos" },
-      { src: buildingRosario, alt: "Hall de entrada do Edifício Rosário", category: "Áreas Comuns" },
-      { src: heroBuilding, alt: "Vista noturna do Edifício Rosário", category: "Fachadas" },
     ],
   },
   {
@@ -246,12 +244,12 @@ export function getProjectBySlug(slug: string): Project | undefined {
 }
 
 export const galleryItems: GalleryItem[] = [
-  ...goldenMallImages.map((image) => ({
-    src: image.src,
-    alt: image.alt,
+  {
+    src: goldenMallCover,
+    alt: "Perspectiva da fachada de esquina do Golden Mall Rosário",
     project: "Golden Mall – Rosário",
     category: "Lançamentos" as GalleryCategory,
-  })),
+  },
   { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
   ...residentialWorks.map((w) => ({
     src: w.src,

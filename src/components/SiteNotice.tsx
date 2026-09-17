@@ -1,6 +1,7 @@
 import { AlertTriangle } from "lucide-react";
+import { COMPANY } from "@/data/company";
 
-const WHATSAPP_URL = "https://wa.me/5531993040342";
+const WHATSAPP_URL = COMPANY.whatsapp.url;
 
 export function SiteNotice() {
   return (

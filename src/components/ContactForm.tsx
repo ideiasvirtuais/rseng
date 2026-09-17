@@ -5,7 +5,9 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 
-const WHATSAPP_NUMBER = "5531993040342";
+import { COMPANY } from "@/data/company";
+
+const WHATSAPP_NUMBER = COMPANY.whatsapp.number;
 
 const INTERESTS = [
   "Edifício Rosário (lançamento)",

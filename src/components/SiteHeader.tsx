@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-
-const LOGO_URL = "/logo-rezende-saback.png";
+import { LOGO_URL, resolveImage } from "@/lib/images";
 
 export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light"; to?: string }) {
   const isLight = variant === "light";
@@ -13,13 +12,17 @@ export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light
       className={`inline-flex items-center ${isLight ? "rounded-md bg-primary-foreground/95 px-3 py-2" : ""}`}
     >
       <img
-        src={LOGO_URL}
+        src={resolveImage(LOGO_URL)}
         alt="Rezende Saback Construtora"
         width={470}
         height={114}
         className="h-10 w-auto md:h-12"
         loading="eager"
         decoding="async"
+        onError={(e) => {
+          // Fallback silencioso: evita logo quebrado no header.
+          (e.target as HTMLImageElement).style.visibility = "hidden";
+        }}
       />
     </Link>
   );
