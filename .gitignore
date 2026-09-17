@@ -38,3 +38,15 @@ dist-ssr
 .env.ftp
 .env.ftp.staging
 .env.ftp.production
+
+# Env local (nunca commitar segredos locais)
+.env
+
+# Config local da ferramenta (opencode) — não é código do projeto
+config.json
+
+# Projeto usa bun.lock — ignora lockfile gerado pelo npm
+package-lock.json
+
+# Assets vendorados gerados localmente (regeneráveis via scripts/vendor-cdn-assets.mjs)
+public/__l5e/
