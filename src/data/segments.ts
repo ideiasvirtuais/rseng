@@ -34,7 +34,7 @@ export type Segment = {
 
 /** Quais empreendimentos aparecem em cada segmento. */
 const RESIDENCIAIS = ["edificio-iris", "edificio-jo-pena-duarte", "edificio-malbec", "edificio-santorini"];
-const COMERCIAIS = ["edificio-rosario"];
+const COMERCIAIS = ["golden-mall-rosario", "edificio-rosario"];
 
 const bySlug = (slugs: string[]) =>
   slugs.map((s) => projects.find((p) => p.slug === s)).filter((p): p is Project => Boolean(p));
