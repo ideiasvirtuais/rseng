@@ -7,6 +7,7 @@ import santoriniPhoto from "@/assets/residenciais/edificio-santorini.png.asset.j
 import { commercialWorks } from "./commercial";
 import { residentialWorks } from "./residential";
 import { houses } from "./houses";
+import { goldenMallCover, goldenMallImages } from "./goldenMall";
 
 const buildingRosario = rosarioPhoto.url;
 const buildingMalbec = malbecPhoto.url;
@@ -42,6 +43,41 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  {
+    slug: "golden-mall-rosario",
+    name: "Golden Mall – Rosário",
+    tag: "Lançamento",
+    type: "Lojas para locação e venda",
+    address: "Rua do Rosário, 1.036 — Angola",
+    year: "Lançamento",
+    img: goldenMallCover,
+    summary:
+      "Lojas para locação e venda em uma das regiões mais promissoras de Betim, com excelente visibilidade e módulos de 90 m² a 140 m².",
+    description: [
+      "Chegou a oportunidade ideal para instalar ou expandir o seu negócio em uma das regiões mais promissoras de Betim.",
+      "Se você procura um ponto comercial que reúna localização, conveniência e potencial de crescimento, o Golden Mall – Rosário é a escolha certa.",
+    ],
+    info: [
+      { label: "Status", value: "Lançamento" },
+      { label: "Disponibilidade", value: "Locação e venda" },
+      { label: "Quantidade", value: "12 lojas" },
+      { label: "Módulos", value: "90 m² a 140 m²" },
+      { label: "Endereço", value: "Rua do Rosário, 1.036 — Bairro Angola, Betim/MG" },
+    ],
+    highlights: [
+      "12 lojas",
+      "Módulos de 90 m² a 140 m²",
+      "Localização estratégica",
+      "Região com alto fluxo de pessoas e veículos",
+      "Comércio consolidado e grande potencial de consumo no entorno",
+      "Excelente visibilidade para sua marca",
+    ],
+    categories: ["Lançamentos", "Comerciais"],
+    gallery: goldenMallImages.map((image, index) => ({
+      ...image,
+      category: index === goldenMallImages.length - 1 ? "Comerciais" as const : "Lançamentos" as const,
+    })),
+  },
   {
     slug: "edificio-rosario",
     name: "Edifício Rosário",
@@ -210,6 +246,12 @@ export function getProjectBySlug(slug: string): Project | undefined {
 }
 
 export const galleryItems: GalleryItem[] = [
+  ...goldenMallImages.map((image) => ({
+    src: image.src,
+    alt: image.alt,
+    project: "Golden Mall – Rosário",
+    category: "Lançamentos" as GalleryCategory,
+  })),
   { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
   ...residentialWorks.map((w) => ({
     src: w.src,

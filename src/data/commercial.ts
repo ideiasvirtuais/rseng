@@ -8,6 +8,7 @@ import nilza from "@/assets/comerciais/nilza.jpg.asset.json";
 import portal from "@/assets/comerciais/portal.jpg.asset.json";
 import reauto from "@/assets/comerciais/reauto-betim.jpg.asset.json";
 import scala from "@/assets/comerciais/ed-scala.jpg.asset.json";
+import { goldenMallCover } from "./goldenMall";
 
 export type CommercialWork = {
   src: string;
@@ -17,6 +18,12 @@ export type CommercialWork = {
 };
 
 export const commercialWorks: CommercialWork[] = [
+  {
+    src: goldenMallCover,
+    name: "Golden Mall – Rosário",
+    type: "Lançamento · Lojas para locação e venda",
+    alt: "Perspectiva da fachada do Golden Mall Rosário, centro comercial com 12 lojas em Betim",
+  },
   {
     src: scala.url,
     name: "Edifício Scala Centro Comercial",

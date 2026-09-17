@@ -4,13 +4,13 @@ import { ArrowLeft, MapPin, Phone, ZoomIn, X, Diamond } from "lucide-react";
 
 import { getProjectBySlug, projects, type GalleryCategory } from "@/data/projects";
 
-const SITE_URL = "https://rseng.lovable.app";
+const SITE_URL = "https://rsengenharia.eng.br";
 
 export const Route = createFileRoute("/obras/$slug")({
   loader: ({ params }) => {
     const project = getProjectBySlug(params.slug);
     if (!project) throw notFound();
-    return { slug: project.slug };
+    return project;
   },
   head: ({ params }) => {
     const project = getProjectBySlug(params.slug);
@@ -24,9 +24,9 @@ export const Route = createFileRoute("/obras/$slug")({
     const statusInfo = project.info.find((i) => i.label === "Status")?.value ?? "";
     const yearInfo = project.info.find((i) => i.label.startsWith("Entrega"))?.value ?? project.year;
 
-    const residenceJsonLd = {
+    const projectJsonLd = {
       "@context": "https://schema.org",
-      "@type": "Residence",
+      "@type": project.slug === "golden-mall-rosario" ? "ShoppingCenter" : "Residence",
       name: project.name,
       description,
       url,
@@ -102,7 +102,7 @@ export const Route = createFileRoute("/obras/$slug")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        { type: "application/ld+json", children: JSON.stringify(residenceJsonLd) },
+        { type: "application/ld+json", children: JSON.stringify(projectJsonLd) },
         { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
         ...(galleryJsonLd ? [{ type: "application/ld+json", children: JSON.stringify(galleryJsonLd) }] : []),
       ],
@@ -114,8 +114,7 @@ export const Route = createFileRoute("/obras/$slug")({
 });
 
 function ProjectDetail() {
-  const { slug } = Route.useLoaderData();
-  const project = getProjectBySlug(slug)!;
+  const project = Route.useLoaderData();
 
   const filters = useMemo(
     () => ["Todas", ...project.categories] as ("Todas" | GalleryCategory)[],
@@ -143,7 +142,7 @@ function ProjectDetail() {
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Voltar para a página inicial
           </Link>
-          <Link to="/" hash="empreendimentos" className="hidden text-sm text-muted-foreground hover:text-primary md:inline">
+           <Link to="/" hash="galeria" className="hidden text-sm text-muted-foreground hover:text-primary md:inline">
             Todos os empreendimentos
           </Link>
         </div>
@@ -154,7 +153,7 @@ function ProjectDetail() {
         <nav aria-label="Navegação estrutural" className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
           <Link to="/" className="hover:text-primary">Início</Link>
           <span className="mx-2">/</span>
-          <Link to="/" hash="empreendimentos" className="hover:text-primary">Empreendimentos</Link>
+           <Link to="/" hash="galeria" className="hover:text-primary">Empreendimentos</Link>
           <span className="mx-2">/</span>
           <span className="text-primary">{project.name}</span>
         </nav>
@@ -240,7 +239,7 @@ function ProjectDetail() {
             <h2 className="mt-4">Explore por <span className="text-primary/70">categoria</span>.</h2>
           </div>
           <p className="text-muted-foreground">
-            Fotos reais de fachadas, interiores e áreas comuns do {project.name}. Clique em qualquer imagem para ampliar.
+             Imagens e detalhes do {project.name}. Clique em qualquer imagem para ampliar.
           </p>
         </div>
 
@@ -349,7 +348,7 @@ function ProjectDetail() {
             </Link>
             <Link
               to="/"
-              hash="empreendimentos"
+               hash="galeria"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary-foreground/10"
             >
               Ver outros empreendimentos
@@ -403,7 +402,7 @@ function ProjectNotFound() {
       </p>
       <Link
         to="/"
-        hash="empreendimentos"
+         hash="galeria"
         className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
       >
         Ver todos os empreendimentos
