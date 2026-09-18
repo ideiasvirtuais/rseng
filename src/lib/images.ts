@@ -10,7 +10,8 @@
  * 3. URLs externas (http/https, data:, blob:) passam direto.
  * 4. Fallback automático webp <-> jpg/png quando o Apache/CDN falha
  *    no MIME ou o arquivo específico dá 404 (ex: golden-mall-*.webp).
- * 5. Placeholder SVG inline como última instância — nunca exibe <img> quebrado.
+ * 5. Variações de CAIXA da extensão (.JPG ↔ .jpg): Linux é case-sensitive.
+ * 6. Placeholder SVG inline como última instância — nunca exibe <img> quebrado.
  */
 
 export type AssetJson = {
@@ -103,6 +104,8 @@ export function swapExtension(url: string, toExt: "jpg" | "jpeg" | "png" | "webp
  * - .webp → tenta .jpg, depois .png
  * - .jpg/.jpeg → tenta .webp, depois .png
  * - .png → tenta .webp, depois .jpg
+ * - Variações de CAIXA da extensão (.JPG ↔ .jpg): servidores Linux são
+ *   case-sensitive — public/instagram-rs.JPG quebra se o código pedir .jpg.
  * Remove duplicatas e a própria URL original.
  */
 export function autoFallbacks(rawSrc: ImageInput): string[] {
@@ -126,6 +129,37 @@ export function autoFallbacks(rawSrc: ImageInput): string[] {
     push(swapExtension(resolved, "webp"));
     push(swapExtension(resolved, "jpg"));
   }
+  // Variação de caixa da extensão (Linux case-sensitive).
+  for (const variant of caseVariants(resolved)) {
+    push(variant);
+  }
+  return out;
+}
+
+/**
+ * Variações de caixa da extensão do arquivo.
+ * Ex: "/instagram-rs.JPG" → ["/instagram-rs.jpg", "/instagram-rs.jpeg"]
+ * Servidores Windows ignoram caixa; Apache/Linux não — sem isso a imagem
+ * "falha" só em produção.
+ */
+export function caseVariants(url: string): string[] {
+  if (!url || /^(data:|blob:)/i.test(url)) return [];
+  const qIndex = url.indexOf("?");
+  const path = qIndex >= 0 ? url.slice(0, qIndex) : url;
+  const query = qIndex >= 0 ? url.slice(qIndex) : "";
+  const dot = path.lastIndexOf(".");
+  const slash = path.lastIndexOf("/");
+  if (dot < 0 || dot < slash) return [];
+  const base = path.slice(0, dot);
+  const ext = path.slice(dot + 1);
+  const out: string[] = [];
+  const lower = ext.toLowerCase();
+  const upper = ext.toUpperCase();
+  if (ext !== lower) out.push(`${base}.${lower}${query}`);
+  if (ext !== upper) out.push(`${base}.${upper}${query}`);
+  // .jpg ↔ .jpeg também confunde CDN/Apache em arquivos legados.
+  if (lower === "jpg") out.push(`${base}.jpeg${query}`, `${base}.JPG${query}`);
+  if (lower === "jpeg") out.push(`${base}.jpg${query}`, `${base}.JPG${query}`);
   return out;
 }
 

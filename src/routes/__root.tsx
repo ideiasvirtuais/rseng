@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { COMPANY, OG_IMAGE, SITE_URL } from "../data/company";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { installClientErrorReporter, reportClientError } from "../lib/client-error-reporter";
+import { warmCriticalImage } from "../lib/image-health";
 import { WhatsAppFloat } from "../components/WhatsAppFloat";
 import { SiteNotice } from "../components/SiteNotice";
 
@@ -222,6 +223,16 @@ function RootComponent() {
       installClientErrorReporter();
     } catch {
       // telemetria opcional — nunca pode impedir a renderização
+    }
+    // Aquece o hero (LCP) + logo assim que o app hidrata: se a imagem
+    // estiver 404/travada, o cache global já aprende antes do scroll.
+    try {
+      const base = (import.meta.env?.BASE_URL as string | undefined) ?? "/";
+      const prefix = !base || base === "/" || base === "./" ? "" : base.replace(/\/$/, "");
+      warmCriticalImage(`${prefix}/hero-rosario.jpg`);
+      warmCriticalImage(`${prefix}/logo-rezende-saback.png`);
+    } catch {
+      // otimização — nunca quebra
     }
   }, []);
 

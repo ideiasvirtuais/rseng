@@ -89,7 +89,8 @@ export function HomeInstagram() {
           </div>
           <div className="relative overflow-hidden bg-card">
             <SmartImage
-              src="/instagram-rs.JPG"
+              src="/instagram-rs.jpg"
+              fallbackSrc="/instagram-rs.JPG"
               alt="Grade de publicações do Instagram @rezendesabackengenharia — concretagem de fundação de galpão industrial, obras comerciais e campanhas institucionais da Rezende Saback"
               wrapperClassName="block w-full"
               className="h-auto w-full object-cover object-top transition duration-700 group-hover:scale-[1.02]"

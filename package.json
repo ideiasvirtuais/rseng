@@ -9,6 +9,7 @@
     "build:ftp": "BUILD_TARGET=ftp vite build --mode ftp",
     "postbuild:ftp": "node scripts/bundle-cdn-assets.mjs && node scripts/verify-images.mjs && node scripts/verify-prerender.mjs && node scripts/generate-htaccess.mjs",
     "verify:images": "node scripts/verify-images.mjs",
+    "fix:images": "node scripts/fix-images.mjs --write",
     "build:dev": "vite build --mode development",
     "deploy:ftp": "node scripts/deploy-ftp.mjs",
     "predeploy:ftp": "node scripts/preflight-ftp.mjs",
