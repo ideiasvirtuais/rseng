@@ -60,6 +60,46 @@ if (!existsSync(ASSETS)) {
   }
 }
 
+// ── Imagens públicas (hero, logo, og-cover, favicons) ────────────────────────
+const REQUIRED_PUBLIC_IMAGES = [
+  "hero-rosario.jpg",
+  "hero-rosario.webp",
+  "logo-rezende-saback.png",
+  "og-cover.jpg",
+  "favicon.png",
+  "apple-touch-icon.png",
+];
+for (const img of REQUIRED_PUBLIC_IMAGES) {
+  const file = resolve(DIST, img);
+  if (!existsSync(file)) {
+    errors.push(`Imagem pública ausente no build: dist/client/${img}`);
+  } else if (statSync(file).size < 500) {
+    errors.push(`Imagem pública suspeita (muito pequena): dist/client/${img}`);
+  }
+}
+
+// ── Assets do CDN vendorados em __l5e ────────────────────────────────────────
+const L5E_DIR = resolve(DIST, "__l5e/assets-v1");
+if (!existsSync(L5E_DIR)) {
+  errors.push("Pasta obrigatória ausente: dist/client/__l5e/assets-v1/ (imagens do CDN)");
+} else {
+  const groups = readdirSync(L5E_DIR).filter((n) => !n.startsWith("."));
+  if (groups.length < 40) {
+    warnings.push(`__l5e/assets-v1 com apenas ${groups.length} grupos — esperado 40+ (alguma imagem pode não ter subido)`);
+  }
+  let files = 0;
+  for (const g of groups) {
+    try {
+      files += readdirSync(resolve(L5E_DIR, g)).length;
+    } catch { /* ignore */ }
+  }
+  if (files < 40) {
+    errors.push(`__l5e/assets-v1 com apenas ${files} arquivos — esperado 40+`);
+  } else {
+    console.log(`✓ imagens __l5e ok — ${files} arquivos em ${groups.length} grupos`);
+  }
+}
+
 if (errors.length === 0) {
   console.log(
     `✓ build FTP ok — dist/client contém _shell.html, index.html e assets JS/CSS (${PRERENDER_ROUTES.length} rotas prerenderizadas, home com Golden Mall)`,

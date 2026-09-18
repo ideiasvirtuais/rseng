@@ -11,7 +11,7 @@ import { Component, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
-import { COMPANY } from "../data/company";
+import { COMPANY, OG_IMAGE, SITE_URL } from "../data/company";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { installClientErrorReporter, reportClientError } from "../lib/client-error-reporter";
 import { WhatsAppFloat } from "../components/WhatsAppFloat";
@@ -130,14 +130,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
+      { property: "og:url", content: `${SITE_URL}/` },
+      { property: "og:image", content: `${SITE_URL}${OG_IMAGE}` },
+      { property: "og:image:secure_url", content: `${SITE_URL}${OG_IMAGE}` },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `${SITE_URL}${OG_IMAGE}` },
       { name: "twitter:title", content: `${COMPANY.name} — ${COMPANY.tagline}` },
       { name: "twitter:description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" },
