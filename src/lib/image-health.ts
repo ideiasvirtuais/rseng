@@ -121,10 +121,14 @@ export function failureReport(): FailureRecord[] {
  * mas sempre mantém ao menos o primeiro (para permitir retry manual).
  */
 export function skipKnownFailures(chain: string[]): string[] {
-  ensureHydrated();
-  if (chain.length <= 1) return chain;
-  const filtered = chain.filter((u, i) => i === 0 || !failedMemory.has(u));
-  return filtered.length > 0 ? filtered : chain.slice(0, 1);
+  try {
+    ensureHydrated?.();
+    if (!Array.isArray(chain) || chain.length <= 1) return Array.isArray(chain) ? chain : [];
+    const filtered = chain.filter((u, i) => i === 0 || !failedMemory?.has?.(u));
+    return filtered?.length > 0 ? filtered : chain.slice(0, 1);
+  } catch {
+    return Array.isArray(chain) ? chain : [];
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -196,18 +200,15 @@ export async function preloadImages(urls: string[], concurrency = PRELOAD_CONCUR
   });
 }
 
-/** Pré-conecta + preload do hero (LCP) o quanto antes. */
+/** Aquece o cache do hero (LCP) o quanto antes — sem <link rel="preload">. */
 export function warmCriticalImage(href: string): void {
   try {
     if (typeof document === "undefined" || !href) return;
-    if (document.querySelector(`link[rel="preload"][href="${href}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "image";
-    link.href = href;
-    link.setAttribute("fetchpriority", "high");
-    document.head.appendChild(link);
-    // Aquece o cache do browser em background.
+    // Intencionalmente SEM injeção de <link rel="preload" as="image">:
+    // o <img> do hero é inserido pelo React após a hidratação e o Chrome
+    // marcava o preload como "not used within a few seconds", o que o
+    // overlay do preview exibia como exceção/tela branca. Apenas aquece
+    // o cache HTTP/decode em background — nunca gera o warning.
     void loadOne(href);
   } catch {
     // otimização — nunca quebra

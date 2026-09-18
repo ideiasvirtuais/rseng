@@ -101,66 +101,88 @@ export function swapExtension(url: string, toExt: "jpg" | "jpeg" | "png" | "webp
 
 /**
  * Gera candidatos de fallback para uma URL.
- * - .webp → tenta .jpg, depois .png
- * - .jpg/.jpeg → tenta .webp, depois .png
+ * - .webp → tenta .jpg (arquivo real mais comum; ex: hero-rosario.jpg)
+ * - .jpg/.jpeg → tenta .webp (variante otimizada, quando existir)
  * - .png → tenta .webp, depois .jpg
- * - Variações de CAIXA da extensão (.JPG ↔ .jpg): servidores Linux são
- *   case-sensitive — public/instagram-rs.JPG quebra se o código pedir .jpg.
+ * - .avif → tenta .webp, depois .jpg
+ * - Normalização de CAIXA: se a URL pedir .JPG/.JPEG/.PNG (upload legado
+ *   Windows), tenta a variante lowercase, que é o padrão em public/.
+ *   NUNCA gera variante UPPERCASE a partir de lowercase — esse fantasma
+ *   (.jpg → .JPG) sempre dá 404 no Linux e era o responsável pelo log
+ *   "[SmartImage] cadeia esgotada ... /instagram-rs.JPG" mesmo quando
+ *   o arquivo real /instagram-rs.jpg existia em disco.
  * Remove duplicatas e a própria URL original.
  */
 export function autoFallbacks(rawSrc: ImageInput): string[] {
-  const resolved = resolveImage(rawSrc);
-  if (!resolved || /^(data:|blob:)/i.test(resolved)) return [];
-  const lower = resolved.toLowerCase().split("?")[0];
-  const out: string[] = [];
-  const push = (u: string) => {
-    if (u && u !== resolved && !out.includes(u)) out.push(u);
-  };
-  if (lower.endsWith(".webp")) {
-    push(swapExtension(resolved, "jpg"));
-    push(swapExtension(resolved, "png"));
-  } else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) {
-    push(swapExtension(resolved, "webp"));
-    push(swapExtension(resolved, "png"));
-  } else if (lower.endsWith(".png")) {
-    push(swapExtension(resolved, "webp"));
-    push(swapExtension(resolved, "jpg"));
-  } else if (lower.endsWith(".avif")) {
-    push(swapExtension(resolved, "webp"));
-    push(swapExtension(resolved, "jpg"));
+  try {
+    const resolved = resolveImage(rawSrc);
+    if (!resolved || /^(data:|blob:)/i.test(resolved)) return [];
+    const lower = resolved?.toLowerCase?.()?.split("?")?.[0] ?? "";
+    if (!lower) return [];
+    const out: string[] = [];
+    const push = (u: string) => {
+      if (u && u !== resolved && !out.includes(u)) out.push(u);
+    };
+    // Assets vendorados __l5e são content-addressed: cada variante
+    // (jpg/webp/png) vive em pasta UUID distinta. Trocar a extensão
+    // dentro da mesma pasta gera 404 garantido (ex: .../8d20.../iris.jpg
+    // → .../8d20.../iris.webp não existe; o webp real está em 659c.../).
+    // Por isso, para /__l5e/ NÃO geramos swap de extensão — apenas
+    // normalização de caixa. O fallback correto entre variantes deve ser
+    // explícito via prop fallbackSrc nos dados (webp leve como primary).
+    const isVendorAsset = lower.includes("/__l5e/");
+    if (!isVendorAsset) {
+      if (lower.endsWith(".webp")) {
+        push(swapExtension(resolved, "jpg"));
+      } else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) {
+        push(swapExtension(resolved, "webp"));
+      } else if (lower.endsWith(".png")) {
+        push(swapExtension(resolved, "webp"));
+        push(swapExtension(resolved, "jpg"));
+      } else if (lower.endsWith(".avif")) {
+        push(swapExtension(resolved, "webp"));
+        push(swapExtension(resolved, "jpg"));
+      }
+    }
+    // Normalização de caixa (apenas uppercase → lowercase).
+    for (const variant of caseVariants(resolved) ?? []) {
+      push(variant);
+    }
+    return out;
+  } catch {
+    return [];
   }
-  // Variação de caixa da extensão (Linux case-sensitive).
-  for (const variant of caseVariants(resolved)) {
-    push(variant);
-  }
-  return out;
 }
 
 /**
- * Variações de caixa da extensão do arquivo.
- * Ex: "/instagram-rs.JPG" → ["/instagram-rs.jpg", "/instagram-rs.jpeg"]
+ * Normalização de caixa da extensão do arquivo (apenas um sentido).
+ * Ex: "/foto.JPG" → ["/foto.jpg"]; "/foto.jpg" → [] (sem fantasma).
  * Servidores Windows ignoram caixa; Apache/Linux não — sem isso a imagem
- * "falha" só em produção.
+ * "falha" só em produção quando o código legado pede .JPG.
+ * NOTA: NÃO geramos aliases .jpg ↔ .jpeg nem lowercase → UPPERCASE —
+ * isso criava requisições garantidas de 404 (ex: /instagram-rs.JPG e
+ * /instagram-rs.jpeg quando só existe /instagram-rs.jpg), poluindo o log
+ * com "[SmartImage] cadeia esgotada" e parecendo exceção de runtime.
  */
 export function caseVariants(url: string): string[] {
-  if (!url || /^(data:|blob:)/i.test(url)) return [];
-  const qIndex = url.indexOf("?");
-  const path = qIndex >= 0 ? url.slice(0, qIndex) : url;
-  const query = qIndex >= 0 ? url.slice(qIndex) : "";
-  const dot = path.lastIndexOf(".");
-  const slash = path.lastIndexOf("/");
-  if (dot < 0 || dot < slash) return [];
-  const base = path.slice(0, dot);
-  const ext = path.slice(dot + 1);
-  const out: string[] = [];
-  const lower = ext.toLowerCase();
-  const upper = ext.toUpperCase();
-  if (ext !== lower) out.push(`${base}.${lower}${query}`);
-  if (ext !== upper) out.push(`${base}.${upper}${query}`);
-  // .jpg ↔ .jpeg também confunde CDN/Apache em arquivos legados.
-  if (lower === "jpg") out.push(`${base}.jpeg${query}`, `${base}.JPG${query}`);
-  if (lower === "jpeg") out.push(`${base}.jpg${query}`, `${base}.JPG${query}`);
-  return out;
+  try {
+    if (!url || /^(data:|blob:)/i.test(url)) return [];
+    const qIndex = url.indexOf("?");
+    const path = qIndex >= 0 ? url.slice(0, qIndex) : url;
+    const query = qIndex >= 0 ? url.slice(qIndex) : "";
+    const dot = path?.lastIndexOf(".") ?? -1;
+    const slash = path?.lastIndexOf("/") ?? -1;
+    if (dot < 0 || dot < slash) return [];
+    const base = path?.slice(0, dot) ?? "";
+    const ext = path?.slice(dot + 1) ?? "";
+    if (!base || !ext) return [];
+    const lower = ext?.toLowerCase?.() ?? ext;
+    // Apenas normaliza para lowercase. Se já está lowercase, sem variantes.
+    if (ext !== lower) return [`${base}.${lower}${query}`];
+    return [];
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -168,15 +190,35 @@ export function caseVariants(url: string): string[] {
  * primary → fallback explícito → fallbacks automáticos (webp<->jpg).
  */
 export function fallbackChain(primary: ImageInput, explicitFallback?: ImageInput): string[] {
-  const chain: string[] = [];
-  const p = resolveImage(primary);
-  if (p) chain.push(p);
-  const f = resolveImage(explicitFallback);
-  if (f && !chain.includes(f)) chain.push(f);
-  for (const auto of autoFallbacks(p)) {
-    if (!chain.includes(auto)) chain.push(auto);
+  try {
+    const chain: string[] = [];
+    const p = resolveImage(primary);
+    if (p) chain.push(p);
+    let f = "";
+    try {
+      f = resolveImage(explicitFallback);
+    } catch {
+      f = "";
+    }
+    if (f && !chain.includes(f)) chain.push(f);
+    let autos: string[] = [];
+    try {
+      autos = autoFallbacks(p);
+    } catch {
+      autos = [];
+    }
+    for (const auto of autos ?? []) {
+      if (auto && !chain.includes(auto)) chain.push(auto);
+    }
+    return chain;
+  } catch {
+    try {
+      const p = resolveImage(primary);
+      return p ? [p] : [];
+    } catch {
+      return [];
+    }
   }
-  return chain;
 }
 
 /** Adiciona cache-buster para retry (data:/blob: não aceitam query). */
@@ -222,19 +264,19 @@ export function placeholderImage(label?: string): string {
 /* Preload do hero (LCP)                                               */
 /* ------------------------------------------------------------------ */
 
-/** Injeta <link rel="preload" as="image"> para a imagem crítica (hero). Idempotente. */
+/** Aquece o cache da imagem crítica (hero) — sem <link rel="preload">. Idempotente. */
 export function preloadHero(url: ImageInput = HERO_URL): void {
   try {
-    if (typeof document === "undefined") return;
+    if (typeof document === "undefined" || typeof Image === "undefined") return;
     const href = resolveImage(url);
     if (!href || href.startsWith("data:") || href.startsWith("blob:")) return;
-    if (document.querySelector(`link[rel="preload"][href="${href}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "image";
-    link.href = href;
-    link.setAttribute("fetchpriority", "high");
-    document.head.appendChild(link);
+    // SEM injeção de <link rel="preload">: o <img> é montado pelo React
+    // após a hidratação e o Chrome reportava "preloaded but not used",
+    // exibido pelo preview como exceção/tela branca. Apenas `new Image()`
+    // para aquecer o cache — o LCP usa eager + fetchpriority="high".
+    const img = new Image();
+    (img as HTMLImageElement).decoding = "async";
+    (img as HTMLImageElement).src = href;
   } catch {
     // preload é otimização — nunca pode quebrar
   }

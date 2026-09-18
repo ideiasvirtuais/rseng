@@ -1,17 +1,29 @@
 import perspectiva from "@/assets/residenciais/perspectiva.jpg.asset.json";
 import raimundo from "@/assets/residenciais/raimundo-rezende.jpg.asset.json";
-import jayme from "@/assets/residenciais/jayme-brasileia.jpg.asset.json";
+import jaymeWebp from "@/assets/residenciais/jayme-brasileia.webp.asset.json";
 import saoJorge from "@/assets/residenciais/sao-jorge.jpg.asset.json";
 import odila from "@/assets/residenciais/odila-zabel.jpg.asset.json";
 import beatriz from "@/assets/residenciais/beatriz-ribeiro.jpg.asset.json";
 import everest from "@/assets/residenciais/everest.jpg.asset.json";
-import alcides from "@/assets/residenciais/alcides-guilherme.jpg.asset.json";
+import alcidesWebp from "@/assets/residenciais/alcides-guilherme.webp.asset.json";
 import altaVista from "@/assets/residenciais/alta-vista.jpg.asset.json";
 import atenas from "@/assets/residenciais/atenas.jpg.asset.json";
-import iris from "@/assets/residenciais/edificio-iris.jpg.asset.json";
+import irisWebp from "@/assets/residenciais/edificio-iris.webp.asset.json";
 import joPena from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
-import santorini from "@/assets/residenciais/edificio-santorini.png.asset.json";
+import santoriniWebp from "@/assets/residenciais/edificio-santorini.webp.asset.json";
 import eros from "@/assets/residenciais/edificio-eros.jpg.asset.json";
+
+// Variantes leves (webp) como primárias — corrigem as falhas de carregamento:
+// - edificio-iris.jpg (2,3 MB) possui bytes PNG com extensão .jpg + content-type
+//   image/jpeg (MIME divergente → CDN/Apache estrito recusa, watchdog estoura no 3G).
+//   O .webp correspondente (179 KB, MIME correto) carrega instantaneamente.
+// - jayme-brasileia.jpg (2,0 MB), alcides-guilherme.jpg (1,1 MB) e
+//   edificio-santorini.png (1,9 MB) travavam no 3G e pareciam "falha".
+//   As variantes .webp (288 KB / 212 KB / 108 KB) resolvem.
+const jayme = jaymeWebp;
+const alcides = alcidesWebp;
+const iris = irisWebp;
+const santorini = santoriniWebp;
 
 export type ResidentialWork = {
   src: string;

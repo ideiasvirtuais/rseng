@@ -1,4 +1,4 @@
-import casaModernista from "@/assets/casas/casa-modernista-condominio.png.asset.json";
+import casaModernista from "@/assets/casas/casa-modernista-condominio.webp.asset.json";
 import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg";
 import casaJoelma from "@/assets/casas/joelma.jpg";
 import casaJoseMaria from "@/assets/casas/jose-maria.jpg";

@@ -2,12 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowUpRight, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
-import sedePhoto from "@/assets/sede-rezende-saback.png.asset.json";
+import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
 import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, type AssetJson } from "@/lib/images";
 import { projects } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
 import { GoldenMallSpotlight } from "@/components/GoldenMallSpotlight";
+import { HeroBackground } from "@/components/HeroBackground";
 import { HomeInstagram } from "@/components/HomeInstagram";
 import { SmartImage } from "@/components/SmartImage";
 import { segmentNav, type SegmentRoute } from "@/components/SiteHeader";
@@ -74,7 +75,9 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: `${SITE_URL}/` },
-      { rel: "preload", href: "/hero-rosario.jpg", as: "image", fetchPriority: "high" },
+      // Sem preload declarativo do hero: o <img> é inserido pelo React após
+      // a hidratação e o Chrome marcava o preload como "not used" (overlay
+      // de exceção no preview). LCP via eager + fetchpriority="high".
     ],
     scripts: [
       {
@@ -133,6 +136,20 @@ function Index() {
     { href: "#sobre", label: "Sobre" },
     { href: "#contato", label: "Contato" },
   ];
+
+  // Acessos defensivos: COMPANY pode chegar undefined em HMR/navegação
+  // parcial — sem optional chaining, o render lançava (tela branca).
+  const foundedYear = COMPANY?.foundedYear ?? 1988;
+  const city = COMPANY?.city ?? "Betim";
+  const phones = COMPANY?.phones ?? [];
+  const whatsappUrl = COMPANY?.whatsapp?.url ?? "#contato";
+  const whatsappDisplay = COMPANY?.whatsapp?.display ?? "";
+  const emailHref = COMPANY?.email?.href ?? "mailto:";
+  const emailAddress = COMPANY?.email?.address ?? "";
+  const address = COMPANY?.address;
+  const hours = (COMPANY as { hours?: string } | undefined)?.hours ?? "";
+  const heroSrc = typeof HERO_URL === "string" ? HERO_URL : "";
+  const heroFallback = typeof HERO_FALLBACK_URL === "string" ? HERO_FALLBACK_URL : "";
 
 
   return (
@@ -213,22 +230,22 @@ function Index() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="relative h-[92vh] min-h-[640px] w-full">
-          <SmartImage
-            src={HERO_URL}
-            fallbackSrc={HERO_FALLBACK_URL}
+          <HeroBackground
+            src={heroSrc}
+            fallbackSrc={heroFallback}
             alt="Empreendimento da Rezende Saback no bairro Angola, Betim/MG — foto oficial atualizada"
-            wrapperClassName="absolute inset-0"
-            className="h-full w-full object-cover"
-            loading="eager"
-            fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/75 via-primary/55 to-background" />
+          {/* Overlay de legibilidade: escurece o topo para o texto e faz a
+              transição suave para o fundo da página na base — sem cobrir a
+              foto com véu sólido (era `to-background`, que apagava a imagem). */}
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/30 to-primary/80" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
           <div className="container-x relative flex h-full flex-col justify-end pb-16 pt-32">
             <div className="max-w-3xl text-primary-foreground">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Desde {COMPANY.foundedYear} · {COMPANY.city}, Minas Gerais
+                Desde {foundedYear} · {city}, Minas Gerais
               </div>
               <h1>
                 A cidade que <span className="text-accent">cresce</span> com quem constrói para durar.
@@ -282,29 +299,37 @@ function Index() {
         <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Segmentos</div>
         <h2 className="mt-4 max-w-2xl">Portfólio.</h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {segments.map((s) => (
+          {(Array.isArray(segments) ? segments : []).map((s) => {
+            const slug = (s as { slug?: unknown })?.slug;
+            const cover = (s as { cover?: unknown })?.cover;
+            const coverAlt = (s as { coverAlt?: unknown })?.coverAlt;
+            const label = (s as { label?: unknown })?.label;
+            const summary = (s as { summary?: unknown })?.summary;
+            if (typeof slug !== "string" || !slug) return null;
+            return (
             <Link
-              key={s.slug}
-              to={segmentRouteOf(s.slug)}
+              key={slug}
+              to={segmentRouteOf(slug)}
               className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <SmartImage
-                  src={s.cover}
-                  alt={s.coverAlt}
+                  src={typeof cover === "string" ? cover : ""}
+                  alt={typeof coverAlt === "string" ? coverAlt : typeof label === "string" ? label : "Empreendimento"}
                   wrapperClassName="h-full w-full"
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
               </div>
               <div className="p-6">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-xl font-semibold text-primary">{s.label}</h3>
+                  <h3 className="text-xl font-semibold text-primary">{typeof label === "string" ? label : ""}</h3>
                   <ArrowUpRight className="mt-1 h-5 w-5 flex-none text-muted-foreground transition group-hover:text-primary" aria-hidden="true" />
                 </div>
-                <p className="mt-3 text-sm text-muted-foreground">{s.summary}</p>
+                <p className="mt-3 text-sm text-muted-foreground">{typeof summary === "string" ? summary : ""}</p>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -321,7 +346,7 @@ function Index() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Sobre a construtora</div>
           <h2 className="mt-4">
-            Desde {COMPANY.foundedYear} construindo o skyline de Betim — um empreendimento sólido de cada vez.
+            Desde {foundedYear} construindo o skyline de Betim — um empreendimento sólido de cada vez.
           </h2>
         </div>
 
@@ -368,22 +393,24 @@ function Index() {
 
             <div className="mt-10 space-y-4">
               {[
-                ...COMPANY.phones.map((p) => ({ icon: Phone, label: p.label, href: p.href })),
-                { icon: Phone, label: `${COMPANY.whatsapp.display} (WhatsApp)`, href: COMPANY.whatsapp.url },
-                { icon: Mail, label: COMPANY.email.address, href: COMPANY.email.href },
-              ].map((c) => (
-                <a key={c.label} href={c.href} target={c.href.startsWith("https") ? "_blank" : undefined} rel={c.href.startsWith("https") ? "noopener noreferrer" : undefined} className="flex items-center gap-3 text-primary hover:underline">
+                ...(phones ?? []).map((p) => ({ icon: Phone, label: p?.label ?? "", href: p?.href ?? "#contato" })),
+                { icon: Phone, label: `${whatsappDisplay} (WhatsApp)`, href: whatsappUrl },
+                { icon: Mail, label: emailAddress, href: emailHref },
+              ].filter((c) => c?.label && c?.href).map((c) => (
+                <a key={c.label} href={c.href} target={c.href?.startsWith?.("https") ? "_blank" : undefined} rel={c.href?.startsWith?.("https") ? "noopener noreferrer" : undefined} className="flex items-center gap-3 text-primary hover:underline">
                   <c.icon className="h-4 w-4" /> {c.label}
                 </a>
               ))}
-              <a href={COMPANY.address.mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 pt-4 text-muted-foreground hover:text-primary">
+              {address?.mapsUrl ? (
+              <a href={address.mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 pt-4 text-muted-foreground hover:text-primary">
                 <MapPin className="mt-0.5 h-4 w-4 flex-none text-primary" />
                 <div>
-                  {COMPANY.address.street}<br />
-                  {COMPANY.address.district}, {COMPANY.address.city} · CEP {COMPANY.address.cep}
-                  <span className="mt-1 block text-xs uppercase tracking-wider">{COMPANY.hours}</span>
+                  {address?.street ?? ""}<br />
+                  {address?.district ?? ""}, {address?.city ?? ""} · CEP {address?.cep ?? ""}
+                  {hours ? <span className="mt-1 block text-xs uppercase tracking-wider">{hours}</span> : null}
                 </div>
               </a>
+              ) : null}
             </div>
           </div>
 

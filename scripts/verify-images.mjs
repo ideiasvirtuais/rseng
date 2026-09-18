@@ -14,8 +14,25 @@
  * Uso:
  *   node scripts/verify-images.mjs
  */
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { resolve, join, extname } from "node:path";
+
+/** Lê os magic bytes para detectar o formato real (evita PNG servido como .jpg). */
+function detectMagic(file) {
+  try {
+    const fd = openSync(file, "r");
+    const buf = Buffer.alloc(12);
+    readSync(fd, buf, 0, 12, 0);
+    closeSync(fd);
+    if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return ".jpg";
+    if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return ".png";
+    if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46) return ".webp";
+    if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return ".gif";
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 const ROOT = process.cwd();
 const SRC_ASSETS = resolve(ROOT, "src/assets");
@@ -77,6 +94,19 @@ for (const file of pointers) {
   if (ext === ".png" && ct && !ct.includes("png")) {
     warnings.push(`${file}: content_type "${data.content_type}" não confere com extensão .png`);
   }
+  // 4b. magic bytes vs extensão — causa raiz real de "algumas falhando":
+  // PNG com extensão .jpg é servido como image/jpeg pelo Apache; CDN estrito
+  // recusa e o watchdog do SmartImage estoura no 3G (ex: edificio-iris.jpg).
+  const magic = detectMagic(local);
+  if (magic && magic !== ext) {
+    // Erro (não só aviso): MIME divergente quebra em produção.
+    // Exceção legada conhecida: o primário foi migrado para .webp no código,
+    // então o arquivo antigo segue em disco apenas por compatibilidade.
+    const legacyKnown = url.includes("/8d201ded-06e3-4b99-96ac-bc878e0e4c88/edificio-iris.jpg");
+    const msg = `${url}: bytes ${magic} com extensão ${ext} (MIME divergente — sirva com a extensão correta) (ref ${file})`;
+    if (legacyKnown) warnings.push(`LEGADO (não referenciado pelo código): ${msg}`);
+    else errors.push(msg);
+  }
   okVendor += 1;
 }
 console.log(`✓ vendorados: ${okVendor}/${pointers.length} assets __l5e presentes em public/`);
@@ -122,6 +152,54 @@ for (const rel of VITE_REFS) {
   }
 }
 console.log(`✓ vite: ${VITE_REFS.filter((r) => existsSync(resolve(ROOT, r))).length}/${VITE_REFS.length} assets do bundler`);
+
+// 6b. Referências do código aos originais pesados (parecem "falha" no 3G).
+// Se algum .tsx/.ts voltar a importar o original pesado em vez do .webp,
+// o watchdog estoura e a imagem cai para placeholder — barrar em CI.
+{
+  const HEAVY_ORIGINALS = [
+    "residenciais/edificio-iris.jpg.asset.json",
+    "residenciais/edificio-santorini.png.asset.json",
+    "residenciais/alcides-guilherme.jpg.asset.json",
+    "residenciais/jayme-brasileia.jpg.asset.json",
+    "casas/casa-modernista-condominio.png.asset.json",
+    "sede-rezende-saback.png.asset.json",
+  ];
+  const SRC = resolve(ROOT, "src");
+  const stack = [SRC];
+  const hits = [];
+  while (stack.length) {
+    const dir = stack.pop();
+    let entries = [];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const e of entries) {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) {
+        if (e.name === "node_modules" || e.name === "assets") continue;
+        stack.push(full);
+      } else if (/\.(tsx?|jsx?)$/.test(e.name)) {
+        let body = "";
+        try {
+          body = readFileSync(full, "utf8");
+        } catch {
+          continue;
+        }
+        for (const heavy of HEAVY_ORIGINALS) {
+          if (body.includes(heavy)) hits.push(`${full.replace(ROOT, "").replace(/\\/g, "/")}: importa original pesado ${heavy} (use a variante .webp)`);
+        }
+      }
+    }
+  }
+  if (hits.length) {
+    for (const h of hits) errors.push(h);
+  } else {
+    console.log(`✓ código: nenhum import aos originais pesados (${HEAVY_ORIGINALS.length} verificados)`);
+  }
+}
 
 // 3. Espelho no dist/client (pós-build)
 if (!existsSync(DIST)) {

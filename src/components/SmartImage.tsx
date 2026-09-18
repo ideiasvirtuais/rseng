@@ -56,7 +56,7 @@ type SmartImageProps = Omit<
 export function SmartImage({
   src: rawSrc,
   fallbackSrc: rawFallback,
-  alt,
+  alt = "",
   className,
   wrapperClassName,
   skeletonClassName,
@@ -68,23 +68,52 @@ export function SmartImage({
   sizes,
   fetchPriority,
   stalledTimeoutMs = STALLED_TIMEOUT_MS,
-  referrerPolicy = "strict-origin-when-cross-origin",
+  // Sem default: o React 19 SSR copia as props do <img> para o
+  // <link rel="preload" as="image"> que ele emite automaticamente, e um
+  // referrerPolicy não-padrão no preload faz o Chrome ignorar o match
+  // preload→img ("preloaded but not used", exibido pelo preview como
+  // exceção) + baixa a imagem 2x. Imagens same-origin não precisam dela.
+  referrerPolicy,
   onLoad,
   onError,
   ...rest
 }: SmartImageProps) {
-  const fullChain = useMemo(
-    () => fallbackChain(rawSrc, rawFallback),
+  const rawSrcKey = (() => {
+    try {
+      return resolveImage(rawSrc) ?? "";
+    } catch {
+      return "";
+    }
+  })();
+  const rawFallbackKey = (() => {
+    try {
+      return resolveImage(rawFallback) ?? "";
+    } catch {
+      return "";
+    }
+  })();
+  const fullChain = useMemo(() => {
+    try {
+      const c = fallbackChain(rawSrc, rawFallback) ?? [];
+      return Array.isArray(c) ? c.filter(Boolean) : [];
+    } catch {
+      return rawSrcKey ? [rawSrcKey] : [];
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [resolveImage(rawSrc), resolveImage(rawFallback)],
-  );
+  }, [rawSrcKey, rawFallbackKey]);
   // Pula URLs que já falharam nesta sessão — exceto em retry manual.
   const [retryTick, setRetryTick] = useState(0);
-  const chain = useMemo(
-    () => (retryTick > 0 ? fullChain : skipKnownFailures(fullChain)),
-    [fullChain, retryTick],
-  );
-  const primary = chain[0] ?? "";
+  const chain = useMemo(() => {
+    try {
+      if (!Array.isArray(fullChain) || fullChain.length === 0) return [] as string[];
+      if (retryTick > 0) return fullChain;
+      const filtered = skipKnownFailures(fullChain);
+      return Array.isArray(filtered) && filtered.length > 0 ? filtered : fullChain.slice(0, 1);
+    } catch {
+      return Array.isArray(fullChain) ? fullChain : [];
+    }
+  }, [fullChain, retryTick]);
+  const primary = chain?.[0] ?? "";
 
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -92,15 +121,30 @@ export function SmartImage({
   const reportedRef = useRef<Set<string>>(new Set());
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const current = exhausted ? placeholderImage(alt) : (chain[index] ?? "");
+  const current = (() => {
+    try {
+      if (exhausted) return placeholderImage(alt ?? "imagem");
+      return chain?.[index] ?? "";
+    } catch {
+      return "";
+    }
+  })();
   const isPlaceholder = exhausted;
+
+  const chainKey = (() => {
+    try {
+      return Array.isArray(chain) ? chain.join("|") : "";
+    } catch {
+      return "";
+    }
+  })();
 
   // Sempre que a imagem pedida mudar, recomeça o ciclo de carga.
   useEffect(() => {
     setIndex(0);
     setLoaded(false);
     setExhausted(false);
-  }, [primary, chain.join("|")]);
+  }, [primary, chainKey]);
 
   // Limpa o watchdog ao desmontar / trocar de candidato.
   useEffect(() => {
@@ -117,26 +161,53 @@ export function SmartImage({
   }, []);
 
   const reportFailure = useCallback(
-    (failedUrl: string) => {
-      if (!failedUrl || reportedRef.current.has(failedUrl)) return;
-      reportedRef.current.add(failedUrl);
+    (failedUrl: string, isFinal: boolean) => {
+      const safeUrl = failedUrl ?? "";
       try {
-        markFailed(failedUrl);
+        if (!safeUrl || reportedRef?.current?.has?.(safeUrl)) return;
+        reportedRef?.current?.add?.(safeUrl);
       } catch {
         // cache nunca quebra render
       }
       try {
-        reportClientError(new Error(`[SmartImage] falha ao carregar: ${failedUrl}`), "manual", {
-          alt,
-          chain,
-          failedUrl,
-        });
+        markFailed?.(safeUrl);
       } catch {
-        // telemetria nunca quebra render
+        // cache nunca quebra render
       }
+      // Fallback intermediário (ex: .jpg → .webp) é comportamento esperado,
+      // não erro — apenas debug silencioso, sem warn e sem telemetria.
+      // Isso evita que o overlay do preview interprete o log como
+      // "EXCEÇÃO DE RUNTIME" com origem em SmartImage.tsx.
+      if (!isFinal) {
+        if (import.meta.env?.DEV) {
+          // eslint-disable-next-line no-console
+          console.debug?.(`[SmartImage] tentando próximo fallback: ${safeUrl}`);
+        }
+        return;
+      }
+      // Cadeia esgotada: fallback gracioso para placeholder SVG inline.
+      // NÃO cria `new Error()` aqui — a captura de stack apontava para
+      // SmartImage.tsx e o preview exibia como exceção/tela branca.
+      // Telemetria apenas em produção e sem stack de "exceção".
+      const safeAlt = alt ?? "";
+      const primaryUrl = chain?.[0] ?? safeUrl;
       if (import.meta.env?.DEV) {
         // eslint-disable-next-line no-console
-        console.warn(`[SmartImage] falha ao carregar: ${failedUrl} (alt: ${alt})`);
+        console.debug?.(
+          `[SmartImage] placeholder após fallbacks (primária OK em disco?): ${primaryUrl} | alt: ${safeAlt}`,
+        );
+      }
+      try {
+        if (!import.meta.env?.DEV) {
+          reportClientError?.(`[SmartImage] placeholder após fallbacks: ${primaryUrl}`, "manual", {
+            alt: safeAlt,
+            primary: primaryUrl,
+            chain: chain ?? [],
+            failedUrl: safeUrl,
+          });
+        }
+      } catch {
+        // telemetria nunca quebra render
       }
     },
     [alt, chain],
@@ -144,17 +215,32 @@ export function SmartImage({
 
   const advance = useCallback(
     (failedUrl: string, e?: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      reportFailure(failedUrl);
-      clearWatchdog();
-      if (index + 1 < chain.length) {
-        setIndex((i) => i + 1);
-        setLoaded(false);
-        return;
-      }
-      setExhausted(true);
-      setLoaded(true);
-      if (e && onError) {
-        onError?.(e as unknown as React.SyntheticEvent<HTMLImageElement, Event> & { target: EventTarget });
+      try {
+        const len = Array.isArray(chain) ? chain.length : 0;
+        const isFinal = !(index + 1 < len);
+        reportFailure(failedUrl ?? "", isFinal);
+        clearWatchdog?.();
+        if (index + 1 < len) {
+          setIndex((i) => i + 1);
+          setLoaded(false);
+          return;
+        }
+        setExhausted(true);
+        setLoaded(true);
+        if (e && onError) {
+          try {
+            onError?.(e as unknown as React.SyntheticEvent<HTMLImageElement, Event> & { target: EventTarget });
+          } catch {
+            // callback do consumidor nunca quebra o SmartImage
+          }
+        }
+      } catch {
+        try {
+          setExhausted(true);
+          setLoaded(true);
+        } catch {
+          // último recurso: nunca lançar durante render/evento
+        }
       }
     },
     [chain, index, reportFailure, clearWatchdog, onError],
@@ -162,8 +248,17 @@ export function SmartImage({
 
   const handleError = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      const failedUrl = chain[index] ?? current;
-      advance(failedUrl, e);
+      try {
+        const failedUrl = chain?.[index] ?? current ?? "";
+        advance(failedUrl, e);
+      } catch {
+        try {
+          setExhausted(true);
+          setLoaded(true);
+        } catch {
+          // no-op
+        }
+      }
     },
     [chain, index, current, advance],
   );
@@ -171,46 +266,74 @@ export function SmartImage({
   // Watchdog anti-travamento: se `current` não carregar nem falhar em N ms,
   // considera stalled e avança para o próximo candidato.
   useEffect(() => {
-    if (isPlaceholder || !current || loaded) return;
-    clearWatchdog();
-    watchdogRef.current = setTimeout(() => {
-      // Se a URL já está no cache global de falhas, avança sem reportar de novo.
-      if (didFail(current)) {
-        if (index + 1 < chain.length) {
-          setIndex((i) => i + 1);
-          setLoaded(false);
-        } else {
-          setExhausted(true);
-          setLoaded(true);
+    try {
+      if (isPlaceholder || !current || loaded) return;
+      clearWatchdog?.();
+      const chainLen = Array.isArray(chain) ? chain.length : 0;
+      watchdogRef.current = setTimeout(() => {
+        try {
+          // Se a URL já está no cache global de falhas, avança sem reportar de novo.
+          if (didFail?.(current)) {
+            if (index + 1 < chainLen) {
+              setIndex((i) => i + 1);
+              setLoaded(false);
+            } else {
+              setExhausted(true);
+              setLoaded(true);
+            }
+            return;
+          }
+          advance(current);
+        } catch {
+          // watchdog nunca quebra render
         }
-        return;
-      }
-      advance(current);
-    }, stalledTimeoutMs);
-    return clearWatchdog;
-  }, [current, loaded, isPlaceholder, index, chain.length, stalledTimeoutMs, advance, clearWatchdog]);
+      }, stalledTimeoutMs);
+      return clearWatchdog;
+    } catch {
+      return undefined;
+    }
+  }, [current, loaded, isPlaceholder, index, chain?.length, stalledTimeoutMs, advance, clearWatchdog]);
 
   const handleRetry = useCallback(() => {
-    reportedRef.current.clear();
     try {
-      for (const u of fullChain) clearFailure(u);
+      reportedRef?.current?.clear?.();
     } catch {
       // no-op
     }
-    setExhausted(false);
-    setLoaded(false);
-    setIndex(0);
-    setRetryTick((t) => t + 1);
+    try {
+      for (const u of fullChain ?? []) {
+        if (u) clearFailure?.(u);
+      }
+    } catch {
+      // no-op
+    }
+    try {
+      setExhausted(false);
+      setLoaded(false);
+      setIndex(0);
+      setRetryTick((t) => (t ?? 0) + 1);
+    } catch {
+      // no-op
+    }
   }, [fullChain]);
 
-  const displaySrc =
-    !isPlaceholder && retryTick > 0 && index === 0 ? withRetryBuster(current) : current;
+  const displaySrc = (() => {
+    try {
+      if (!isPlaceholder && retryTick > 0 && index === 0 && current) {
+        return withRetryBuster(current) ?? current;
+      }
+      return current ?? "";
+    } catch {
+      return current ?? "";
+    }
+  })();
 
   if (!displaySrc) {
+    const label = fallbackLabel ?? alt ?? "imagem";
     return (
       <div
         role="img"
-        aria-label={fallbackLabel ?? alt}
+        aria-label={label}
         className={cn(
           "flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-primary/90 via-primary to-primary/70 p-6 text-center text-primary-foreground",
           skeletonClassName,
@@ -220,7 +343,7 @@ export function SmartImage({
       >
         <ImageOff className="h-6 w-6 opacity-70" aria-hidden="true" />
         <span className="max-w-[26ch] text-xs font-medium leading-relaxed opacity-80">
-          {fallbackLabel ?? alt}
+          {label}
         </span>
       </div>
     );
@@ -232,7 +355,7 @@ export function SmartImage({
       <span className={cn("relative block overflow-hidden", skeletonClassName, wrapperClassName)}>
         <img
           src={displaySrc}
-          alt={alt}
+          alt={alt ?? ""}
           loading={loading}
           decoding={decoding}
           draggable={false}
@@ -268,7 +391,7 @@ export function SmartImage({
       )}
       <img
         src={displaySrc}
-        alt={alt}
+        alt={alt ?? ""}
         loading={loading}
         decoding={decoding}
         draggable={false}

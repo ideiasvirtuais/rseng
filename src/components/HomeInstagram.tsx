@@ -7,9 +7,14 @@ import { SmartImage } from "@/components/SmartImage";
  * Bloco "Nas redes" da home — feed real do Instagram.
  *
  * Exibe o print oficial do grid @rezendesabackengenharia
- * (public/instagram-rs.JPG) como prova social clicável para o perfil.
+ * (public/instagram-rs.jpg — arquivo real em disco, lowercase) como
+ * prova social clicável para o perfil. NÃO usar variante .JPG/.jpeg
+ * como fallback explícito: esses arquivos não existem e geravam
+ * requisições 404 com log "[SmartImage] falha ao carregar".
  */
 export function HomeInstagram() {
+  const instagramUrl = COMPANY?.social?.instagram?.url ?? "https://www.instagram.com/rezendesabackengenharia";
+  const instagramHandle = COMPANY?.social?.instagram?.handle ?? "@rezendesabackengenharia";
   return (
     <section aria-labelledby="instagram-title" className="border-y border-border bg-secondary">
       <div className="container-x section-y grid items-center gap-10 lg:grid-cols-[1fr_1.15fr]">
@@ -19,13 +24,13 @@ export function HomeInstagram() {
             Acompanhe as obras no nosso Instagram.
           </h2>
           <a
-            href={COMPANY.social.instagram.url}
+            href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-3 inline-flex items-center gap-2 font-medium text-primary hover:underline"
           >
             <Instagram className="h-4 w-4" aria-hidden="true" />
-            {COMPANY.social.instagram.handle}
+            {instagramHandle}
           </a>
           <p className="mt-6 max-w-md text-muted-foreground">
             Concretagem, terraplanagem, entregas e bastidores — publicamos primeiro nas nossas
@@ -33,7 +38,7 @@ export function HomeInstagram() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
-              href={COMPANY.social.instagram.url}
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
@@ -42,7 +47,7 @@ export function HomeInstagram() {
               Seguir no Instagram
             </a>
             <a
-              href={COMPANY.social.instagram.url}
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
@@ -66,7 +71,7 @@ export function HomeInstagram() {
           </dl>
         </div>
         <a
-          href={COMPANY.social.instagram.url}
+          href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Abrir perfil @rezendesabackengenharia no Instagram"
@@ -78,7 +83,7 @@ export function HomeInstagram() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-primary">
-                {COMPANY.social.instagram.handle}
+                {instagramHandle}
                 <BadgeCheck className="h-4 w-4 flex-none text-sky-500" aria-label="Perfil oficial" />
               </p>
               <p className="text-xs text-muted-foreground">Bastidores, lançamentos e acabamentos</p>
@@ -90,12 +95,13 @@ export function HomeInstagram() {
           <div className="relative overflow-hidden bg-card">
             <SmartImage
               src="/instagram-rs.jpg"
-              fallbackSrc="/instagram-rs.JPG"
               alt="Grade de publicações do Instagram @rezendesabackengenharia — concretagem de fundação de galpão industrial, obras comerciais e campanhas institucionais da Rezende Saback"
               wrapperClassName="block w-full"
+              skeletonClassName="aspect-[4/5] w-full"
               className="h-auto w-full object-cover object-top transition duration-700 group-hover:scale-[1.02]"
               loading="lazy"
               decoding="async"
+              fallbackLabel="Publicações do Instagram @rezendesabackengenharia"
             />
             <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/15 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
           </div>

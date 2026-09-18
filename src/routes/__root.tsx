@@ -146,7 +146,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: `${import.meta.env.BASE_URL}favicon.png`.replace(/\/\//g, "/"), type: "image/png" },
       { rel: "apple-touch-icon", href: `${import.meta.env.BASE_URL}apple-touch-icon.png`.replace(/\/\//g, "/") },
-      { rel: "preload", href: `${import.meta.env.BASE_URL}hero-rosario.jpg`.replace(/\/\//g, "/"), as: "image", fetchPriority: "high" },
+      // NOTA: sem <link rel="preload" as="image"> para o hero.
+      // O hero é renderizado via React (SmartImage) após a hidratação;
+      // o preload declarativo disparava no HTML estático e o <img> só era
+      // inserido segundos depois → o Chrome registrava
+      // "preloaded but not used within a few seconds" e o overlay do
+      // preview exibia como exceção/tela branca. O LCP continua otimizado
+      // via <img loading="eager" fetchpriority="high"> + aquecimento de
+      // cache em memória (warmCriticalImage), sem link preload.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" },

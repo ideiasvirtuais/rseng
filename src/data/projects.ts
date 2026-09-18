@@ -1,9 +1,9 @@
 import heroBuilding from "@/assets/hero-building.jpg";
 import rosarioPhoto from "@/assets/residenciais/edificio-rosario.jpg.asset.json";
-import irisPhoto from "@/assets/residenciais/edificio-iris.jpg.asset.json";
+import irisPhoto from "@/assets/residenciais/edificio-iris.webp.asset.json";
 import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
 import malbecPhoto from "@/assets/residenciais/edificio-malbec.jpg.asset.json";
-import santoriniPhoto from "@/assets/residenciais/edificio-santorini.png.asset.json";
+import santoriniPhoto from "@/assets/residenciais/edificio-santorini.webp.asset.json";
 import { commercialWorks } from "./commercial";
 import { residentialWorks } from "./residential";
 import { houses } from "./houses";
