@@ -1,28 +1,43 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ImageOff, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { resolveImage } from "@/lib/images";
+import {
+  fallbackChain,
+  placeholderImage,
+  resolveImage,
+  withRetryBuster,
+  type ImageInput,
+} from "@/lib/images";
+import { reportClientError } from "@/lib/client-error-reporter";
 
-type SmartImageProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> & {
-  src: string | { url: string } | undefined | null;
+type SmartImageProps = Omit<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  "src" | "srcSet" | "fetchPriority"
+> & {
+  src: ImageInput;
   alt: string;
   /** Classes do wrapper (posicionamento / proporção). Por padrão ocupa o bloco. */
   wrapperClassName?: string;
   /** Proporção do skeleton enquanto carrega (ex: "aspect-[4/3]"). Vazio = sem reserva de espaço. */
   skeletonClassName?: string;
   fallbackLabel?: string;
-  /** Segunda tentativa com outra URL (ex: webp → png, cdn → local). */
-  fallbackSrc?: string | { url: string };
+  /** Segunda tentativa com outra URL (ex: webp → jpg, cdn → local). */
+  fallbackSrc?: ImageInput;
   /** Mostra botão "tentar de novo" no fallback. Padrão: true */
   retryable?: boolean;
+  /** srcSet responsivo (opcional). Quando omitido, usa a URL única. */
+  srcSet?: string;
+  sizes?: string;
+  /** Prioridade de fetch do browser ("high" para hero/LCP). */
+  fetchPriority?: "high" | "low" | "auto";
 };
 
 /**
  * Imagem resiliente com skeleton (shimmer) + fallback elegante + retry.
  * - Resolve o base path automaticamente (funciona em dev, preview e FTP/subpasta).
  * - Reseta o estado sempre que `src` muda (corrige galeria/filtros).
- * - Tenta `fallbackSrc` antes de desistir.
- * - Nunca quebra o layout.
+ * - Tenta a cadeia: primary → fallbackSrc → webp<->jpg automáticos → placeholder SVG.
+ * - Nunca quebra o layout e reporta falhas para /api/public/client-error.
  */
 export function SmartImage({
   src: rawSrc,
@@ -35,71 +50,89 @@ export function SmartImage({
   retryable = true,
   loading = "lazy",
   decoding = "async",
+  srcSet,
+  sizes,
+  fetchPriority,
+  referrerPolicy = "strict-origin-when-cross-origin",
   onLoad,
   onError,
   ...rest
 }: SmartImageProps) {
-  const primary = resolveImage(rawSrc);
-  const fallback = resolveImage(rawFallback);
+  const chain = useMemo(
+    () => fallbackChain(rawSrc, rawFallback),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [resolveImage(rawSrc), resolveImage(rawFallback)],
+  );
+  const primary = chain[0] ?? "";
 
-  const [current, setCurrent] = useState(primary);
+  const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const [triedFallback, setTriedFallback] = useState(false);
+  const [exhausted, setExhausted] = useState(false);
+  const [retryTick, setRetryTick] = useState(0);
+  const reportedRef = useRef<Set<string>>(new Set());
+
+  const current = exhausted ? placeholderImage(alt) : (chain[index] ?? "");
+  const isPlaceholder = exhausted;
 
   // Sempre que a imagem pedida mudar, recomeça o ciclo de carga.
   useEffect(() => {
-    setCurrent(primary);
+    setIndex(0);
     setLoaded(false);
-    setFailed(false);
-    setTriedFallback(false);
-  }, [primary]);
+    setExhausted(false);
+    setRetryTick(0);
+  }, [primary, chain.join("|")]);
+
+  const reportFailure = useCallback(
+    (failedUrl: string) => {
+      if (!failedUrl || reportedRef.current.has(failedUrl)) return;
+      reportedRef.current.add(failedUrl);
+      try {
+        reportClientError(new Error(`[SmartImage] falha ao carregar: ${failedUrl}`), "manual", {
+          alt,
+          chain,
+          failedUrl,
+        });
+      } catch {
+        // telemetria nunca quebra render
+      }
+      if (import.meta.env?.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn(`[SmartImage] falha ao carregar: ${failedUrl} (alt: ${alt})`);
+      }
+    },
+    [alt, chain],
+  );
 
   const handleError = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      // 1ª falha → tenta o fallbackSrc (se houver e ainda não tentou).
-      if (fallback && !triedFallback && current !== fallback) {
-        setTriedFallback(true);
-        setCurrent(fallback);
+      const failedUrl = chain[index] ?? current;
+      reportFailure(failedUrl);
+      // Avança para o próximo candidato da cadeia.
+      if (index + 1 < chain.length) {
+        setIndex((i) => i + 1);
         setLoaded(false);
         return;
       }
-      setFailed(true);
+      // Cadeia esgotada → placeholder SVG inline (sempre funciona).
+      setExhausted(true);
+      setLoaded(true);
       onError?.(e as unknown as React.SyntheticEvent<HTMLImageElement, Event> & { target: EventTarget });
-      if (import.meta.env?.DEV) {
-        // eslint-disable-next-line no-console
-        console.warn(`[SmartImage] falha ao carregar: ${current} (alt: ${alt})`);
-      }
     },
-    [fallback, triedFallback, current, onError, alt],
+    [chain, index, current, reportFailure, onError],
   );
 
   const handleRetry = useCallback(() => {
-    // Força reload com cache-buster; data:/blob: não aceitam query.
-    setFailed(false);
+    reportedRef.current.clear();
+    setExhausted(false);
     setLoaded(false);
-    setTriedFallback(false);
-    if (!primary || /^(data:|blob:)/i.test(primary)) {
-      setCurrent(primary);
-      return;
-    }
-    try {
-      if (/^https?:\/\//i.test(primary)) {
-        const url = new URL(primary);
-        url.searchParams.set("retry", String(Date.now()));
-        setCurrent(url.toString());
-      } else {
-        const url = new URL(primary, "http://retry.local");
-        url.searchParams.set("retry", String(Date.now()));
-        const path = `${url.pathname}${url.search}`;
-        setCurrent(primary.startsWith("/") ? path : path.replace(/^\//, ""));
-      }
-    } catch {
-      setCurrent(primary);
-    }
-  }, [primary]);
+    setIndex(0);
+    setRetryTick((t) => t + 1);
+  }, []);
 
-  if (failed || !current) {
+  const displaySrc =
+    !isPlaceholder && retryTick > 0 && index === 0 ? withRetryBuster(current) : current;
+
+  if (!displaySrc) {
     return (
       <div
         role="img"
@@ -115,17 +148,37 @@ export function SmartImage({
         <span className="max-w-[26ch] text-xs font-medium leading-relaxed opacity-80">
           {fallbackLabel ?? alt}
         </span>
-        {retryable && current && (
-          <button
-            type="button"
-            onClick={handleRetry}
-            className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/30 px-3 py-1.5 text-[11px] font-medium text-primary-foreground/90 transition hover:bg-primary-foreground/10"
-          >
-            <RefreshCw className="h-3 w-3" aria-hidden="true" />
-            Tentar carregar de novo
-          </button>
-        )}
       </div>
+    );
+  }
+
+  // Placeholder final: renderiza direto (sem skeleton, sem retry loop).
+  if (isPlaceholder) {
+    return (
+      <span className={cn("relative block overflow-hidden", skeletonClassName, wrapperClassName)}>
+        <img
+          src={displaySrc}
+          alt={alt}
+          loading={loading}
+          decoding={decoding}
+          draggable={false}
+          referrerPolicy={referrerPolicy}
+          className={cn("opacity-100", className)}
+          {...rest}
+        />
+        {retryable && (
+          <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/70 to-transparent p-3">
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/30 px-3 py-1.5 text-[11px] font-medium text-white transition hover:bg-white/10"
+            >
+              <RefreshCw className="h-3 w-3" aria-hidden="true" />
+              Tentar carregar de novo
+            </button>
+          </span>
+        )}
+      </span>
     );
   }
 
@@ -140,11 +193,15 @@ export function SmartImage({
         />
       )}
       <img
-        src={current}
+        src={displaySrc}
         alt={alt}
         loading={loading}
         decoding={decoding}
         draggable={false}
+        referrerPolicy={referrerPolicy}
+        srcSet={srcSet}
+        sizes={sizes}
+        {...(fetchPriority ? { fetchPriority } : {})}
         onLoad={(e) => {
           setLoaded(true);
           onLoad?.(e);

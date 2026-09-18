@@ -3,9 +3,8 @@ import { useState } from "react";
 import { ArrowUpRight, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
 import sedePhoto from "@/assets/sede-rezende-saback.png.asset.json";
-import ogCover from "@/assets/og-cover.jpg";
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
-import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, resolveImage, type AssetJson } from "@/lib/images";
+import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, type AssetJson } from "@/lib/images";
 import { projects } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
 import { GoldenMallSpotlight } from "@/components/GoldenMallSpotlight";
@@ -40,7 +39,11 @@ function sedePhotoUrl(): string {
 }
 
 
-const OG_IMAGE = `${SITE_URL}${ogCover}`;
+/**
+ * OG usa o arquivo estável de public/ (nunca o hash do Vite):
+ * o hash muda a cada build e crawlers/WhatsApp cacheiam a URL antiga → 404.
+ */
+const OG_IMAGE = `${SITE_URL}/og-cover.jpg`;
 const OG_TITLE = `${COMPANY.name} — ${COMPANY.tagline}`;
 const OG_DESCRIPTION =
   `Construtora e incorporadora em Betim desde ${COMPANY.foundedYear}. Lançamento Golden Mall Rosário com planta customizada e acabamento premium, além de imóveis prontos para morar.`;
@@ -69,7 +72,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: OG_IMAGE },
       { name: "twitter:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/` },
+      { rel: "preload", href: "/hero-rosario.jpg", as: "image", fetchPriority: "high" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -106,17 +112,14 @@ function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
       aria-label="Rezende Saback Construtora — início"
       className={`inline-flex items-center ${isLight ? "rounded-md bg-primary-foreground/95 px-3 py-2" : ""}`}
     >
-      <img
-        src={resolveImage(LOGO_URL)}
+      <SmartImage
+        src={LOGO_URL}
         alt="Rezende Saback Construtora"
-        width={470}
-        height={114}
+        wrapperClassName="inline-flex"
         className="h-10 w-auto md:h-12"
         loading="eager"
         decoding="async"
-        onError={(e) => {
-          (e.target as HTMLImageElement).style.visibility = "hidden";
-        }}
+        retryable={false}
       />
     </a>
   );
@@ -217,6 +220,7 @@ function Index() {
             wrapperClassName="absolute inset-0"
             className="h-full w-full object-cover"
             loading="eager"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-primary/75 via-primary/55 to-background" />
 

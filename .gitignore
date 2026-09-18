@@ -48,8 +48,14 @@ config.json
 # Projeto usa bun.lock — ignora lockfile gerado pelo npm
 package-lock.json
 
-# Assets vendorados gerados localmente (regeneráveis via scripts/vendor-cdn-assets.mjs)
-public/__l5e/
+# Assets vendorados do CDN Lovable (public/__l5e/...) — OBRIGATÓRIO versionar.
+# Eles são a ÚNICA fonte das imagens /__l5e/... em builds limpos (CI/GitHub
+# Actions) e no deploy FTP/KingHost, onde não há acesso ao CDN do Lovable.
+# NÃO adicionar public/__l5e/ aqui: sem esses arquivos no git, o
+# bundle-cdn-assets tenta baixar de localhost/rseng.lovable.app, falha,
+# e todas as imagens quebram (404).
+# Gerar/atualizar com: node scripts/vendor-cdn-assets.mjs
+# Conferir com: node scripts/verify-images.mjs
 
 # CodeIn auto-ignore
 .git

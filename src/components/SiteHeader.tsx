@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { LOGO_URL, resolveImage } from "@/lib/images";
+import { LOGO_URL } from "@/lib/images";
+import { SmartImage } from "@/components/SmartImage";
 
 export type SegmentRoute = "/edificios-residenciais" | "/edificios-comerciais" | "/casas-de-alto-padrao";
 
@@ -13,18 +14,14 @@ export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light
       aria-label="Rezende Saback Construtora — início"
       className={`inline-flex items-center ${isLight ? "rounded-md bg-primary-foreground/95 px-3 py-2" : ""}`}
     >
-      <img
-        src={resolveImage(LOGO_URL)}
+      <SmartImage
+        src={LOGO_URL}
         alt="Rezende Saback Construtora"
-        width={470}
-        height={114}
+        wrapperClassName="inline-flex"
         className="h-10 w-auto md:h-12"
         loading="eager"
         decoding="async"
-        onError={(e) => {
-          // Fallback silencioso: evita logo quebrado no header.
-          (e.target as HTMLImageElement).style.visibility = "hidden";
-        }}
+        retryable={false}
       />
     </Link>
   );

@@ -7,7 +7,6 @@ import { COMPANY, SITE_URL } from "@/data/company";
 import { SmartImage } from "@/components/SmartImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { resolveImage } from "@/lib/images";
 
 export const Route = createFileRoute("/obras/$slug")({
   loader: ({ params }) => {
@@ -354,10 +353,12 @@ function ProjectDetail() {
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={resolveImage(typeof lightboxItem.src === "string" ? lightboxItem.src : "")}
+            <SmartImage
+              src={typeof lightboxItem.src === "string" ? lightboxItem.src : ""}
               alt={typeof lightboxItem.alt === "string" ? lightboxItem.alt : "Foto da obra"}
+              wrapperClassName="block w-full"
               className="max-h-[80vh] w-auto rounded-xl object-contain"
+              loading="eager"
             />
             <figcaption className="mt-3 text-center text-sm text-white/80">
               <span className="text-accent">{typeof lightboxItem.category === "string" ? lightboxItem.category : ""}</span> · {typeof lightboxItem.alt === "string" ? lightboxItem.alt : ""}

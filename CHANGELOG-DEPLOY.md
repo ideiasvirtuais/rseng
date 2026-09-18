@@ -1,6 +1,173 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.09.18-3 — 2026-09-18T14:30:53.563Z
+
+- **Commit:** `89523c3` (main) — chore: publicar projeto via Code In
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 18 novo(s), 13 alterado(s), 119 removido(s), 63 inalterado(s) — 25.63 MB enviados
+
+**Adicionados (18)**
+
+- `assets/casas-de-alto-padrao-Bn4XSm2A.js`
+- `assets/ContactForm-CXqRKIzO.js`
+- `assets/deploy-xLqGXHLG.js`
+- `assets/edificios-comerciais-BMmmJThP.js`
+- `assets/edificios-residenciais-CTvkxq-G.js`
+- `assets/health-BWcNXJBs.js`
+- `assets/index-ioehRTYx.js`
+- `assets/jsx-dev-runtime-BjSf4xY7.js`
+- `assets/obras._slug-BkkX16tO.js`
+- `assets/obras._slug-D1olASS1.js`
+- `assets/obras._slug-L85DvnSw.js`
+- `assets/routes-BTN6ej64.js`
+- `assets/SegmentPage-C1iScA9G.js`
+- `assets/SiteFooter-Dw91rIj_.js`
+- `assets/SmartImage-Bt7E7iDH.js`
+- `assets/styles-D5sUOMPP.css`
+- `assets/zoom-in-kuiOroHB.js`
+- `og-cover.jpg`
+
+**Modificados (13)**
+
+- `_shell.html`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `index.html`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+
+**Removidos (119)**
+
+- `assets/ContactForm-BRp1majV.js`
+- `assets/ContactForm-D6ydDbS7.js`
+- `assets/ContactForm-DE8l9ENL.js`
+- `assets/ContactForm-DLKLEMdd.js`
+- `assets/ContactForm-Ql64ZRYP.js`
+- `assets/ContactForm-WKlFa7ts.js`
+- `assets/ContactForm-hBUb6RYN.js`
+- `assets/SegmentPage-BkzXGIs5.js`
+- `assets/SegmentPage-C-DmBdYr.js`
+- `assets/SegmentPage-Colrh5Ti.js`
+- `assets/SegmentPage-DDFkjyad.js`
+- `assets/SegmentPage-DRi3e3Jy.js`
+- `assets/SegmentPage-D_ztKd5c.js`
+- `assets/SegmentPage-fRqquv03.js`
+- `assets/SiteFooter-B-yz1g8a.js`
+- `assets/SiteFooter-COmega-4.js`
+- `assets/SiteHeader-6No69OZo.js`
+- `assets/SiteHeader-BuqH7qGe.js`
+- `assets/SmartImage-Ca8KH7m0.js`
+- `assets/SmartImage-QsmtqLRF.js`
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/casas-de-alto-padrao-BPHvfMyn.js`
+- `assets/casas-de-alto-padrao-Bvmnt6O1.js`
+- `assets/casas-de-alto-padrao-C0wuy518.js`
+- `assets/casas-de-alto-padrao-CP0n65nA.js`
+- `assets/casas-de-alto-padrao-DLUstp-w.js`
+- `assets/casas-de-alto-padrao-DSKckXog.js`
+- `assets/casas-de-alto-padrao-OwU73Hbe.js`
+- `assets/deploy-DTEeLSLq.js`
+- `assets/deploy-cp3TsZeZ.js`
+- `assets/edificios-comerciais-2rRxc1Uy.js`
+- `assets/edificios-comerciais-4cWEyzDW.js`
+- `assets/edificios-comerciais-73ReicqV.js`
+- `assets/edificios-comerciais-DGx4x6XN.js`
+- `assets/edificios-comerciais-DvKT71Cq.js`
+- `assets/edificios-comerciais-ayB8nWAB.js`
+- `assets/edificios-comerciais-t-mtghLq.js`
+- `assets/edificios-residenciais-BeGx0oD_.js`
+- `assets/edificios-residenciais-CAb6SmYF.js`
+- `assets/edificios-residenciais-D5A7kjj3.js`
+- `assets/edificios-residenciais-D7Fdw4CZ.js`
+- `assets/edificios-residenciais-DQkH4bgQ.js`
+- `assets/edificios-residenciais-DxIFRiuW.js`
+- `assets/edificios-residenciais-XcWnyhKN.js`
+- `assets/health-2Uea5SCb.js`
+- `assets/health-BYIrlipd.js`
+- `assets/health-BxDBw7n9.js`
+- `assets/health-CTFqHcrq.js`
+- `assets/health-CTujiW7M.js`
+- `assets/health-CYrV1ubO.js`
+- `assets/health-C_un727T.js`
+- `assets/health-Dt0XWTjU.js`
+- `assets/health-H6gkSNsF.js`
+- `assets/images-CQhVcDhf.js`
+- `assets/images-O0Bax6Bk.js`
+- `assets/index-B-7ZxKb3.js`
+- `assets/index-BTZSZbYO.js`
+- `assets/index-Bhfo_SQW.js`
+- `assets/index-Bktl6lNX.js`
+- `assets/index-CIvkNNbX.js`
+- `assets/index-COYKMsfk.js`
+- `assets/index-CabEd1Wv.js`
+- `assets/index-DBnAZv0I.js`
+- `assets/index-ih8dsURV.js`
+- `assets/interior-custom-9nvRngDY.jpg`
+- `assets/jsx-dev-runtime-C0A2Pi2Y.js`
+- `assets/jsx-runtime-DGeXAQPT.js`
+- `assets/link-DLpvscCl.js`
+- `assets/obras._slug-0ASOCmuY.js`
+- `assets/obras._slug-BKqvb7x4.js`
+- `assets/obras._slug-BcffAiqj.js`
+- `assets/obras._slug-BiqYwaeU.js`
+- `assets/obras._slug-BjVSu-4r.js`
+- `assets/obras._slug-BpRYc22l.js`
+- `assets/obras._slug-C19zuqeg.js`
+- `assets/obras._slug-CEGexurE.js`
+- `assets/obras._slug-CJbhlM7f.js`
+- `assets/obras._slug-CO8BH_PV.js`
+- `assets/obras._slug-CUG7oImf.js`
+- `assets/obras._slug-CfpJx0_H.js`
+- `assets/obras._slug-Ckcg0wVR.js`
+- `assets/obras._slug-Cuxs_n0c.js`
+- `assets/obras._slug-D0oT-Jal.js`
+- `assets/obras._slug-D7ZCAVUA.js`
+- `assets/obras._slug-DNsaq3zq.js`
+- `assets/obras._slug-DZvcduBM.js`
+- `assets/obras._slug-DkK9o0l_.js`
+- `assets/obras._slug-kwO9Ulcg.js`
+- `assets/phone-0785levB.js`
+- `assets/phone-A8zFB1mV.js`
+- `assets/phone-CRu0i5yl.js`
+- `assets/phone-Cty4XKUi.js`
+- `assets/phone-DYGp8l1j.js`
+- `assets/routes-B1Z3d7bx.js`
+- `assets/routes-BEQVLF1P.js`
+- `assets/routes-BMmCsqZZ.js`
+- `assets/routes-Bas5JR-Y.js`
+- `assets/routes-C58QHaB7.js`
+- `assets/routes-CfUfZosH.js`
+- `assets/routes-CtyDjbt3.js`
+- `assets/routes-CxMbmlPg.js`
+- `assets/routes-Dj38f_uS.js`
+- `assets/styles-15NWJEix.css`
+- `assets/styles-5_6zmjoj.css`
+- `assets/styles-Bc6pcDdz.css`
+- `assets/styles-CB5GcyT5.css`
+- `assets/styles-Cb5Wvq6P.css`
+- `assets/styles-CjvI5sUc.css`
+- `assets/zoom-in-BLGme1Ku.js`
+- `assets/zoom-in-Bzi655Jj.js`
+- `assets/zoom-in-C3APSIgc.js`
+- `assets/zoom-in-CQR2jlen.js`
+- `assets/zoom-in-DGM_hSto.js`
+- `assets/zoom-in-mZ_7olm5.js`
+- `robots.txt`
+
+---
+
 ## v2026.09.18-2 — 2026-09-18T00:27:34.649Z
 
 - **Commit:** `433d2e5` (main) — Ignora arquivos locais e gerados (env, config, package-lock, __l5e)

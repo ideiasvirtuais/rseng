@@ -8,7 +8,6 @@ import { SiteHeader, segmentNav } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { ContactForm } from "./ContactForm";
 import { SmartImage } from "./SmartImage";
-import { resolveImage } from "@/lib/images";
 import type { Segment } from "@/data/segments";
 
 export function SegmentPage({ segment }: { segment: Segment }) {
@@ -237,7 +236,13 @@ export function SegmentPage({ segment }: { segment: Segment }) {
             <X className="h-5 w-5" />
           </button>
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img src={resolveImage(typeof photo.src === "string" ? photo.src : "")} alt={typeof photo.alt === "string" ? photo.alt : "Foto ampliada"} className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl" />
+            <SmartImage
+              src={typeof photo.src === "string" ? photo.src : ""}
+              alt={typeof photo.alt === "string" ? photo.alt : "Foto ampliada"}
+              wrapperClassName="block w-full"
+              className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl"
+              loading="eager"
+            />
             <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
               <span className="text-accent">{typeof photo.caption === "string" ? photo.caption : ""}</span> · {typeof photo.title === "string" ? photo.title : ""}
             </figcaption>

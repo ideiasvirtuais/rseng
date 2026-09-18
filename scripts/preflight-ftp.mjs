@@ -70,6 +70,12 @@ if (htaccess) {
   if (!/index\.html/.test(body.split("\n").find((l) => /DirectoryIndex/i.test(l)) ?? "")) {
     warnings.push("DirectoryIndex não prioriza index.html — Apache pode cair em index.php do WordPress antigo");
   }
+  if (!/AddType\s+image\/webp/i.test(body)) {
+    errors.push(".htaccess sem AddType image/webp — regenere com `node scripts/generate-htaccess.mjs` (webp quebra no Apache antigo)");
+  }
+  if (!/R=404/.test(body)) {
+    errors.push(".htaccess sem regra R=404 para mídia — imagem ausente voltaria como _shell.html e 'daria erro de carregamento'");
+  }
 }
 
 const assetsDir = must("assets", "bundles JS/CSS gerados pelo Vite");
