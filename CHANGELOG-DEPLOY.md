@@ -1,6 +1,70 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.09.18-4 — 2026-09-18T15:08:36.171Z
+
+- **Commit:** `a09ccea` (main) — chore: publicar projeto via Code In
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 16 novo(s), 14 alterado(s), 17 removido(s), 63 inalterado(s) — 1.81 MB enviados
+
+**Adicionados (16)**
+
+- `assets/casas-de-alto-padrao-B8QcRkfe.js`
+- `assets/ContactForm-B5h18Bph.js`
+- `assets/deploy-CGF82TBV.js`
+- `assets/edificios-comerciais-BQ3qtLXf.js`
+- `assets/edificios-residenciais-D4NtwNq2.js`
+- `assets/health-C42KBsBH.js`
+- `assets/index-6-g6Z7Rr.js`
+- `assets/obras._slug-D6T-TpF6.js`
+- `assets/obras._slug-DyGASaJe.js`
+- `assets/obras._slug-spgwWxDH.js`
+- `assets/routes-CUqrt_WH.js`
+- `assets/SegmentPage-BnkdaCZC.js`
+- `assets/SiteFooter-BwyG3ODV.js`
+- `assets/styles-DDnIpnGS.css`
+- `assets/zoom-in-D0X_9zcb.js`
+- `instagram-rs.JPG`
+
+**Modificados (14)**
+
+- `_shell.html`
+- `.htaccess`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `index.html`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+
+**Removidos (17)**
+
+- `assets/ContactForm-CXqRKIzO.js`
+- `assets/SegmentPage-C1iScA9G.js`
+- `assets/SiteFooter-Dw91rIj_.js`
+- `assets/SmartImage-Bt7E7iDH.js`
+- `assets/casas-de-alto-padrao-Bn4XSm2A.js`
+- `assets/deploy-xLqGXHLG.js`
+- `assets/edificios-comerciais-BMmmJThP.js`
+- `assets/edificios-residenciais-CTvkxq-G.js`
+- `assets/health-BWcNXJBs.js`
+- `assets/index-ioehRTYx.js`
+- `assets/obras._slug-BkkX16tO.js`
+- `assets/obras._slug-D1olASS1.js`
+- `assets/obras._slug-L85DvnSw.js`
+- `assets/og-cover-D-errj70.jpg`
+- `assets/routes-BTN6ej64.js`
+- `assets/styles-D5sUOMPP.css`
+- `assets/zoom-in-kuiOroHB.js`
+
+---
+
 ## v2026.09.18-3 — 2026-09-18T14:30:53.563Z
 
 - **Commit:** `89523c3` (main) — chore: publicar projeto via Code In
