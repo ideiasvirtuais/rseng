@@ -9,6 +9,7 @@ import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, resolveImage, type AssetJson } f
 import { projects } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
 import { GoldenMallSpotlight } from "@/components/GoldenMallSpotlight";
+import { HomeInstagram } from "@/components/HomeInstagram";
 import { SmartImage } from "@/components/SmartImage";
 import { segmentNav, type SegmentRoute } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -307,6 +308,9 @@ function Index() {
       {/* Feito para você — Destaque lançamento Golden Mall Rosário */}
       <GoldenMallSpotlight />
 
+      {/* Galeria de obras desabilitada na home por solicitação — componente preservado em src/components/HomeGallery.tsx para reativação futura. */}
+      {/* <HomeGallery /> */}
+
       {/* Sobre */}
       <section id="sobre" className="container-x section-y">
 
@@ -342,6 +346,9 @@ function Index() {
 
       </section>
 
+
+      {/* Nas redes — feed do Instagram (em configuração) */}
+      <HomeInstagram />
 
       {/* Contato */}
       <section id="contato" className="container-x section-y">

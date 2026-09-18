@@ -243,33 +243,53 @@ export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }
 
-export const galleryItems: GalleryItem[] = [
-  {
-    src: goldenMallCover,
-    alt: "Perspectiva da fachada de esquina do Golden Mall Rosário",
-    project: "Golden Mall – Rosário",
-    category: "Lançamentos" as GalleryCategory,
-  },
-  { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
-  ...residentialWorks.map((w) => ({
-    src: w.src,
-    alt: w.alt,
-    project: w.name,
-    category: "Residenciais" as GalleryCategory,
-  })),
-  ...commercialWorks.map((w) => ({
-    src: w.src,
-    alt: w.alt,
-    project: w.name,
-    category: "Comerciais" as GalleryCategory,
-  })),
-  ...houses.map((h) => ({
-    src: h.src,
-    alt: h.alt,
-    project: h.name,
-    category: "Casas" as GalleryCategory,
-  })),
-];
+export const galleryItems: GalleryItem[] = (() => {
+  const raw: GalleryItem[] = [
+    {
+      src: goldenMallCover,
+      alt: "Perspectiva da fachada de esquina do Golden Mall Rosário",
+      project: "Golden Mall – Rosário",
+      category: "Lançamentos" as GalleryCategory,
+    },
+    { src: buildingRosario, alt: "Fachada do Edifício Rosário", project: "Edifício Rosário", category: "Lançamentos" },
+    ...residentialWorks.map((w) => ({
+      src: w?.src ?? "",
+      alt: w?.alt ?? w?.name ?? "",
+      project: w?.name ?? "",
+      category: "Residenciais" as GalleryCategory,
+    })),
+    // commercialWorks[0] reutiliza o mesmo src/cover do Golden Mall já listado
+    // acima como "Lançamentos" — filtrar evita chave duplicada
+    // (`Golden Mall – Rosário-<src>`) e foto repetida no filtro "Todas".
+    ...commercialWorks
+      .filter((w) => (w?.src ?? "") !== (goldenMallCover ?? ""))
+      .map((w) => ({
+        src: w?.src ?? "",
+        alt: w?.alt ?? w?.name ?? "",
+        project: w?.name ?? "",
+        category: "Comerciais" as GalleryCategory,
+      })),
+    ...houses.map((h) => ({
+      src: h?.src ?? "",
+      alt: h?.alt ?? h?.name ?? "",
+      project: h?.name ?? "",
+      category: "Casas" as GalleryCategory,
+    })),
+  ];
+  // Dedupe defensivo por `project|src|category`: garante keys únicas mesmo
+  // se duas fontes voltarem a convergir para o mesmo arquivo.
+  const seen = new Set<string>();
+  return raw.filter((item) => {
+    const src = typeof item?.src === "string" ? item.src : "";
+    const project = typeof item?.project === "string" ? item.project : "";
+    const category = typeof item?.category === "string" ? item.category : "";
+    if (!src || !project) return false;
+    const k = `${project}|${src}|${category}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+})();
 
 export const galleryCategories = ["Todas", "Lançamentos", "Residenciais", "Comerciais", "Casas"] as const;
 export type GalleryFilter = (typeof galleryCategories)[number];
