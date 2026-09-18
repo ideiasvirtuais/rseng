@@ -5,6 +5,8 @@ import { ArrowLeft, MapPin, Phone, ZoomIn, X, Diamond } from "lucide-react";
 import { getProjectBySlug, projects, type GalleryCategory, type Project } from "@/data/projects";
 import { COMPANY, SITE_URL } from "@/data/company";
 import { SmartImage } from "@/components/SmartImage";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { resolveImage } from "@/lib/images";
 
 export const Route = createFileRoute("/obras/$slug")({
@@ -14,16 +16,24 @@ export const Route = createFileRoute("/obras/$slug")({
     return project;
   },
   head: ({ params }) => {
-    const project = getProjectBySlug(params.slug);
-    if (!project) {
-      return { meta: [{ title: "Obra não encontrada — Rezende Saback" }, { name: "robots", content: "noindex" }] };
-    }
-    const title = `${project.name} — ${COMPANY.name}`;
-    const description = project.summary;
-    const url = `${SITE_URL}/obras/${project.slug}`;
-    const image = `${SITE_URL}${project.img}`;
-    const statusInfo = project.info.find((i) => i.label === "Status")?.value ?? "";
-    const yearInfo = project.info.find((i) => i.label.startsWith("Entrega"))?.value ?? project.year;
+    try {
+      const slug = typeof params?.slug === "string" ? params.slug : "";
+      const project = slug ? getProjectBySlug(slug) : undefined;
+      if (!project) {
+        return { meta: [{ title: "Obra não encontrada — Rezende Saback" }, { name: "robots", content: "noindex" }] };
+      }
+      const companyName = typeof COMPANY?.name === "string" ? COMPANY.name : "Rezende Saback";
+      const siteUrl = typeof SITE_URL === "string" ? SITE_URL : "https://rsengenharia.eng.br";
+      const title = `${project.name ?? "Obra"} — ${companyName}`;
+      const description = typeof project.summary === "string" ? project.summary : "";
+      const url = `${siteUrl}/obras/${project.slug ?? slug}`;
+      const image = `${siteUrl}${typeof project.img === "string" ? project.img : ""}`;
+      const info = Array.isArray(project.info) ? project.info : [];
+      const gallery = Array.isArray(project.gallery) ? project.gallery : [];
+      const highlights = Array.isArray(project.highlights) ? project.highlights : [];
+      const categories = Array.isArray(project.categories) ? project.categories : [];
+      const statusInfo = info.find((i) => i?.label === "Status")?.value ?? "";
+      const yearInfo = info.find((i) => typeof i?.label === "string" && i.label.startsWith("Entrega"))?.value ?? project.year ?? "";
 
     const projectJsonLd = {
       "@context": "https://schema.org",
@@ -31,27 +41,27 @@ export const Route = createFileRoute("/obras/$slug")({
       name: project.name,
       description,
       url,
-      image: [image, ...project.gallery.map((g) => `${SITE_URL}${g.src}`)],
+      image: [image, ...gallery.map((g) => `${siteUrl}${typeof g?.src === "string" ? g.src : ""}`)],
       address: {
         "@type": "PostalAddress",
-        streetAddress: project.address,
+        streetAddress: typeof project.address === "string" ? project.address : "",
         addressLocality: "Betim",
         addressRegion: "MG",
         addressCountry: "BR",
       },
       additionalProperty: [
-        { "@type": "PropertyValue", name: "Tipologia", value: project.type },
+        { "@type": "PropertyValue", name: "Tipologia", value: project.type ?? "" },
         { "@type": "PropertyValue", name: "Status", value: statusInfo },
         { "@type": "PropertyValue", name: "Entrega", value: yearInfo },
       ],
-      amenityFeature: project.highlights.map((h) => ({
+      amenityFeature: highlights.map((h) => ({
         "@type": "LocationFeatureSpecification",
-        name: h,
+        name: typeof h === "string" ? h : "",
       })),
       provider: {
         "@type": "Organization",
-        name: COMPANY.name,
-        url: SITE_URL,
+        name: companyName,
+        url: siteUrl,
       },
     };
 
@@ -59,17 +69,17 @@ export const Route = createFileRoute("/obras/$slug")({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
-        { "@type": "ListItem", position: 2, name: "Empreendimentos", item: `${SITE_URL}/#empreendimentos` },
-        { "@type": "ListItem", position: 3, name: project.name, item: url },
+        { "@type": "ListItem", position: 1, name: "Início", item: `${siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Empreendimentos", item: `${siteUrl}/#empreendimentos` },
+        { "@type": "ListItem", position: 3, name: project.name ?? "", item: url },
       ],
     };
 
-    const gallerySchemaImages = project.gallery.map((g) => ({
+    const gallerySchemaImages = gallery.map((g) => ({
       "@type": "ImageObject",
-      contentUrl: `${SITE_URL}${g.src}`,
-      description: g.alt,
-      keywords: g.category,
+      contentUrl: `${siteUrl}${typeof g?.src === "string" ? g.src : ""}`,
+      description: typeof g?.alt === "string" ? g.alt : "",
+      keywords: typeof g?.category === "string" ? g.category : "",
     }));
 
     const galleryJsonLd = gallerySchemaImages.length > 0
@@ -90,16 +100,16 @@ export const Route = createFileRoute("/obras/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
-        { property: "og:site_name", content: COMPANY.name },
+        { property: "og:site_name", content: companyName },
         { property: "og:locale", content: "pt_BR" },
         { property: "og:url", content: url },
         { property: "og:image", content: image },
-        { property: "og:image:alt", content: `${project.name} — ${project.type}` },
+        { property: "og:image:alt", content: `${project.name ?? ""} — ${project.type ?? ""}` },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
         { name: "twitter:image", content: image },
-        { name: "keywords", content: `${project.name}, ${project.type}, imóveis em Betim, ${project.categories.join(", ")}, Rezende Saback` },
+        { name: "keywords", content: `${project.name ?? ""}, ${project.type ?? ""}, imóveis em Betim, ${categories.join(", ")}, Rezende Saback` },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -108,6 +118,9 @@ export const Route = createFileRoute("/obras/$slug")({
         ...(galleryJsonLd ? [{ type: "application/ld+json", children: JSON.stringify(galleryJsonLd) }] : []),
       ],
     };
+    } catch {
+      return { meta: [{ title: "Obra — Rezende Saback" }, { name: "robots", content: "noindex" }] };
+    }
   },
   component: ProjectDetail,
   notFoundComponent: ProjectNotFound,
@@ -115,24 +128,38 @@ export const Route = createFileRoute("/obras/$slug")({
 });
 
 function ProjectDetail() {
-  const project = Route.useLoaderData() as Project;
+  const loaded = Route.useLoaderData() as Project | undefined;
+  // Defesa contra loader vazio (ex: HMR, navegação interrompida):
+  // em vez de lançar em `project.categories`, cai no 404 local.
+  if (!loaded) throw notFound();
+  const project: Project = loaded;
 
   const filters = useMemo(
-    () => ["Todas", ...project.categories] as ("Todas" | GalleryCategory)[],
+    () => ["Todas", ...(Array.isArray(project.categories) ? project.categories : [])] as ("Todas" | GalleryCategory)[],
     [project.categories],
   );
   const [filter, setFilter] = useState<"Todas" | GalleryCategory>("Todas");
   const [lightbox, setLightbox] = useState<number | null>(null);
 
+  const gallery = Array.isArray(project.gallery) ? project.gallery : [];
   const filteredGallery = useMemo(
-    () => (filter === "Todas" ? project.gallery : project.gallery.filter((g) => g.category === filter)),
-    [filter, project.gallery],
+    () => (filter === "Todas" ? gallery : gallery.filter((g) => g?.category === filter)),
+    [filter, gallery],
   );
+  // Clamp do índice: trocar o filtro com o lightbox aberto não pode
+  // deixar `filteredGallery[i]` undefined e quebrar a rota.
+  const lightboxItem = lightbox !== null ? (filteredGallery[lightbox] ?? null) : null;
 
-  const related = projects.filter((p) => p.slug !== project.slug).slice(0, 3);
+  const selectFilter = (cat: "Todas" | GalleryCategory) => {
+    setFilter(cat);
+    setLightbox(null);
+  };
+
+  const related = (Array.isArray(projects) ? projects : []).filter((p) => p?.slug !== project.slug).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background">
+      <SiteHeader />
       {/* Top bar */}
       <div className="border-b border-border bg-background">
         <div className="container-x flex items-center justify-between py-4">
@@ -175,12 +202,17 @@ function ProjectDetail() {
           <aside className="rounded-2xl border border-border bg-card p-6">
             <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Ficha técnica</div>
             <dl className="mt-4 divide-y divide-border">
-              {project.info.map((item) => (
-                <div key={item.label} className="flex items-start justify-between gap-4 py-3 text-sm">
-                  <dt className="text-muted-foreground">{item.label}</dt>
-                  <dd className="text-right font-medium text-primary">{item.value}</dd>
+              {(Array.isArray(project.info) ? project.info : []).map((item, i) => {
+                if (!item || typeof item !== "object") return null;
+                const label = typeof item.label === "string" ? item.label : `Item ${i + 1}`;
+                const value = typeof item.value === "string" ? item.value : "";
+                return (
+                <div key={`${label}-${i}`} className="flex items-start justify-between gap-4 py-3 text-sm">
+                  <dt className="text-muted-foreground">{label}</dt>
+                  <dd className="text-right font-medium text-primary">{value}</dd>
                 </div>
-              ))}
+                );
+              })}
             </dl>
             <a
               href="#contato"
@@ -212,8 +244,8 @@ function ProjectDetail() {
           <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Sobre a obra</div>
           <h2 className="mt-4">Um projeto pensado no <span className="text-primary/70">detalhe</span>.</h2>
           <div className="mt-6 space-y-4 text-muted-foreground">
-            {project.description.map((paragraph, i) => (
-              <p key={i}>{paragraph}</p>
+            {(Array.isArray(project.description) ? project.description : []).map((paragraph, i) => (
+              <p key={i}>{typeof paragraph === "string" ? paragraph : ""}</p>
             ))}
           </div>
         </div>
@@ -222,10 +254,10 @@ function ProjectDetail() {
           <div className="text-xs uppercase tracking-[0.25em] text-accent">Destaques</div>
           <h3 className="mt-3 text-2xl font-semibold">O que este empreendimento entrega</h3>
           <ul className="mt-6 space-y-4">
-            {project.highlights.map((h) => (
-              <li key={h} className="flex items-start gap-3">
+            {(Array.isArray(project.highlights) ? project.highlights : []).map((h, i) => (
+              <li key={`${i}-${typeof h === "string" ? h.slice(0, 24) : i}`} className="flex items-start gap-3">
                 <Diamond className="mt-0.5 h-4 w-4 flex-none fill-accent text-accent" aria-hidden="true" />
-                <span className="text-primary-foreground/90">{h}</span>
+                <span className="text-primary-foreground/90">{typeof h === "string" ? h : ""}</span>
               </li>
             ))}
           </ul>
@@ -251,7 +283,7 @@ function ProjectDetail() {
               <button
                 key={cat}
                 type="button"
-                onClick={() => setFilter(cat)}
+                onClick={() => selectFilter(cat)}
                 aria-pressed={active}
                 className={`rounded-full border px-4 py-2 text-sm transition ${
                   active
@@ -266,26 +298,33 @@ function ProjectDetail() {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredGallery.map((item, i) => (
+          {filteredGallery.map((item, i) => {
+            if (!item || typeof item !== "object") return null;
+            const src = typeof item.src === "string" ? item.src : "";
+            const alt = typeof item.alt === "string" ? item.alt : "Foto da obra";
+            const category = typeof item.category === "string" ? item.category : "";
+            if (!src) return null;
+            return (
             <button
-              key={`${item.src}-${i}`}
+              key={`${src}-${i}`}
               type="button"
               onClick={() => setLightbox(i)}
               className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border bg-card text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-              aria-label={`Ampliar: ${item.alt}`}
+              aria-label={`Ampliar: ${alt}`}
             >
               <SmartImage
-                src={item.src}
-                alt={item.alt}
+                src={src}
+                alt={alt}
                 wrapperClassName="absolute inset-0"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="pointer-events-none absolute inset-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/70 via-black/10 to-transparent p-3 text-primary-foreground opacity-0 transition group-hover:opacity-100">
-                <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-accent">{item.category}</span>
+                <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-accent">{category}</span>
                 <ZoomIn className="h-5 w-5" aria-hidden="true" />
               </div>
             </button>
-          ))}
+            );
+          })}
         </div>
 
         {filteredGallery.length === 0 && (
@@ -295,11 +334,11 @@ function ProjectDetail() {
         )}
       </section>
 
-      {lightbox !== null && filteredGallery[lightbox] && (
+      {lightboxItem && typeof lightboxItem === "object" ? (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={filteredGallery[lightbox].alt}
+          aria-label={typeof lightboxItem.alt === "string" ? lightboxItem.alt : "Foto ampliada"}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
           onClick={() => setLightbox(null)}
         >
@@ -316,16 +355,16 @@ function ProjectDetail() {
           </button>
           <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <img
-              src={resolveImage(filteredGallery[lightbox].src)}
-              alt={filteredGallery[lightbox].alt}
+              src={resolveImage(typeof lightboxItem.src === "string" ? lightboxItem.src : "")}
+              alt={typeof lightboxItem.alt === "string" ? lightboxItem.alt : "Foto da obra"}
               className="max-h-[80vh] w-auto rounded-xl object-contain"
             />
             <figcaption className="mt-3 text-center text-sm text-white/80">
-              <span className="text-accent">{filteredGallery[lightbox].category}</span> · {filteredGallery[lightbox].alt}
+              <span className="text-accent">{typeof lightboxItem.category === "string" ? lightboxItem.category : ""}</span> · {typeof lightboxItem.alt === "string" ? lightboxItem.alt : ""}
             </figcaption>
           </figure>
         </div>
-      )}
+      ) : null}
 
       {/* CTA + relacionados */}
       <section id="contato" className="bg-primary text-primary-foreground">
@@ -363,31 +402,41 @@ function ProjectDetail() {
           <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Outras obras</div>
           <h2 className="mt-4">Continue explorando o portfólio</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {related.map((r) => (
+            {related.map((r, i) => {
+              if (!r || typeof r !== "object" || typeof r.slug !== "string") return null;
+              const rName = typeof r.name === "string" ? r.name : "Obra";
+              const rImg = typeof r.img === "string" ? r.img : "";
+              const rTag = typeof r.tag === "string" ? r.tag : "";
+              const rAddress = typeof r.address === "string" ? r.address : "";
+              return (
               <Link
-                key={r.slug}
+                key={r.slug || i}
                 to="/obras/$slug"
                 params={{ slug: r.slug }}
                 className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <SmartImage
-                    src={r.img}
-                    alt={r.name}
+                    src={rImg}
+                    alt={rName}
                     wrapperClassName="h-full w-full"
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   />
                 </div>
                 <div className="p-5">
-                  <div className="text-[11px] font-medium uppercase tracking-wider text-accent">{r.tag}</div>
-                  <div className="mt-1 text-lg font-semibold text-primary">{r.name}</div>
-                  <div className="mt-1 text-sm text-muted-foreground">{r.address}</div>
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-accent">{rTag}</div>
+                  <div className="mt-1 text-lg font-semibold text-primary">{rName}</div>
+                  <div className="mt-1 text-sm text-muted-foreground">{rAddress}</div>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
+
+      {/* Rodapé institucional único — inclui crédito IDEIAS VIRTUAIS + links em nova janela */}
+      <SiteFooter />
     </div>
   );
 }
@@ -395,19 +444,23 @@ function ProjectDetail() {
 function ProjectNotFound() {
   const { slug } = Route.useParams();
   return (
-    <div className="container-x section-y text-center">
-      <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">404</div>
-      <h1 className="mt-4">Obra não encontrada</h1>
-      <p className="mt-3 text-muted-foreground">
-        Não encontramos uma obra com o identificador <span className="font-mono">{slug}</span>.
-      </p>
-      <Link
-        to="/"
-         hash="galeria"
-        className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-      >
-        Ver todos os empreendimentos
-      </Link>
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <div className="container-x section-y text-center">
+        <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">404</div>
+        <h1 className="mt-4">Obra não encontrada</h1>
+        <p className="mt-3 text-muted-foreground">
+          Não encontramos uma obra com o identificador <span className="font-mono">{slug}</span>.
+        </p>
+        <Link
+          to="/"
+          hash="galeria"
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+        >
+          Ver todos os empreendimentos
+        </Link>
+      </div>
+      <SiteFooter />
     </div>
   );
 }
@@ -415,18 +468,22 @@ function ProjectNotFound() {
 function ProjectError({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   return (
-    <div className="container-x section-y text-center">
-      <h1>Não foi possível carregar esta obra</h1>
-      <p className="mt-3 text-muted-foreground">Tente novamente em instantes.</p>
-      <button
-        type="button"
-        onClick={() => {
-          reset();
-        }}
-        className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-      >
-        Tentar novamente
-      </button>
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <div className="container-x section-y text-center">
+        <h1>Não foi possível carregar esta obra</h1>
+        <p className="mt-3 text-muted-foreground">Tente novamente em instantes.</p>
+        <button
+          type="button"
+          onClick={() => {
+            reset();
+          }}
+          className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+        >
+          Tentar novamente
+        </button>
+      </div>
+      <SiteFooter />
     </div>
   );
 }

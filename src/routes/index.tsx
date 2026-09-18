@@ -1,23 +1,48 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ArrowUpRight, Diamond, Facebook, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
-import interiorCustomPhoto from "@/assets/interiores/interior-flat-01.png.asset.json";
 import sedePhoto from "@/assets/sede-rezende-saback.png.asset.json";
 import ogCover from "@/assets/og-cover.jpg";
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
-import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, resolveImage } from "@/lib/images";
-import { galleryCategories, galleryItems, projects, type GalleryFilter } from "@/data/projects";
+import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, resolveImage, type AssetJson } from "@/lib/images";
+import { projects } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
+import { GoldenMallSpotlight } from "@/components/GoldenMallSpotlight";
 import { SmartImage } from "@/components/SmartImage";
-import { segmentNav } from "@/components/SiteHeader";
-import { segments } from "@/data/segments";
+import { segmentNav, type SegmentRoute } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { segments, type SegmentSlug } from "@/data/segments";
+
+/**
+ * Mapa slug → rota literal. O <Link> do TanStack Router valida o `to`
+ * em runtime: interpolar string dinâmica (`/${slug}`) contorna a checagem
+ * de tipos e um slug inesperado lança "Error in route match". O mapa
+ * mantém tipos literais e um fallback seguro para a home.
+ */
+const SEGMENT_ROUTES: Record<SegmentSlug, SegmentRoute> = {
+  "edificios-residenciais": "/edificios-residenciais",
+  "edificios-comerciais": "/edificios-comerciais",
+  "casas-de-alto-padrao": "/casas-de-alto-padrao",
+};
+
+function segmentRouteOf(slug: string): SegmentRoute | "/" {
+  return (SEGMENT_ROUTES as Record<string, SegmentRoute>)[slug] ?? "/";
+}
+
+/** URL da foto da sede com acesso defensivo (import pode falhar em HMR). */
+function sedePhotoUrl(): string {
+  const maybe = sedePhoto as AssetJson | { default?: unknown } | undefined | null;
+  if (!maybe) return "";
+  if (typeof (maybe as AssetJson).url === "string") return (maybe as AssetJson).url;
+  return "";
+}
 
 
 const OG_IMAGE = `${SITE_URL}${ogCover}`;
 const OG_TITLE = `${COMPANY.name} — ${COMPANY.tagline}`;
 const OG_DESCRIPTION =
-  `Construtora e incorporadora em Betim desde ${COMPANY.foundedYear}. Lançamentos, imóveis prontos para morar e personalização de plantas com acabamento diferenciado.`;
+  `Construtora e incorporadora em Betim desde ${COMPANY.foundedYear}. Lançamento Golden Mall Rosário com planta customizada e acabamento premium, além de imóveis prontos para morar.`;
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -49,30 +74,6 @@ export const Route = createFileRoute("/")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "ImageGallery",
-          name: "Galeria de obras — Rezende Saback",
-          description:
-            "Fachadas, áreas comuns e interiores dos empreendimentos entregues e em construção pela Rezende Saback em Betim/MG.",
-          url: `${SITE_URL}/#galeria`,
-          about: {
-            "@type": "Organization",
-            name: "Rezende Saback Construtora",
-            url: SITE_URL,
-          },
-          image: galleryItems.map((g) => ({
-            "@type": "ImageObject",
-            contentUrl: `${SITE_URL}${g.src}`,
-            description: g.alt,
-            keywords: g.category,
-            representativeOfPage: false,
-            creditText: `${g.project} — Rezende Saback`,
-          })),
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
           "@type": "ItemList",
           name: "Empreendimentos Rezende Saback",
           itemListElement: projects.map((p, i) => ({
@@ -92,13 +93,6 @@ const stats = [
   { n: `${COMPANY_YEARS}+`, l: "Anos de história em Betim" },
   { n: "200+", l: "Obras entregues" },
   { n: "1.000+", l: "Famílias atendidas" },
-];
-
-const perks = [
-  "Planta adaptável antes da obra",
-  "Acabamentos premium à sua escolha",
-  "Instalações elétricas customizadas",
-  "Acompanhamento técnico contínuo",
 ];
 
 
@@ -129,15 +123,9 @@ function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("Todas");
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const filteredGallery = useMemo(
-    () => (galleryFilter === "Todas" ? galleryItems : galleryItems.filter((g) => g.category === galleryFilter)),
-    [galleryFilter],
-  );
 
   const navLinks = [
-    { href: "#galeria", label: "Galeria" },
+    { href: "#personalizacao", label: "Lançamento" },
     { href: "#sobre", label: "Sobre" },
     { href: "#contato", label: "Contato" },
   ];
@@ -244,7 +232,7 @@ function Index() {
                 Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de mais de três décadas de engenharia.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#galeria" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
+                <a href="#segmentos" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">
                   Ver empreendimentos <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a href="#contato" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-6 py-3 text-sm font-medium text-primary-foreground backdrop-blur hover:bg-primary-foreground/10">
@@ -292,7 +280,7 @@ function Index() {
           {segments.map((s) => (
             <Link
               key={s.slug}
-              to={`/${s.slug}`}
+              to={segmentRouteOf(s.slug)}
               className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-xl"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
@@ -316,140 +304,8 @@ function Index() {
       </section>
 
 
-      {/* Personalização */}
-      <section id="personalizacao" className="bg-primary text-primary-foreground">
-        <div className="container-x grid gap-16 section-y lg:grid-cols-2 lg:items-center">
-          <div className="relative overflow-hidden rounded-2xl">
-            <SmartImage
-              src={interiorCustomPhoto.url}
-              alt="Sala integrada com cozinha planejada, painel ripado de madeira e dormitório de apartamento entregue pronto"
-              wrapperClassName="block w-full"
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div>
-            <div className="text-xs uppercase tracking-[0.25em] text-accent">Feito para você</div>
-            <h2 className="mt-4">
-              Receba as chaves com o seu imóvel <span className="text-accent">já pronto</span>.
-            </h2>
-            <p className="mt-6 text-primary-foreground/90">
-              Planta customizada, instalações elétricas e hidráulicas sob medida e acabamentos diferenciados escolhidos antes mesmo da mudança. Você entra em um apartamento pensado exatamente do jeito que sempre quis.
-            </p>
-            <ul className="mt-8 space-y-4">
-              {perks.map((perk) => (
-                <li key={perk} className="flex items-start gap-3">
-                  <Diamond className="mt-0.5 h-4 w-4 flex-none fill-accent text-accent" />
-                  <span className="text-primary-foreground/90">{perk}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Galeria */}
-      <section id="galeria" className="container-x section-y">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
-          <div>
-            <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Galeria de obras</div>
-            <h2 className="mt-4">
-              Detalhes que só a <span className="text-primary/70">obra pronta</span> revela.
-            </h2>
-          </div>
-          <p className="text-muted-foreground">
-            Fachadas, áreas comuns e interiores dos nossos empreendimentos em Betim. Filtre por categoria para explorar cada aspecto do nosso padrão construtivo.
-          </p>
-        </div>
-
-        <div className="mt-10 flex flex-wrap gap-2">
-          {galleryCategories.map((cat) => {
-            const active = galleryFilter === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setGalleryFilter(cat)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background text-primary hover:border-primary/50 hover:bg-secondary"
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredGallery.map((item, i) => (
-            <button
-              key={`${item.src}-${i}`}
-              type="button"
-              onClick={() => setLightboxIndex(i)}
-              className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card text-left"
-              aria-label={`Ampliar ${item.alt}`}
-            >
-              <SmartImage
-                src={item.src}
-                alt={item.alt}
-                wrapperClassName="absolute inset-0"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent opacity-0 transition group-hover:opacity-100" />
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground opacity-0 transition group-hover:opacity-100">
-                <div className="min-w-0">
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-accent">{item.category}</div>
-                  <div className="truncate text-sm font-semibold">{item.project}</div>
-                </div>
-                <ZoomIn className="h-5 w-5 shrink-0" />
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {filteredGallery.length === 0 && (
-          <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            Nenhuma foto nesta categoria ainda.
-          </div>
-        )}
-      </section>
-
-      {/* Lightbox */}
-      {lightboxIndex !== null && filteredGallery[lightboxIndex] && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Visualização ampliada"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/95 p-4 backdrop-blur-sm"
-          onClick={() => setLightboxIndex(null)}
-        >
-          <button
-            type="button"
-            aria-label="Fechar"
-            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/30 text-primary-foreground transition hover:bg-primary-foreground/10"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightboxIndex(null);
-            }}
-          >
-            <X className="h-5 w-5" />
-          </button>
-          <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={resolveImage(filteredGallery[lightboxIndex].src)}
-              alt={filteredGallery[lightboxIndex].alt}
-              className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl"
-            />
-            <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
-              <span className="text-accent">{filteredGallery[lightboxIndex].category}</span> · {filteredGallery[lightboxIndex].project}
-            </figcaption>
-          </figure>
-        </div>
-      )}
-
-
-
+      {/* Feito para você — Destaque lançamento Golden Mall Rosário */}
+      <GoldenMallSpotlight />
 
       {/* Sobre */}
       <section id="sobre" className="container-x section-y">
@@ -464,7 +320,7 @@ function Index() {
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-2">
           <figure className="overflow-hidden rounded-2xl border border-border bg-card">
             <SmartImage
-              src={sedePhoto.url}
+              src={sedePhotoUrl()}
               alt="Sede da Rezende Saback Construtora — Edifício Londres, fachada em pastilha azul e branca em Betim/MG"
               wrapperClassName="block w-full"
               className="h-full w-full object-cover"
@@ -486,41 +342,6 @@ function Index() {
 
       </section>
 
-
-      {/* Instagram */}
-      <section id="instagram" className="border-y border-border bg-secondary">
-        <div className="container-x section-y text-center">
-          <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Nas redes</div>
-          <h2 className="mt-4">
-            Acompanhe as obras no nosso <span className="text-primary/70">Instagram</span>.
-          </h2>
-          <a
-            href={COMPANY.social.instagram.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Abrir o perfil ${COMPANY.social.instagram.handle} no Instagram (nova aba)`}
-            className="mt-6 inline-flex items-center gap-2 text-primary hover:underline"
-          >
-            <Instagram aria-hidden="true" focusable="false" className="h-4 w-4" /> {COMPANY.social.instagram.handle}
-          </a>
-          <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-dashed border-border bg-card/60 p-8 text-sm text-muted-foreground">
-            <div className="font-medium text-primary">Feed do Instagram em configuração</div>
-            <p className="mt-2">
-              Para exibir as postagens do perfil aqui automaticamente, conecte um widget do Instagram e insira o ID no arquivo <code className="rounded bg-muted px-1.5 py-0.5">src/routes/index.tsx</code>.
-            </p>
-            <a
-              href={COMPANY.social.instagram.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Ver o perfil da Rezende Saback no Instagram (nova aba)"
-              className="mt-4 inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              Ver perfil enquanto isso <ArrowUpRight aria-hidden="true" focusable="false" className="h-4 w-4" />
-            </a>
-          </div>
-
-        </div>
-      </section>
 
       {/* Contato */}
       <section id="contato" className="container-x section-y">
@@ -560,65 +381,8 @@ function Index() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-primary text-primary-foreground">
-        <div className="container-x pt-16 pb-10">
-          {/* Siga-nos */}
-          <div className="grid gap-10 border-b border-primary-foreground/15 pb-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
-            <div>
-              <div className="text-xs uppercase tracking-[0.25em] text-accent">Siga-nos</div>
-              <h2 className="mt-3 text-3xl font-semibold text-primary-foreground sm:text-4xl">
-                Acompanhe cada etapa das nossas obras.
-              </h2>
-              <p className="mt-4 max-w-md text-primary-foreground/90">
-                Bastidores do canteiro, lançamentos e detalhes de acabamento — publicamos primeiro nas nossas redes.
-              </p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <a
-                href={COMPANY.social.instagram.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Seguir a Rezende Saback no Instagram (abre em nova aba)"
-                className="group flex items-center gap-4 rounded-2xl border border-primary-foreground/15 bg-primary-foreground/5 p-5 transition hover:border-accent hover:bg-primary-foreground/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-              >
-                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-primary transition group-hover:scale-105">
-                  <Instagram aria-hidden="true" focusable="false" className="h-5 w-5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Instagram</span>
-                  <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">{COMPANY.social.instagram.handle}</span>
-                </span>
-                <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
-              </a>
-              <a
-                href={COMPANY.social.facebook.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Seguir a Rezende Saback no Facebook (abre em nova aba)"
-                className="group flex items-center gap-4 rounded-2xl border border-primary-foreground/15 bg-primary-foreground/5 p-5 transition hover:border-accent hover:bg-primary-foreground/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-              >
-                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-primary transition group-hover:scale-105">
-                  <Facebook aria-hidden="true" focusable="false" className="h-5 w-5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Facebook</span>
-                  <span className="mt-1 block truncate text-base font-semibold text-primary-foreground">{COMPANY.social.facebook.handle}</span>
-                </span>
-                <ArrowUpRight aria-hidden="true" focusable="false" className="h-5 w-5 shrink-0 text-primary-foreground/90 transition group-hover:text-accent" />
-              </a>
-            </div>
-          </div>
-
-          {/* Bottom row */}
-          <div className="mt-8 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <Logo variant="light" />
-            <div className="text-xs text-primary-foreground/60">
-              © {new Date().getFullYear()} {COMPANY.name} e Incorporadora. {COMPANY.address.street}, {COMPANY.address.district}, {COMPANY.address.city}/{COMPANY.address.state} · {COMPANY.email.address} · {COMPANY.whatsapp.display}. Todos os direitos reservados.
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Rodapé institucional único — inclui crédito IDEIAS VIRTUAIS + links em nova janela */}
+      <SiteFooter />
 
 
       <style>{`

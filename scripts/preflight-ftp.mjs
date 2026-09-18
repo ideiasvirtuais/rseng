@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 /**
  * Preflight check: valida se dist/client/ está pronto para upload via FTP.
- * Roda automaticamente antes de `bun run deploy:ftp` (script `predeploy:ftp`).
+ * Roda automaticamente antes de `bun run deploy:ftp` (script `predeploy:ftp`)
+ * e no CI (`bun run verify:ftp`).
  *
  * Confere:
  *   - dist/client/_shell.html (não vazio)
- *   - dist/client/index.html (não vazio, referencia assets/)
+ *   - dist/client/index.html (não vazio, referencia assets/, contém Golden Mall)
+ *   - todas as rotas de scripts/prerender-routes.mjs prerenderizadas
  *   - dist/client/.htaccess (com RewriteRule e DirectoryIndex)
  *   - dist/client/assets/ com pelo menos 1 .js e 1 .css
  *   - dist/client/favicon.png
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve, join } from "node:path";
+import { PRERENDER_ROUTES } from "./prerender-routes.mjs";
 
 const DIST = resolve(process.cwd(), "dist/client");
 const MIN_HTML = 500;
@@ -44,6 +47,19 @@ if (index) {
   if (size < MIN_HTML) errors.push(`index.html suspeito (${size} bytes < ${MIN_HTML})`);
   const html = readFileSync(index, "utf8");
   if (!/\/assets\//.test(html)) warnings.push("index.html não referencia /assets/ (bundle pode não carregar)");
+  if (!html.includes("Golden Mall")) {
+    errors.push("index.html sem 'Golden Mall' — home desatualizada; regenere com `bun run build:ftp`");
+  }
+}
+
+for (const route of PRERENDER_ROUTES) {
+  const rel = route === "/" ? "index.html" : `${route.replace(/^\//, "")}/index.html`;
+  const full = join(DIST, rel);
+  if (!existsSync(full)) {
+    errors.push(`Rota não prerenderizada: ${route} (esperado ${rel})`);
+  } else if (statSync(full).size < MIN_HTML) {
+    errors.push(`HTML suspeito em ${route} (${statSync(full).size} bytes < ${MIN_HTML})`);
+  }
 }
 
 const htaccess = must(".htaccess", "regras de reescrita para Apache/KingHost");

@@ -58,6 +58,17 @@ export const COMPANY = {
 
 export const COMPANY_YEARS = new Date().getFullYear() - COMPANY.foundedYear;
 
+/**
+ * Crédito oficial do rodapé — agência desenvolvedora do site.
+ * Todos os links externos do rodapé abrem em nova janela
+ * (target="_blank" + rel="noopener noreferrer").
+ */
+export const DEVELOPER = {
+  name: "IDEIAS VIRTUAIS",
+  url: "http://www.ideiasvirtuais.com.br/",
+  year: 2026,
+} as const;
+
 export const HERO_IMAGE = "/hero-rosario.jpg";
 export const HERO_IMAGE_FALLBACK = "/hero-rosario.webp";
 export const LOGO_IMAGE = "/logo-rezende-saback.png";

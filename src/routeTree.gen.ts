@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CasasDeAltoPadraoRouteImport } from './routes/casas-de-alto-padrao'
+import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-comerciais'
 import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
 import { Route as HealthRouteImport } from './routes/health'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const CasasDeAltoPadraoRoute = CasasDeAltoPadraoRouteImport.update({
   id: '/casas-de-alto-padrao',
   path: '/casas-de-alto-padrao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeployRoute = DeployRouteImport.update({
+  id: '/deploy',
+  path: '/deploy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EdificiosComerciaisRoute = EdificiosComerciaisRouteImport.update({
@@ -62,6 +68,7 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
+  '/deploy': typeof DeployRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/health': typeof HealthRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
+  '/deploy': typeof DeployRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/health': typeof HealthRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
+  '/deploy': typeof DeployRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/health': typeof HealthRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/casas-de-alto-padrao'
+    | '/deploy'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
     | '/health'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/casas-de-alto-padrao'
+    | '/deploy'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
     | '/health'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/casas-de-alto-padrao'
+    | '/deploy'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
     | '/health'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CasasDeAltoPadraoRoute: typeof CasasDeAltoPadraoRoute
+  DeployRoute: typeof DeployRoute
   EdificiosComerciaisRoute: typeof EdificiosComerciaisRoute
   EdificiosResidenciaisRoute: typeof EdificiosResidenciaisRoute
   HealthRoute: typeof HealthRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/casas-de-alto-padrao'
       fullPath: '/casas-de-alto-padrao'
       preLoaderRoute: typeof CasasDeAltoPadraoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deploy': {
+      id: '/deploy'
+      path: '/deploy'
+      fullPath: '/deploy'
+      preLoaderRoute: typeof DeployRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/edificios-comerciais': {
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CasasDeAltoPadraoRoute: CasasDeAltoPadraoRoute,
+  DeployRoute: DeployRoute,
   EdificiosComerciaisRoute: EdificiosComerciaisRoute,
   EdificiosResidenciaisRoute: EdificiosResidenciaisRoute,
   HealthRoute: HealthRoute,

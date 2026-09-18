@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { Component, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
@@ -41,12 +41,52 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
-  const normalized = error instanceof Error ? error : new Error("Erro desconhecido ao carregar a página");
-  const router = useRouter();
+  // Normalizado com useMemo: sem isso, um erro não-Error geraria um novo
+  // objeto a cada render, religando o efeito de reporte em loop.
+  const normalized = useMemo(
+    () =>
+      error instanceof Error
+        ? error
+        : new Error(
+            typeof error === "string" && error.length > 0
+              ? error
+              : "Erro desconhecido ao carregar a página",
+          ),
+    [error],
+  );
+  // useRouter pode lançar se o próprio contexto do roteador estiver
+  // comprometido — nesse caso o fallback é o reload da página.
+  let router: ReturnType<typeof useRouter> | undefined;
+  try {
+    router = useRouter();
+  } catch {
+    router = undefined;
+  }
   useEffect(() => {
-    reportLovableError(normalized, { boundary: "tanstack_root_error_component" });
-    reportClientError(normalized, "react_error_boundary", { boundary: "tanstack_root_error_component" });
+    try {
+      reportLovableError(normalized, { boundary: "tanstack_root_error_component" });
+    } catch {
+      // reporte nunca pode quebrar a tela de erro
+    }
+    try {
+      reportClientError(normalized, "react_error_boundary", { boundary: "tanstack_root_error_component" });
+    } catch {
+      // reporte nunca pode quebrar a tela de erro
+    }
   }, [normalized]);
+
+  const handleRetry = () => {
+    try {
+      router?.invalidate();
+    } catch {
+      // segue para o reset mesmo se a invalidação falhar
+    }
+    try {
+      reset();
+    } catch {
+      window.location.reload();
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -59,10 +99,7 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
+            onClick={handleRetry}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again
@@ -112,6 +149,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+/**
+ * Boundary de classe para widgets auxiliares do shell.
+ * O shellComponent do TanStack Router fica FORA do CatchBoundary da rota:
+ * se um widget não-essencial (aviso, flutuante, toasts) lançar, nada o
+ * captura e o resultado é tela branca. Com este guard, o widget defeituoso
+ * é descartado em silêncio e a página continua renderizando.
+ */
+class ShellGuard extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error("[ShellGuard]", error);
+  }
+
+  render() {
+    if (this.state.failed) return null;
+    return this.props.children;
+  }
+}
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
@@ -119,10 +180,16 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <SiteNotice />
+        <ShellGuard>
+          <SiteNotice />
+        </ShellGuard>
         {children}
-        <WhatsAppFloat />
-        <Toaster richColors position="top-right" />
+        <ShellGuard>
+          <WhatsAppFloat />
+        </ShellGuard>
+        <ShellGuard>
+          <Toaster richColors position="top-right" />
+        </ShellGuard>
         <Scripts />
       </body>
     </html>
@@ -130,13 +197,25 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+  // Cliente de fallback para o caso extremo de o contexto do roteador
+  // chegar vazio (ex: HMR recriando o router). Sem isso, a
+  // desestruturação lançaria e derrubaria todas as rotas filhas.
+  const [fallbackClient] = useState(() => new QueryClient());
+  let contextClient: QueryClient | undefined;
+  try {
+    contextClient = Route.useRouteContext()?.queryClient;
+  } catch {
+    contextClient = undefined;
+  }
+  const queryClient = contextClient ?? fallbackClient;
 
   useEffect(() => {
-    installClientErrorReporter();
+    try {
+      installClientErrorReporter();
+    } catch {
+      // telemetria opcional — nunca pode impedir a renderização
+    }
   }, []);
-
-
 
   return (
     <QueryClientProvider client={queryClient}>

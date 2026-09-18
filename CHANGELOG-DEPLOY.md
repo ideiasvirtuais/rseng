@@ -1,6 +1,303 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.09.18-2 — 2026-09-18T00:27:34.649Z
+
+- **Commit:** `433d2e5` (main) — Ignora arquivos locais e gerados (env, config, package-lock, __l5e)
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 15 novo(s), 13 alterado(s), 100 removido(s), 67 inalterado(s) — 1.38 MB enviados
+
+**Adicionados (15)**
+
+- `assets/casas-de-alto-padrao-Bvmnt6O1.js`
+- `assets/ContactForm-D6ydDbS7.js`
+- `assets/deploy-cp3TsZeZ.js`
+- `assets/edificios-comerciais-4cWEyzDW.js`
+- `assets/edificios-residenciais-DQkH4bgQ.js`
+- `assets/health-H6gkSNsF.js`
+- `assets/images-O0Bax6Bk.js`
+- `assets/index-Bktl6lNX.js`
+- `assets/obras._slug-BiqYwaeU.js`
+- `assets/obras._slug-BKqvb7x4.js`
+- `assets/routes-BEQVLF1P.js`
+- `assets/SegmentPage-fRqquv03.js`
+- `assets/SiteFooter-COmega-4.js`
+- `assets/SiteHeader-6No69OZo.js`
+- `assets/SmartImage-Ca8KH7m0.js`
+
+**Modificados (13)**
+
+- `_shell.html`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `index.html`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+
+**Removidos (100)**
+
+- `assets/ContactForm-BRp1majV.js`
+- `assets/ContactForm-DE8l9ENL.js`
+- `assets/ContactForm-DLKLEMdd.js`
+- `assets/ContactForm-Ql64ZRYP.js`
+- `assets/ContactForm-WKlFa7ts.js`
+- `assets/ContactForm-hBUb6RYN.js`
+- `assets/SegmentPage-BkzXGIs5.js`
+- `assets/SegmentPage-C-DmBdYr.js`
+- `assets/SegmentPage-Colrh5Ti.js`
+- `assets/SegmentPage-DDFkjyad.js`
+- `assets/SegmentPage-DRi3e3Jy.js`
+- `assets/SegmentPage-D_ztKd5c.js`
+- `assets/SiteFooter-B-yz1g8a.js`
+- `assets/SiteHeader-BuqH7qGe.js`
+- `assets/SmartImage-QsmtqLRF.js`
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/casas-de-alto-padrao-BPHvfMyn.js`
+- `assets/casas-de-alto-padrao-C0wuy518.js`
+- `assets/casas-de-alto-padrao-CP0n65nA.js`
+- `assets/casas-de-alto-padrao-DLUstp-w.js`
+- `assets/casas-de-alto-padrao-DSKckXog.js`
+- `assets/casas-de-alto-padrao-OwU73Hbe.js`
+- `assets/deploy-DTEeLSLq.js`
+- `assets/edificios-comerciais-2rRxc1Uy.js`
+- `assets/edificios-comerciais-73ReicqV.js`
+- `assets/edificios-comerciais-DGx4x6XN.js`
+- `assets/edificios-comerciais-DvKT71Cq.js`
+- `assets/edificios-comerciais-ayB8nWAB.js`
+- `assets/edificios-comerciais-t-mtghLq.js`
+- `assets/edificios-residenciais-BeGx0oD_.js`
+- `assets/edificios-residenciais-CAb6SmYF.js`
+- `assets/edificios-residenciais-D5A7kjj3.js`
+- `assets/edificios-residenciais-D7Fdw4CZ.js`
+- `assets/edificios-residenciais-DxIFRiuW.js`
+- `assets/edificios-residenciais-XcWnyhKN.js`
+- `assets/health-2Uea5SCb.js`
+- `assets/health-BYIrlipd.js`
+- `assets/health-BxDBw7n9.js`
+- `assets/health-CTFqHcrq.js`
+- `assets/health-CTujiW7M.js`
+- `assets/health-CYrV1ubO.js`
+- `assets/health-C_un727T.js`
+- `assets/health-Dt0XWTjU.js`
+- `assets/images-CQhVcDhf.js`
+- `assets/index-B-7ZxKb3.js`
+- `assets/index-BTZSZbYO.js`
+- `assets/index-Bhfo_SQW.js`
+- `assets/index-CIvkNNbX.js`
+- `assets/index-COYKMsfk.js`
+- `assets/index-CabEd1Wv.js`
+- `assets/index-DBnAZv0I.js`
+- `assets/index-ih8dsURV.js`
+- `assets/interior-custom-9nvRngDY.jpg`
+- `assets/jsx-runtime-DGeXAQPT.js`
+- `assets/link-DLpvscCl.js`
+- `assets/obras._slug-0ASOCmuY.js`
+- `assets/obras._slug-BcffAiqj.js`
+- `assets/obras._slug-BjVSu-4r.js`
+- `assets/obras._slug-BpRYc22l.js`
+- `assets/obras._slug-C19zuqeg.js`
+- `assets/obras._slug-CEGexurE.js`
+- `assets/obras._slug-CJbhlM7f.js`
+- `assets/obras._slug-CO8BH_PV.js`
+- `assets/obras._slug-CUG7oImf.js`
+- `assets/obras._slug-CfpJx0_H.js`
+- `assets/obras._slug-Ckcg0wVR.js`
+- `assets/obras._slug-Cuxs_n0c.js`
+- `assets/obras._slug-D0oT-Jal.js`
+- `assets/obras._slug-D7ZCAVUA.js`
+- `assets/obras._slug-DNsaq3zq.js`
+- `assets/obras._slug-DZvcduBM.js`
+- `assets/obras._slug-kwO9Ulcg.js`
+- `assets/phone-0785levB.js`
+- `assets/phone-A8zFB1mV.js`
+- `assets/phone-CRu0i5yl.js`
+- `assets/phone-Cty4XKUi.js`
+- `assets/phone-DYGp8l1j.js`
+- `assets/routes-B1Z3d7bx.js`
+- `assets/routes-BMmCsqZZ.js`
+- `assets/routes-Bas5JR-Y.js`
+- `assets/routes-C58QHaB7.js`
+- `assets/routes-CfUfZosH.js`
+- `assets/routes-CtyDjbt3.js`
+- `assets/routes-CxMbmlPg.js`
+- `assets/routes-Dj38f_uS.js`
+- `assets/styles-15NWJEix.css`
+- `assets/styles-5_6zmjoj.css`
+- `assets/styles-Bc6pcDdz.css`
+- `assets/styles-CB5GcyT5.css`
+- `assets/styles-Cb5Wvq6P.css`
+- `assets/zoom-in-BLGme1Ku.js`
+- `assets/zoom-in-Bzi655Jj.js`
+- `assets/zoom-in-C3APSIgc.js`
+- `assets/zoom-in-CQR2jlen.js`
+- `assets/zoom-in-DGM_hSto.js`
+- `assets/zoom-in-mZ_7olm5.js`
+
+---
+
+## v2026.09.18-1 — 2026-09-18T00:25:48.276Z
+
+- **Commit:** `433d2e5` (main) — Ignora arquivos locais e gerados (env, config, package-lock, __l5e)
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 47 novo(s), 3 alterado(s), 85 removido(s), 45 inalterado(s) — 3.46 MB enviados
+
+**Adicionados (47)**
+
+- `__l5e/assets-v1/03b45161-2b3e-4ad2-82a8-4ff4b349efe5/golden-mall-03.webp`
+- `__l5e/assets-v1/07815899-b018-4ea9-97e4-b0ce77d7c5ac/edificio-santorini.webp`
+- `__l5e/assets-v1/30f15e3d-7211-44f2-a5b7-80d3be80e89d/sede-rezende-saback.webp`
+- `__l5e/assets-v1/46fa28f9-6878-4446-a21f-1946a022d432/interior-flat-01.webp`
+- `__l5e/assets-v1/57c16c55-488a-42f6-84aa-0af767db9233/golden-mall-05.webp`
+- `__l5e/assets-v1/659cf7d4-4bb5-443c-a366-db36b7c10210/edificio-iris.webp`
+- `__l5e/assets-v1/836577d5-d047-4b6b-895f-57a3731574ba/golden-mall-09.webp`
+- `__l5e/assets-v1/8f2fda34-6c15-4772-8779-ef1aab21b099/golden-mall-06.webp`
+- `__l5e/assets-v1/94e2989f-00f9-4f18-b57d-41f402d53ce8/casa-modernista-condominio.webp`
+- `__l5e/assets-v1/a84ead5f-de9f-4f49-b117-259876e27bbb/golden-mall-07.webp`
+- `__l5e/assets-v1/b7cff709-0d33-4cde-8bd7-f20b4966983e/jayme-brasileia.webp`
+- `__l5e/assets-v1/be499926-6bf3-467f-b0da-6461f5db17e7/alcides-guilherme.webp`
+- `__l5e/assets-v1/d0f6cdb7-890f-4206-8187-4bc17bfc6fb4/golden-mall-08.webp`
+- `__l5e/assets-v1/d24568fe-10dd-4ec3-ad2c-37aed83df153/golden-mall-02.webp`
+- `__l5e/assets-v1/d5e5baf6-bd1f-4f40-8a39-d8537b51b309/golden-mall-01.webp`
+- `__l5e/assets-v1/ff53681e-d379-40a6-a152-f23a0798623a/golden-mall-04.webp`
+- `apple-touch-icon.png`
+- `assets/casas-de-alto-padrao-C0wuy518.js`
+- `assets/ContactForm-hBUb6RYN.js`
+- `assets/deploy-DTEeLSLq.js`
+- `assets/edificios-comerciais-73ReicqV.js`
+- `assets/edificios-residenciais-D5A7kjj3.js`
+- `assets/health-CTujiW7M.js`
+- `assets/images-CQhVcDhf.js`
+- `assets/index-BTZSZbYO.js`
+- `assets/jsx-dev-runtime-C0A2Pi2Y.js`
+- `assets/obras._slug-0ASOCmuY.js`
+- `assets/obras._slug-DkK9o0l_.js`
+- `assets/obras._slug-kwO9Ulcg.js`
+- `assets/routes-CxMbmlPg.js`
+- `assets/SegmentPage-DRi3e3Jy.js`
+- `assets/SiteFooter-B-yz1g8a.js`
+- `assets/SiteHeader-BuqH7qGe.js`
+- `assets/SmartImage-QsmtqLRF.js`
+- `assets/styles-CjvI5sUc.css`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `hero-rosario.webp`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+
+**Modificados (3)**
+
+- `_shell.html`
+- `favicon.png`
+- `index.html`
+
+**Removidos (85)**
+
+- `assets/ContactForm-BRp1majV.js`
+- `assets/ContactForm-DE8l9ENL.js`
+- `assets/ContactForm-DLKLEMdd.js`
+- `assets/ContactForm-Ql64ZRYP.js`
+- `assets/ContactForm-WKlFa7ts.js`
+- `assets/SegmentPage-BkzXGIs5.js`
+- `assets/SegmentPage-C-DmBdYr.js`
+- `assets/SegmentPage-Colrh5Ti.js`
+- `assets/SegmentPage-DDFkjyad.js`
+- `assets/SegmentPage-D_ztKd5c.js`
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/building-santorini-BGIRRu1m.jpg`
+- `assets/casas-de-alto-padrao-BPHvfMyn.js`
+- `assets/casas-de-alto-padrao-CP0n65nA.js`
+- `assets/casas-de-alto-padrao-DLUstp-w.js`
+- `assets/casas-de-alto-padrao-DSKckXog.js`
+- `assets/casas-de-alto-padrao-OwU73Hbe.js`
+- `assets/edificios-comerciais-2rRxc1Uy.js`
+- `assets/edificios-comerciais-DGx4x6XN.js`
+- `assets/edificios-comerciais-DvKT71Cq.js`
+- `assets/edificios-comerciais-ayB8nWAB.js`
+- `assets/edificios-comerciais-t-mtghLq.js`
+- `assets/edificios-residenciais-BeGx0oD_.js`
+- `assets/edificios-residenciais-CAb6SmYF.js`
+- `assets/edificios-residenciais-D7Fdw4CZ.js`
+- `assets/edificios-residenciais-DxIFRiuW.js`
+- `assets/edificios-residenciais-XcWnyhKN.js`
+- `assets/health-2Uea5SCb.js`
+- `assets/health-BYIrlipd.js`
+- `assets/health-BxDBw7n9.js`
+- `assets/health-CTFqHcrq.js`
+- `assets/health-CYrV1ubO.js`
+- `assets/health-C_un727T.js`
+- `assets/health-Dt0XWTjU.js`
+- `assets/index-B-7ZxKb3.js`
+- `assets/index-Bhfo_SQW.js`
+- `assets/index-CIvkNNbX.js`
+- `assets/index-COYKMsfk.js`
+- `assets/index-CabEd1Wv.js`
+- `assets/index-DBnAZv0I.js`
+- `assets/index-ih8dsURV.js`
+- `assets/interior-custom-9nvRngDY.jpg`
+- `assets/jsx-runtime-DGeXAQPT.js`
+- `assets/link-DLpvscCl.js`
+- `assets/obras._slug-BcffAiqj.js`
+- `assets/obras._slug-BjVSu-4r.js`
+- `assets/obras._slug-BpRYc22l.js`
+- `assets/obras._slug-C19zuqeg.js`
+- `assets/obras._slug-CEGexurE.js`
+- `assets/obras._slug-CJbhlM7f.js`
+- `assets/obras._slug-CO8BH_PV.js`
+- `assets/obras._slug-CUG7oImf.js`
+- `assets/obras._slug-CfpJx0_H.js`
+- `assets/obras._slug-Ckcg0wVR.js`
+- `assets/obras._slug-Cuxs_n0c.js`
+- `assets/obras._slug-D0oT-Jal.js`
+- `assets/obras._slug-D7ZCAVUA.js`
+- `assets/obras._slug-DNsaq3zq.js`
+- `assets/obras._slug-DZvcduBM.js`
+- `assets/phone-0785levB.js`
+- `assets/phone-A8zFB1mV.js`
+- `assets/phone-CRu0i5yl.js`
+- `assets/phone-Cty4XKUi.js`
+- `assets/phone-DYGp8l1j.js`
+- `assets/routes-B1Z3d7bx.js`
+- `assets/routes-BMmCsqZZ.js`
+- `assets/routes-Bas5JR-Y.js`
+- `assets/routes-C58QHaB7.js`
+- `assets/routes-CfUfZosH.js`
+- `assets/routes-CtyDjbt3.js`
+- `assets/routes-Dj38f_uS.js`
+- `assets/styles-15NWJEix.css`
+- `assets/styles-5_6zmjoj.css`
+- `assets/styles-Bc6pcDdz.css`
+- `assets/styles-CB5GcyT5.css`
+- `assets/styles-Cb5Wvq6P.css`
+- `assets/zoom-in-BLGme1Ku.js`
+- `assets/zoom-in-Bzi655Jj.js`
+- `assets/zoom-in-C3APSIgc.js`
+- `assets/zoom-in-CQR2jlen.js`
+- `assets/zoom-in-DGM_hSto.js`
+- `assets/zoom-in-mZ_7olm5.js`
+
+---
+
 ## v2026.08.08-1 — 2026-08-08T11:16:53.954Z
 
 - **Commit:** `13612cc` (edit/edt-02e2ed49-5892-440e-80dc-1debdb40fbf9) — Atualizou entrega da página

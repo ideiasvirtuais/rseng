@@ -3,7 +3,9 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { LOGO_URL, resolveImage } from "@/lib/images";
 
-export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light"; to?: string }) {
+export type SegmentRoute = "/edificios-residenciais" | "/edificios-comerciais" | "/casas-de-alto-padrao";
+
+export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light"; to?: "/" | SegmentRoute }) {
   const isLight = variant === "light";
   return (
     <Link
@@ -28,7 +30,14 @@ export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light
   );
 }
 
-export const segmentNav = [
+/**
+ * Navegação de segmentos com rotas literais.
+ * O `to` do <Link> do TanStack Router resolve a rota em tempo de execução:
+ * manter o tipo como união literal (em vez de `string`) garante em
+ * compilação que cada destino existe e impede "route match" inválido
+ * que derrubaria a rota com tela branca.
+ */
+export const segmentNav: { to: SegmentRoute; label: string }[] = [
   { to: "/edificios-residenciais", label: "Residenciais" },
   { to: "/edificios-comerciais", label: "Comerciais" },
   { to: "/casas-de-alto-padrao", label: "Casas" },
@@ -38,8 +47,6 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const hashLinks = [
-    
-    { href: "/#galeria", label: "Galeria" },
     { href: "/#sobre", label: "Sobre" },
     { href: "/#contato", label: "Contato" },
   ];

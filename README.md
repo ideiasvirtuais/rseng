@@ -39,14 +39,22 @@ O workflow aceita **duas** estruturas possíveis (o TanStack Start pode emitir e
 dist/
 └── client/
     ├── _shell.html          ← shell SPA (fallback para rotas dinâmicas)
-    ├── index.html           ← home prerendered
+    ├── index.html           ← home prerendered (com Golden Mall)
+    ├── edificios-residenciais/index.html
+    ├── edificios-comerciais/index.html
+    ├── casas-de-alto-padrao/index.html
+    ├── health/index.html
     ├── obras/
-    │   └── <slug>/index.html
+    │   ├── golden-mall-rosario/index.html
+    │   ├── edificio-rosario/index.html
+    │   └── <demais-slugs>/index.html
     ├── assets/
     │   ├── *.js             ← bundles JS com hash
     │   └── *.css            ← estilos com hash
     └── favicon.ico, robots.txt, etc.
 ```
+
+A lista exata de rotas vive em `scripts/prerender-routes.mjs` (fonte única usada por `vite.config.ts`, `scripts/verify-prerender.mjs` e `scripts/preflight-ftp.mjs`).
 
 ### Layout B — `dist/` (raiz)
 
@@ -69,6 +77,8 @@ O workflow procura `_shell.html` primeiro em `dist/client/`, depois em `dist/`, 
 | Item | Obrigatório? | Motivo |
 |---|---|---|
 | `index.html` | Sim | Página inicial prerendered — sem ela, a raiz do domínio não abre |
+| `index.html` contém `Golden Mall` | Sim | Garante que a home publicada é a versão atual (não um build antigo) |
+| 11 rotas prerenderizadas (`scripts/prerender-routes.mjs`) | Sim | Home, segmentos, health e cada `obras/<slug>` com `index.html` próprio e SEO |
 | `assets/` (pasta) | Sim | Contém os bundles JS/CSS gerados pelo Vite |
 | Pelo menos 1 arquivo `.js` em `assets/` | Sim | Se não há JS, o Vite quebrou silenciosamente |
 | `_shell.html` não-vazio | Opcional, mas se existir precisa ter conteúdo | É o SPA fallback; vazio serve página em branco |

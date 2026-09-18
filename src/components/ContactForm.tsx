@@ -7,7 +7,10 @@ import { ArrowUpRight, Loader2 } from "lucide-react";
 
 import { COMPANY } from "@/data/company";
 
-const WHATSAPP_NUMBER = COMPANY.whatsapp.number;
+const WHATSAPP_NUMBER =
+  typeof COMPANY?.whatsapp?.number === "string" && COMPANY.whatsapp.number.length > 0
+    ? COMPANY.whatsapp.number
+    : "5531993040342";
 
 const INTERESTS = [
   "Edifício Rosário (lançamento)",
@@ -70,15 +73,27 @@ export function ContactForm() {
   const onSubmit = async (values: FormValues) => {
     setSubmitting(true);
     try {
+      const safe = {
+        nome: typeof values?.nome === "string" ? values.nome : "",
+        telefone: typeof values?.telefone === "string" ? values.telefone : "",
+        email: typeof values?.email === "string" ? values.email : "",
+        interesse: typeof values?.interesse === "string" ? values.interesse : "",
+        mensagem: typeof values?.mensagem === "string" ? values.mensagem : "",
+      };
       const text =
         `Olá! Gostaria de mais informações.\n\n` +
-        `*Nome:* ${values.nome}\n` +
-        `*Telefone:* ${values.telefone}\n` +
-        `*E-mail:* ${values.email}\n` +
-        `*Interesse:* ${values.interesse}\n` +
-        (values.mensagem ? `*Mensagem:* ${values.mensagem}\n` : "");
+        `*Nome:* ${safe.nome}\n` +
+        `*Telefone:* ${safe.telefone}\n` +
+        `*E-mail:* ${safe.email}\n` +
+        `*Interesse:* ${safe.interesse}\n` +
+        (safe.mensagem ? `*Mensagem:* ${safe.mensagem}\n` : "");
       const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-      window.open(url, "_blank", "noopener,noreferrer");
+      // Guard SSR/iframe: window pode não existir no prerender.
+      if (typeof window !== "undefined" && typeof window.open === "function") {
+        window.open(url, "_blank", "noopener,noreferrer");
+      } else if (typeof window !== "undefined") {
+        window.location.href = url;
+      }
       toast.success("Mensagem pronta!", {
         description: "Abrimos o WhatsApp para você concluir o envio.",
       });

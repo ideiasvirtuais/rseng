@@ -11,6 +11,7 @@
     "build:dev": "vite build --mode development",
     "deploy:ftp": "node scripts/deploy-ftp.mjs",
     "predeploy:ftp": "node scripts/preflight-ftp.mjs",
+    "test:ftp": "node scripts/test-ftp-connection.mjs",
     "verify:ftp": "node scripts/preflight-ftp.mjs",
     "deploy:ftp:full": "bun run build:ftp && node scripts/deploy-ftp.mjs",
     "predeploy:staging": "node scripts/preflight-ftp.mjs",

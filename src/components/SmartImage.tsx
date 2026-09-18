@@ -75,13 +75,28 @@ export function SmartImage({
   );
 
   const handleRetry = useCallback(() => {
-    // Força reload adicionando cache-buster.
+    // Força reload com cache-buster; data:/blob: não aceitam query.
     setFailed(false);
     setLoaded(false);
     setTriedFallback(false);
-    setCurrent(primary ? `${primary}${primary.includes("?") ? "&" : "?"}retry=${Date.now()}`.replace(/\?retry=\d+(\?retry=\d+)?$/, `?retry=${Date.now()}`) : primary);
-    // Simplificação: volta ao primary puro (o browser recarrega por ser novo estado).
-    setTimeout(() => setCurrent(primary), 0);
+    if (!primary || /^(data:|blob:)/i.test(primary)) {
+      setCurrent(primary);
+      return;
+    }
+    try {
+      if (/^https?:\/\//i.test(primary)) {
+        const url = new URL(primary);
+        url.searchParams.set("retry", String(Date.now()));
+        setCurrent(url.toString());
+      } else {
+        const url = new URL(primary, "http://retry.local");
+        url.searchParams.set("retry", String(Date.now()));
+        const path = `${url.pathname}${url.search}`;
+        setCurrent(primary.startsWith("/") ? path : path.replace(/^\//, ""));
+      }
+    } catch {
+      setCurrent(primary);
+    }
   }, [primary]);
 
   if (failed || !current) {

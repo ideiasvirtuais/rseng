@@ -50,3 +50,14 @@ package-lock.json
 
 # Assets vendorados gerados localmente (regeneráveis via scripts/vendor-cdn-assets.mjs)
 public/__l5e/
+
+# CodeIn auto-ignore
+.git
+dist-electron
+dist-release
+build
+.next
+.vite
+.turbo
+.cache
+coverage
