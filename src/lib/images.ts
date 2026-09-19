@@ -72,18 +72,53 @@ export function publicUrl(path: string): string {
   return resolveImage(path);
 }
 
-export const LOGO_URL = publicUrl("/logo-rezende-saback.png");
+export const LOGO_URL = publicUrl("/LOGOMARCA-RS-1024x253.png");
 /**
  * Logo oficial vendorada (content-addressed, `__l5e`): segunda tentativa da
  * cadeia da logo. É o upload canônico aprovado — se o arquivo de `public/`
  * na raiz falhar (deploy parcial, cache, rewrite do Apache), esta URL ainda
  * resolve porque vive em pasta versionada própria.
+ * Mantida a logo legada como último fallback de rede antes do SVG inline.
  */
 export const LOGO_VENDOR_URL = publicUrl(
   "/__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png",
 );
-/** Cadeia completa de tentativas da logo: raiz → vendorada (nunca vazia). */
-export const LOGO_CHAIN: readonly string[] = [LOGO_URL, LOGO_VENDOR_URL].filter(Boolean);
+export const LOGO_LEGACY_URL = publicUrl("/logo-rezende-saback.png");
+/** Cadeia completa de tentativas da logo: nova marca → legada → vendorada (nunca vazia). */
+export const LOGO_CHAIN: readonly string[] = [LOGO_URL, LOGO_LEGACY_URL, LOGO_VENDOR_URL].filter(Boolean);
+
+/**
+ * Monta a cadeia da logo em TEMPO DE RENDER (não em tempo de import).
+ *
+ * Por que não usar LOGO_CHAIN direto: LOGO_CHAIN é avaliado uma única vez
+ * no import do módulo, com o BASE_URL daquele ambiente (dev/prerender).
+ * Se o HTML prerenderizado for servido de outra base (preview em subpasta,
+ * FTP parcial), as URLs absolutas gravadas ficam obsoletas e a logo "dá
+ * erro de carregamento". Resolvendo aqui, a cada render, a base vigente
+ * (import.meta.env.BASE_URL do bundle servido) é respeitada.
+ *
+ * Ordem: bundle Vite (hash, sempre com base correta) → public/ nova marca →
+ * public/ legada → vendorada `__l5e` → (o componente Logo acrescenta o SVG inline final).
+  */
+export function logoChain(bundledUrl?: ImageInput): string[] {
+  const out: string[] = [];
+  const push = (u: string) => {
+    if (u && !out.includes(u)) out.push(u);
+  };
+  try {
+    push(resolveImage(bundledUrl));
+  } catch {
+    // bundle ausente — segue para public/
+  }
+  push(publicUrl("/LOGOMARCA-RS-1024x253.png"));
+  push(publicUrl("/logo-rezende-saback.png"));
+  push(
+    publicUrl(
+      "/__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png",
+    ),
+  );
+  return out;
+}
 export const FAVICON_URL = publicUrl("/favicon.png");
 
 /** Imagem principal do hero — foto oficial atual (public/hero-rosario.*). */

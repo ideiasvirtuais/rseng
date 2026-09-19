@@ -1,39 +1,51 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SegmentPage } from "@/components/SegmentPage";
-import { COMPANY, SITE_URL } from "@/data/company";
-import { getSegment } from "@/data/segments";
+import { SITE_URL } from "@/data/company";
+import { requireSegment } from "@/data/segments";
 
-const segment = getSegment("casas-de-alto-padrao");
-const URL = `${SITE_URL}/casas-de-alto-padrao`;
+const segment = requireSegment("casas-de-alto-padrao");
+const URL = `${typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br"}/casas-de-alto-padrao`;
 
 export const Route = createFileRoute("/casas-de-alto-padrao")({
-  head: () => ({
-    meta: [
-      { title: segment.seoTitle },
-      { name: "description", content: segment.seoDescription },
-      { property: "og:title", content: segment.seoTitle },
-      { property: "og:description", content: segment.seoDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: URL },
-      { property: "og:image", content: `${SITE_URL}${segment.cover}` },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: `${SITE_URL}${segment.cover}` },
-    ],
-    links: [{ rel: "canonical", href: URL }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          name: segment.label,
-          description: segment.seoDescription,
-          url: URL,
-          about: { "@type": "Organization", name: COMPANY.name, url: SITE_URL },
-        }),
-      },
-    ],
-  }),
+  head: () => {
+    try {
+      const seg = segment ?? requireSegment("casas-de-alto-padrao");
+      const siteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br";
+      const seoTitle = typeof seg?.seoTitle === "string" ? seg.seoTitle : "Casas de Alto Padrão em Betim — Rezende Saback";
+      const seoDesc = typeof seg?.seoDescription === "string" ? seg.seoDescription : "Casas de alto padrão em Betim/MG.";
+      const cover = typeof seg?.cover === "string" ? seg.cover : "";
+      const label = typeof seg?.label === "string" ? seg.label : "Casas de Alto Padrão";
+      return {
+        meta: [
+          { title: seoTitle },
+          { name: "description", content: seoDesc },
+          { property: "og:title", content: seoTitle },
+          { property: "og:description", content: seoDesc },
+          { property: "og:type", content: "website" },
+          { property: "og:url", content: URL },
+          { property: "og:image", content: `${siteUrl}${cover}` },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:image", content: `${siteUrl}${cover}` },
+        ],
+        links: [{ rel: "canonical", href: URL }],
+        scripts: [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: label,
+              description: seoDesc,
+              url: URL,
+              about: { "@type": "Organization", name: "Rezende Saback", url: siteUrl },
+            }),
+          },
+        ],
+      };
+    } catch {
+      return { meta: [{ title: "Casas de Alto Padrão em Betim — Rezende Saback" }] };
+    }
+  },
   component: () => <SegmentPage segment={segment} />,
 });

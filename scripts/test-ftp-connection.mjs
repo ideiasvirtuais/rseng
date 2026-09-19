@@ -48,6 +48,17 @@ if (!HOST || !USER || !PASSWORD) {
   process.exit(1);
 }
 
+// Validação antecipada: login FTP nunca contém espaços — "rs engenharia"
+// é o nome da conta no painel, não o login FTP (ex.: rsengenharia). Sem
+// isso o servidor responde apenas 530 e parece "senha errada".
+if (/\s/.test(USER)) {
+  console.error(`\n✗ FTP_USER inválido: "${USER}" contém espaço.`);
+  console.error("  O login FTP não tem espaços (é diferente do nome da conta).");
+  console.error("  No painel KingHost, copie o 'Usuário FTP' exato (ex.: rsengenharia)");
+  console.error("  e atualize a linha FTP_USER no arquivo .env.ftp.\n");
+  process.exit(1);
+}
+
 const client = new Client(20_000);
 try {
   await client.access({ host: HOST, port: PORT, user: USER, password: PASSWORD, secure: SECURE });

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Component, useState, type ReactNode } from "react";
 import { ArrowUpRight, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
 import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
@@ -50,59 +50,75 @@ function sedePhotoUrl(): string {
 /**
  * OG usa o arquivo estável de public/ (nunca o hash do Vite):
  * o hash muda a cada build e crawlers/WhatsApp cacheiam a URL antiga → 404.
+ * Constantes defensivas: acesso via optional chaining para nunca lançar
+ * em module evaluation (derrubaria o match __root__/).
  */
-const OG_IMAGE = `${SITE_URL}/og-cover.jpg`;
-const OG_TITLE = `${COMPANY.name} — ${COMPANY.tagline}`;
+const _companyName = (COMPANY as { name?: unknown } | undefined)?.name;
+const _tagline = (COMPANY as { tagline?: unknown } | undefined)?.tagline;
+const _founded = (COMPANY as { foundedYear?: unknown } | undefined)?.foundedYear;
+const _siteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br";
+const OG_IMAGE = `${_siteUrl}/og-cover.jpg`;
+const OG_TITLE = `${typeof _companyName === "string" && _companyName ? _companyName : "Rezende Saback"} — ${typeof _tagline === "string" && _tagline ? _tagline : "Empreendimentos em Betim/MG"}`;
 const OG_DESCRIPTION =
-  `Construtora e incorporadora em Betim desde ${COMPANY.foundedYear}. Lançamento Golden Mall Rosário com planta customizada e acabamento premium, além de imóveis prontos para morar.`;
+  `Construtora e incorporadora em Betim desde ${typeof _founded === "number" ? _founded : 1988}. Lançamento Golden Mall Rosário com planta customizada e acabamento premium, além de imóveis prontos para morar.`;
 
 export const Route = createFileRoute("/")({
   component: Index,
-  head: () => ({
-    meta: [
-      { title: OG_TITLE },
-      { name: "description", content: OG_DESCRIPTION },
-      { property: "og:title", content: OG_TITLE },
-      { property: "og:description", content: OG_DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: COMPANY.name },
-      { property: "og:locale", content: "pt_BR" },
-      { property: "og:url", content: `${SITE_URL}/` },
-      { property: "og:image", content: OG_IMAGE },
-      { property: "og:image:secure_url", content: OG_IMAGE },
-      { property: "og:image:type", content: "image/jpeg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: OG_TITLE },
-      { name: "twitter:description", content: OG_DESCRIPTION },
-      { name: "twitter:image", content: OG_IMAGE },
-      { name: "twitter:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
-    ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/` },
-      // Sem preload declarativo do hero: o <img> é inserido pelo React após
-      // a hidratação e o Chrome marcava o preload como "not used" (overlay
-      // de exceção no preview). LCP via eager + fetchpriority="high".
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          name: "Empreendimentos Rezende Saback",
-          itemListElement: projects.map((p, i) => ({
-            "@type": "ListItem",
-            position: i + 1,
-            url: `${SITE_URL}/obras/${p.slug}`,
-            name: p.name,
-          })),
-        }),
-      },
-    ],
-  }),
+  head: () => {
+    try {
+      const companyName = (COMPANY as { name?: unknown } | undefined)?.name;
+      const safeName = typeof companyName === "string" && companyName ? companyName : "Rezende Saback";
+      const safeSiteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br";
+      const list = Array.isArray(projects) ? projects : [];
+      const items = list
+        .filter((p) => p && typeof (p as { slug?: unknown }).slug === "string" && typeof (p as { name?: unknown }).name === "string")
+        .map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${safeSiteUrl}/obras/${(p as { slug: string }).slug}`,
+          name: (p as { name: string }).name,
+        }));
+      return {
+        meta: [
+          { title: OG_TITLE },
+          { name: "description", content: OG_DESCRIPTION },
+          { property: "og:title", content: OG_TITLE },
+          { property: "og:description", content: OG_DESCRIPTION },
+          { property: "og:type", content: "website" },
+          { property: "og:site_name", content: safeName },
+          { property: "og:locale", content: "pt_BR" },
+          { property: "og:url", content: `${safeSiteUrl}/` },
+          { property: "og:image", content: OG_IMAGE },
+          { property: "og:image:secure_url", content: OG_IMAGE },
+          { property: "og:image:type", content: "image/jpeg" },
+          { property: "og:image:width", content: "1200" },
+          { property: "og:image:height", content: "630" },
+          { property: "og:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: OG_TITLE },
+          { name: "twitter:description", content: OG_DESCRIPTION },
+          { name: "twitter:image", content: OG_IMAGE },
+          { name: "twitter:image:alt", content: "Fachada de empreendimento residencial da Rezende Saback ao entardecer, em Betim/MG" },
+        ],
+        links: [
+          { rel: "canonical", href: `${safeSiteUrl}/` },
+        ],
+        scripts: [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: `Empreendimentos ${safeName}`,
+              itemListElement: items,
+            }),
+          },
+        ],
+      };
+    } catch {
+      return { meta: [{ title: "Rezende Saback — Empreendimentos em Betim/MG" }] };
+    }
+  },
 });
 
 
@@ -111,6 +127,33 @@ const stats = [
   { n: "200+", l: "Obras entregues" },
   { n: "1.000+", l: "Famílias atendidas" },
 ];
+
+/**
+ * Boundary local por seção: se um widget da home lançar (ex: dados
+ * parciais em HMR, imagem inválida), apenas a seção some — a rota
+ * continua renderizando em vez de cair em "Error in route match".
+ */
+class SectionGuard extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch(error: unknown) {
+    try {
+      console.error("[SectionGuard]", error);
+    } catch {
+      // no-op
+    }
+  }
+  render() {
+    if (this.state.failed) return null;
+    try {
+      return this.props.children;
+    } catch {
+      return null;
+    }
+  }
+}
 
 
 function Index() {
@@ -141,9 +184,9 @@ function Index() {
 
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur">
-        <div className="container-x grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 md:flex md:justify-between">
+      {/* Header — logomarca oficial LOGOMARCA-RS-1024x253.png no topo */}
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 shadow-[0_8px_30px_-18px_rgba(46,49,146,0.45)] backdrop-blur">
+        <div className="container-x grid h-24 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 md:flex md:h-24 md:justify-between">
           <div className="min-w-0">
             <Logo />
           </div>
@@ -322,7 +365,9 @@ function Index() {
 
 
       {/* Feito para você — Destaque lançamento Golden Mall Rosário */}
-      <GoldenMallSpotlight />
+      <SectionGuard>
+        <GoldenMallSpotlight />
+      </SectionGuard>
 
       {/* Galeria de obras desabilitada por solicitação — seção "Detalhes que só a obra pronta revela" removida da home.
           Âncora vazia preservada: rotas /obras/$slug linkam para /#galeria; sem o id esses links caíam no topo.
@@ -386,7 +431,9 @@ function Index() {
 
 
       {/* Nas redes — feed do Instagram (em configuração) */}
-      <HomeInstagram />
+      <SectionGuard>
+        <HomeInstagram />
+      </SectionGuard>
 
       {/* Contato */}
       <section id="contato" className="container-x section-y">
@@ -423,13 +470,17 @@ function Index() {
             </div>
           </div>
 
-          <ContactForm />
+          <SectionGuard>
+            <ContactForm />
+          </SectionGuard>
 
         </div>
       </section>
 
       {/* Rodapé institucional único — inclui crédito IDEIAS VIRTUAIS + links em nova janela */}
-      <SiteFooter />
+      <SectionGuard>
+        <SiteFooter />
+      </SectionGuard>
 
 
       <style>{`

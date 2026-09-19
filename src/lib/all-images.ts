@@ -10,7 +10,7 @@
  */
 
 import { resolveImage } from "@/lib/images";
-import { HERO_URL, HERO_FALLBACK_URL, LOGO_URL, LOGO_VENDOR_URL } from "@/lib/images";
+import { HERO_URL, HERO_FALLBACK_URL, LOGO_URL } from "@/lib/images";
 import { galleryItems } from "@/data/projects";
 import { residentialWorks } from "@/data/residential";
 import { commercialWorks } from "@/data/commercial";
@@ -52,9 +52,10 @@ export function getAllImages(): CatalogImage[] {
   pushUnique(all, { src: safeSrc(HERO_URL), alt: "Empreendimento da Rezende Saback ao entardecer", group: "Hero", title: "Hero — foto oficial" }, seen);
   pushUnique(all, { src: safeSrc(HERO_FALLBACK_URL), alt: "Versão otimizada do hero", group: "Hero", title: "Hero — fallback webp" }, seen);
 
-  // 2. Institucional: logo, sede, instagram, og-cover.
+  // 2. Institucional: logo (entrada ÚNICA — a vendorada `__l5e` é fallback
+  // interno do componente Logo, não item de galeria; duplicar gerava 2 cards
+  // da mesma marca com object-cover cortando a logo larga + 2 preloads).
   pushUnique(all, { src: safeSrc(LOGO_URL), alt: "Logo Rezende Saback", group: "Institucional", title: "Logo oficial" }, seen);
-  pushUnique(all, { src: safeSrc(LOGO_VENDOR_URL), alt: "Logo Rezende Saback (vendorada)", group: "Institucional", title: "Logo vendorada" }, seen);
   try {
     const base = safeSrc("/og-cover.jpg");
     pushUnique(all, { src: base, alt: "Capa institucional Rezende Saback", group: "Institucional", title: "OG Cover" }, seen);

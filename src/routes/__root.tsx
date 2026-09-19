@@ -118,47 +118,68 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${COMPANY.name} — ${COMPANY.tagline}` },
-      { name: "description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
-      { name: "author", content: "Rezende Saback Engenharia" },
-      { name: "theme-color", content: "#2E3192" },
-      { property: "og:site_name", content: COMPANY.name },
-      { property: "og:title", content: `${COMPANY.name} — ${COMPANY.tagline}` },
-      { property: "og:description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
-      { property: "og:type", content: "website" },
-      { property: "og:locale", content: "pt_BR" },
-      { property: "og:url", content: `${SITE_URL}/` },
-      { property: "og:image", content: `${SITE_URL}${OG_IMAGE}` },
-      { property: "og:image:secure_url", content: `${SITE_URL}${OG_IMAGE}` },
-      { property: "og:image:type", content: "image/jpeg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: `${SITE_URL}${OG_IMAGE}` },
-      { name: "twitter:title", content: `${COMPANY.name} — ${COMPANY.tagline}` },
-      { name: "twitter:description", content: `Desde ${COMPANY.foundedYear}, a ${COMPANY.name} constrói empreendimentos residenciais e comerciais em ${COMPANY.city}/${COMPANY.state} com acabamento diferenciado e planta customizável.` },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: `${import.meta.env.BASE_URL}favicon.png`.replace(/\/\//g, "/"), type: "image/png" },
-      { rel: "apple-touch-icon", href: `${import.meta.env.BASE_URL}apple-touch-icon.png`.replace(/\/\//g, "/") },
-      // NOTA: sem <link rel="preload" as="image"> para o hero.
-      // O hero é renderizado via React (SmartImage) após a hidratação;
-      // o preload declarativo disparava no HTML estático e o <img> só era
-      // inserido segundos depois → o Chrome registrava
-      // "preloaded but not used within a few seconds" e o overlay do
-      // preview exibia como exceção/tela branca. O LCP continua otimizado
-      // via <img loading="eager" fetchpriority="high"> + aquecimento de
-      // cache em memória (warmCriticalImage), sem link preload.
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" },
-    ],
-  }),
+  head: () => {
+    try {
+      const companyName = (COMPANY as { name?: unknown } | undefined)?.name;
+      const tagline = (COMPANY as { tagline?: unknown } | undefined)?.tagline;
+      const foundedYear = (COMPANY as { foundedYear?: unknown } | undefined)?.foundedYear;
+      const city = (COMPANY as { city?: unknown } | undefined)?.city;
+      const state = (COMPANY as { state?: unknown } | undefined)?.state;
+      const safeName = typeof companyName === "string" && companyName ? companyName : "Rezende Saback";
+      const safeTagline = typeof tagline === "string" && tagline ? tagline : "Empreendimentos em Betim/MG";
+      const safeFound = typeof foundedYear === "number" ? foundedYear : 1988;
+      const safeCity = typeof city === "string" && city ? city : "Betim";
+      const safeState = typeof state === "string" && state ? state : "MG";
+      const safeSiteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br";
+      const safeOg = typeof OG_IMAGE === "string" && OG_IMAGE ? OG_IMAGE : "/og-cover.jpg";
+      const desc = `Desde ${safeFound}, a ${safeName} constrói empreendimentos residenciais e comerciais em ${safeCity}/${safeState} com acabamento diferenciado e planta customizável.`;
+      let base = "/";
+      try {
+        base = (import.meta as unknown as { env?: { BASE_URL?: unknown } })?.env?.BASE_URL as string ?? "/";
+      } catch {
+        base = "/";
+      }
+      const baseStr = typeof base === "string" && base ? base : "/";
+      const iconHref = `${baseStr}favicon.png`.replace(/\/\//g, "/");
+      const appleHref = `${baseStr}apple-touch-icon.png`.replace(/\/\//g, "/");
+      const cssHref = typeof appCss === "string" ? appCss : undefined;
+      return {
+        meta: [
+          { charSet: "utf-8" },
+          { name: "viewport", content: "width=device-width, initial-scale=1" },
+          { title: `${safeName} — ${safeTagline}` },
+          { name: "description", content: desc },
+          { name: "author", content: "Rezende Saback Engenharia" },
+          { name: "theme-color", content: "#2E3192" },
+          { property: "og:site_name", content: safeName },
+          { property: "og:title", content: `${safeName} — ${safeTagline}` },
+          { property: "og:description", content: desc },
+          { property: "og:type", content: "website" },
+          { property: "og:locale", content: "pt_BR" },
+          { property: "og:url", content: `${safeSiteUrl}/` },
+          { property: "og:image", content: `${safeSiteUrl}${safeOg}` },
+          { property: "og:image:secure_url", content: `${safeSiteUrl}${safeOg}` },
+          { property: "og:image:type", content: "image/jpeg" },
+          { property: "og:image:width", content: "1200" },
+          { property: "og:image:height", content: "630" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:image", content: `${safeSiteUrl}${safeOg}` },
+          { name: "twitter:title", content: `${safeName} — ${safeTagline}` },
+          { name: "twitter:description", content: desc },
+        ],
+        links: [
+          ...(cssHref ? [{ rel: "stylesheet", href: cssHref }] : []),
+          { rel: "icon", href: iconHref, type: "image/png" },
+          { rel: "apple-touch-icon", href: appleHref },
+          { rel: "preconnect", href: "https://fonts.googleapis.com" },
+          { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+          { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" },
+        ],
+      };
+    } catch {
+      return { meta: [{ title: "Rezende Saback — Empreendimentos em Betim/MG" }] };
+    }
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -237,7 +258,11 @@ function RootComponent() {
       const base = (import.meta.env?.BASE_URL as string | undefined) ?? "/";
       const prefix = !base || base === "/" || base === "./" ? "" : base.replace(/\/$/, "");
       warmCriticalImage(`${prefix}/hero-rosario.jpg`);
+      warmCriticalImage(`${prefix}/LOGOMARCA-RS-1024x253.png`);
       warmCriticalImage(`${prefix}/logo-rezende-saback.png`);
+      warmCriticalImage(
+        `${prefix}/__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png`,
+      );
     } catch {
       // otimização — nunca quebra
     }

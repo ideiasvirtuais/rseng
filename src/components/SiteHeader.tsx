@@ -6,7 +6,6 @@ import { segmentNav } from "./segments";
 
 // Re-export de compatibilidade (type-only → apagado em compilação,
 // sem binding de runtime; não confunde o code-splitter do TanStack).
-export { segmentNav } from "./segments";
 export type { SegmentRoute } from "./segments";
 
 export function SiteHeader() {
@@ -19,8 +18,8 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur">
-      <div className="container-x grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 md:flex md:justify-between">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 shadow-[0_8px_30px_-18px_rgba(46,49,146,0.45)] backdrop-blur">
+      <div className="container-x grid h-24 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 md:flex md:h-24 md:justify-between">
         <div className="min-w-0">
           <Logo />
         </div>

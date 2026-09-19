@@ -39,8 +39,21 @@ export function HeroBackground({
   className,
   imgClassName,
 }: HeroBackgroundProps) {
-  const primary = resolveImage(rawSrc) || "";
-  const fallback = resolveImage(rawFallback) || "";
+  const primary = (() => {
+    try {
+      return resolveImage(rawSrc) || "";
+    } catch {
+      return "";
+    }
+  })();
+  const fallback = (() => {
+    try {
+      return resolveImage(rawFallback) || "";
+    } catch {
+      return "";
+    }
+  })();
+  const safeAlt = typeof alt === "string" && alt ? alt : "Empreendimento Rezende Saback";
 
   const chain = [primary, fallback].filter((u, i, arr) => u && arr.indexOf(u) === i);
 
@@ -119,7 +132,7 @@ export function HeroBackground({
         <img
           ref={imgRef}
           src={current}
-          alt={alt}
+          alt={safeAlt}
           loading="eager"
           fetchPriority="high"
           decoding="async"

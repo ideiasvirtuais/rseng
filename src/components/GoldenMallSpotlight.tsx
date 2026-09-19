@@ -61,7 +61,17 @@ const QUICK_FACTS = [
  * ficha rápida e CTAs para a página da obra e central de vendas.
  */
 export function GoldenMallSpotlight() {
-  const whatsappUrl = `https://wa.me/${COMPANY.whatsapp.number}?text=${encodeURIComponent(
+  const whatsappNumber =
+    (COMPANY as { whatsapp?: { number?: unknown } } | undefined)?.whatsapp?.number;
+  const safeNumber =
+    typeof whatsappNumber === "string" && whatsappNumber.length > 0
+      ? whatsappNumber
+      : "5531993040342";
+  const foundedYear =
+    (COMPANY as { foundedYear?: unknown } | undefined)?.foundedYear;
+  const safeYear = typeof foundedYear === "number" ? foundedYear : 1988;
+  const coverSrc = typeof goldenMallCover === "string" ? goldenMallCover : "";
+  const whatsappUrl = `https://wa.me/${safeNumber}?text=${encodeURIComponent(
     "Olá! Vi o destaque do Golden Mall Rosário na home e quero receber a tabela e a planta das lojas.",
   )}`;
 
@@ -90,7 +100,7 @@ export function GoldenMallSpotlight() {
         <div className="relative">
           <div className="relative overflow-hidden rounded-3xl border border-primary-foreground/20 shadow-2xl">
             <SmartImage
-              src={goldenMallCover}
+              src={coverSrc}
               alt="Perspectiva da fachada de esquina do Golden Mall Rosário — lançamento comercial no bairro Angola, Betim/MG"
               wrapperClassName="block w-full"
               skeletonClassName="aspect-[4/3] w-full"
@@ -143,7 +153,7 @@ export function GoldenMallSpotlight() {
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">
               Rezende Saback
             </p>
-            <p className="text-sm font-bold">Desde {COMPANY.foundedYear} em Betim</p>
+            <p className="text-sm font-bold">Desde {safeYear} em Betim</p>
           </div>
         </div>
 

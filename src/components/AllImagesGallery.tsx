@@ -9,6 +9,54 @@ import { cn } from "@/lib/utils";
 const FILTERS = ["Todas", "Hero", "Lançamentos", "Residenciais", "Comerciais", "Casas", "Institucional", "Segmentos"] as const;
 export type AllImagesFilter = (typeof FILTERS)[number];
 
+function isLogoSrc(src: string): boolean {
+  return /logo-rezende/i.test(src ?? "");
+}
+
+type GalleryCardProps = {
+  item: CatalogImage;
+  index: number;
+  cardKey: string;
+  onOpen: (index: number) => void;
+};
+
+function GalleryCard({ item, index, cardKey, onOpen }: GalleryCardProps) {
+  const isLogo = isLogoSrc(item.src);
+  return (
+    <li
+      key={cardKey}
+      className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card"
+    >
+      <button
+        type="button"
+        onClick={() => onOpen(index)}
+        className="absolute inset-0 h-full w-full cursor-zoom-in text-left"
+        aria-label={`Ampliar ${item.alt}`}
+      >
+        <SmartImage
+          src={item.src}
+          alt={item.alt}
+          wrapperClassName={cn("absolute inset-0", isLogo && "bg-white p-8")}
+          className={cn(
+            "h-full w-full transition duration-700 group-hover:scale-105",
+            isLogo ? "object-contain" : "object-cover"
+          )}
+          loading={index < 6 ? "eager" : "lazy"}
+          decoding="async"
+        />
+      </button>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/10 to-transparent opacity-90 transition group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground">
+        <div className="min-w-0">
+          <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-accent">{item.group}</div>
+          <div className="truncate text-sm font-semibold">{item.title}</div>
+        </div>
+        <ZoomIn className="h-5 w-5 shrink-0 opacity-70" aria-hidden="true" />
+      </div>
+    </li>
+  );
+}
+
 /**
  * Galeria "Carregar todas as imagens": exibe o catálogo completo com
  * pré-carregamento real em background + barra de progresso + lightbox.
@@ -41,6 +89,15 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
       // no-op
     }
     window.location.reload();
+  };
+
+  const handleOpen = (index: number) => {
+    setLightbox(index);
+  };
+
+  const countFor = (f: AllImagesFilter): number => {
+    if (f === "Todas") return images.length;
+    return images.filter((i) => i.group === f).length;
   };
 
   return (
@@ -107,7 +164,7 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
       <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar todas as imagens por grupo">
         {FILTERS.map((f) => {
           const active = filter === f;
-          const count = f === "Todas" ? images.length : images.filter((i) => i.group === f).length;
+          const count = countFor(f);
           if (f !== "Todas" && count === 0) return null;
           return (
             <button
@@ -122,7 +179,7 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
                 "rounded-full border px-4 py-2 text-sm transition",
                 active
                   ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-muted-foreground hover:border-primary hover:text-primary",
+                  : "border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
               )}
             >
               {f} <span className="ml-1 tabular-nums opacity-70">{count}</span>
@@ -134,34 +191,13 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
       {filtered.length > 0 ? (
         <ul className="mt-8 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((item, index) => (
-            <li
+            <GalleryCard
               key={`${item.group}-${item.src}-${index}`}
-              className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card"
-            >
-              <button
-                type="button"
-                onClick={() => setLightbox(index)}
-                className="absolute inset-0 h-full w-full cursor-zoom-in text-left"
-                aria-label={`Ampliar ${item.alt}`}
-              >
-                <SmartImage
-                  src={item.src}
-                  alt={item.alt}
-                  wrapperClassName="absolute inset-0"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  loading={index < 6 ? "eager" : "lazy"}
-                  decoding="async"
-                />
-              </button>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/10 to-transparent opacity-90 transition group-hover:opacity-100" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground">
-                <div className="min-w-0">
-                  <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-accent">{item.group}</div>
-                  <div className="truncate text-sm font-semibold">{item.title}</div>
-                </div>
-                <ZoomIn className="h-5 w-5 shrink-0 opacity-70" aria-hidden="true" />
-              </div>
-            </li>
+              cardKey={`${item.group}-${item.src}-${index}`}
+              item={item}
+              index={index}
+              onOpen={handleOpen}
+            />
           ))}
         </ul>
       ) : (
@@ -170,7 +206,7 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
         </div>
       )}
 
-      {activePhoto && (
+      {activePhoto ? (
         <div
           role="dialog"
           aria-modal="true"
@@ -223,7 +259,7 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
             </div>
           </figure>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

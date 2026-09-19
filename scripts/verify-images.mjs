@@ -115,6 +115,7 @@ console.log(`✓ vendorados: ${okVendor}/${pointers.length} assets __l5e present
 const REQUIRED = [
   "hero-rosario.jpg",
   "hero-rosario.webp",
+  "LOGOMARCA-RS-1024x253.png",
   "logo-rezende-saback.png",
   "og-cover.jpg",
   "favicon.png",
@@ -132,6 +133,8 @@ console.log(`✓ public/: ${REQUIRED.filter((i) => existsSync(join(PUBLIC, i))).
 
 // 6. Imagens Vite referenciadas diretamente pelo código
 const VITE_REFS = [
+  "src/assets/logomarca-rs-1024x253.png",
+  "src/assets/logo-rezende-saback.png",
   "src/assets/casas/joao-bosco.jpg",
   "src/assets/casas/joelma.jpg",
   "src/assets/casas/jose-maria.jpg",
