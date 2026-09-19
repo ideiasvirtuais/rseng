@@ -169,7 +169,7 @@ function ProjectDetail() {
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Voltar para a página inicial
           </Link>
-           <Link to="/" hash="galeria" className="hidden text-sm text-muted-foreground hover:text-primary md:inline">
+           <Link to="/" hash="segmentos" className="hidden text-sm text-muted-foreground hover:text-primary md:inline">
             Todos os empreendimentos
           </Link>
         </div>
@@ -180,7 +180,7 @@ function ProjectDetail() {
         <nav aria-label="Navegação estrutural" className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
           <Link to="/" className="hover:text-primary">Início</Link>
           <span className="mx-2">/</span>
-           <Link to="/" hash="galeria" className="hover:text-primary">Empreendimentos</Link>
+           <Link to="/" hash="segmentos" className="hover:text-primary">Empreendimentos</Link>
           <span className="mx-2">/</span>
           <span className="text-primary">{project.name}</span>
         </nav>
@@ -389,7 +389,7 @@ function ProjectDetail() {
             </Link>
             <Link
               to="/"
-               hash="galeria"
+               hash="segmentos"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary-foreground/10"
             >
               Ver outros empreendimentos
@@ -455,7 +455,7 @@ function ProjectNotFound() {
         </p>
         <Link
           to="/"
-          hash="galeria"
+          hash="segmentos"
           className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
         >
           Ver todos os empreendimentos

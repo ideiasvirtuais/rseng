@@ -78,6 +78,33 @@ for (const img of REQUIRED_PUBLIC_IMAGES) {
   }
 }
 
+// ── SEO canônico https://rsengenharia.eng.br ───────────────────────────────
+const SITE_URL = (process.env.SITE_URL || "https://rsengenharia.eng.br").replace(/\/+$/, "");
+for (const seo of ["robots.txt", "sitemap.xml", "CNAME"]) {
+  const file = resolve(DIST, seo);
+  if (!existsSync(file)) {
+    warnings.push(`${seo} ausente em dist/client/ — rode node scripts/generate-seo.mjs`);
+  }
+}
+{
+  const robots = resolve(DIST, "robots.txt");
+  if (existsSync(robots)) {
+    const body = readFileSync(robots, "utf8");
+    if (!body.includes(`${SITE_URL}/sitemap.xml`)) errors.push(`robots.txt sem Sitemap ${SITE_URL}/sitemap.xml`);
+  }
+  const sitemap = resolve(DIST, "sitemap.xml");
+  if (existsSync(sitemap)) {
+    const body = readFileSync(sitemap, "utf8");
+    if (!body.includes(SITE_URL)) errors.push(`sitemap.xml sem URLs ${SITE_URL}`);
+    if (!body.includes("/obras/golden-mall-rosario")) errors.push("sitemap.xml sem /obras/golden-mall-rosario");
+  }
+  const htaccess = resolve(DIST, ".htaccess");
+  if (existsSync(htaccess)) {
+    const body = readFileSync(htaccess, "utf8");
+    if (!/RewriteCond %\{HTTPS\} off/i.test(body)) warnings.push(".htaccess sem redirect HTTP→HTTPS (generate-htaccess desatualizado?)");
+  }
+}
+
 // ── Assets do CDN vendorados em __l5e ────────────────────────────────────────
 const L5E_DIR = resolve(DIST, "__l5e/assets-v1");
 if (!existsSync(L5E_DIR)) {

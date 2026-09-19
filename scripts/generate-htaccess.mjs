@@ -16,13 +16,17 @@ const OUT_FILE = resolve(OUT_DIR, ".htaccess");
 const SHELL_FILE = resolve(OUT_DIR, "_shell.html");
 const INDEX_FILE = resolve(OUT_DIR, "index.html");
 
+const SITE_URL = (process.env.SITE_URL || "https://rsengenharia.eng.br").replace(/\/+$/, "");
+const SITE_HOST = SITE_URL.replace(/^https?:\/\//, "");
+
 const HTACCESS = `# TanStack Start SPA hospedado em Apache (KingHost / Napoleon)
-# index.html deve vir antes de index.php para não cair no WordPress antigo.
+# Dominio canonico: ${SITE_URL}
+# index.html deve vir antes de index.php para nao cair no WordPress antigo.
 DirectoryIndex index.html _shell.html index.php
 
 # MIME moderno: Apaches antigos da KingHost servem .webp/.avif como
-# application/octet-stream ou text/plain — o browser falha ao decodificar
-# e a imagem "dá erro de carregamento". Declaração explícita corrige.
+# application/octet-stream ou text/plain - o browser falha ao decodificar
+# e a imagem "da erro de carregamento". Declaracao explicita corrige.
 <IfModule mod_mime.c>
   AddType image/webp .webp
   AddType image/avif .avif
@@ -32,14 +36,23 @@ DirectoryIndex index.html _shell.html index.php
 
 RewriteEngine On
 
-# NUNCA reescreva mídia ausente para o _shell.html:
+# -- Dominio canonico https://rsengenharia.eng.br --
+# 1) HTTP -> HTTPS (preserva path + query)
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://${SITE_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+# 2) www.rsengenharia.eng.br -> rsengenharia.eng.br (consolida SEO no apex)
+RewriteCond %{HTTP_HOST} ^www\\.${SITE_HOST.replace(/\./g, "\\.")}$ [NC]
+RewriteRule ^ https://${SITE_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+# NUNCA reescreva midia ausente para o _shell.html:
 # sem isso, uma imagem 404 retornava HTML (text/html, status 200) e o
-# browser tentava decodificar HTML como imagem → erro silencioso de carga.
-# Com a regra abaixo, mídia ausente responde 404 de verdade e o
+# browser tentava decodificar HTML como imagem -> erro silencioso de carga.
+# Com a regra abaixo, midia ausente responde 404 de verdade e o
 # SmartImage consegue cair para o fallback local em vez de quebrar.
 RewriteRule \\.(?:png|jpe?g|webp|avif|gif|svg|ico|woff2?)$ - [R=404,L]
 
-# SPA fallback: rotas inexistentes caem no _shell.html
+# SPA fallback: rotas inexistentes caem no _shell.html (exceto arquivos reais)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ _shell.html [L]

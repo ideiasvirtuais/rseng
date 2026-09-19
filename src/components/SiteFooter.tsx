@@ -2,7 +2,8 @@ import { ArrowUpRight, Code2, ExternalLink, Facebook, Instagram, Mail, MapPin, P
 import { Link } from "@tanstack/react-router";
 
 import { COMPANY, DEVELOPER } from "@/data/company";
-import { Logo, segmentNav } from "./SiteHeader";
+import { Logo } from "./Logo";
+import { segmentNav } from "./segments";
 
 function ExternalCard({
   eyebrow,

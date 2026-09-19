@@ -14,6 +14,7 @@ import { Route as CasasDeAltoPadraoRouteImport } from './routes/casas-de-alto-pa
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-comerciais'
 import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
+import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
 import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/client-error'
@@ -44,6 +45,11 @@ const EdificiosResidenciaisRoute = EdificiosResidenciaisRouteImport.update({
   path: '/edificios-residenciais',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/deploy': typeof DeployRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
+  '/galeria': typeof GaleriaRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/deploy': typeof DeployRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
+  '/galeria': typeof GaleriaRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/deploy': typeof DeployRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
+  '/galeria': typeof GaleriaRoute
   '/health': typeof HealthRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/deploy'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
+    | '/galeria'
     | '/health'
     | '/obras/$slug'
     | '/api/public/client-error'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/deploy'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
+    | '/galeria'
     | '/health'
     | '/obras/$slug'
     | '/api/public/client-error'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/deploy'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
+    | '/galeria'
     | '/health'
     | '/obras/$slug'
     | '/api/public/client-error'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   DeployRoute: typeof DeployRoute
   EdificiosComerciaisRoute: typeof EdificiosComerciaisRoute
   EdificiosResidenciaisRoute: typeof EdificiosResidenciaisRoute
+  GaleriaRoute: typeof GaleriaRoute
   HealthRoute: typeof HealthRoute
   ObrasSlugRoute: typeof ObrasSlugRoute
   ApiPublicClientErrorRoute: typeof ApiPublicClientErrorRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EdificiosResidenciaisRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health': {
       id: '/health'
       path: '/health'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   DeployRoute: DeployRoute,
   EdificiosComerciaisRoute: EdificiosComerciaisRoute,
   EdificiosResidenciaisRoute: EdificiosResidenciaisRoute,
+  GaleriaRoute: GaleriaRoute,
   HealthRoute: HealthRoute,
   ObrasSlugRoute: ObrasSlugRoute,
   ApiPublicClientErrorRoute: ApiPublicClientErrorRoute,

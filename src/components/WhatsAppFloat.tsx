@@ -1,10 +1,21 @@
 import { COMPANY } from "@/data/company";
 
-const WHATSAPP_NUMBER = COMPANY.whatsapp.number;
-const DEFAULT_MESSAGE = COMPANY.whatsapp.defaultMessage;
+const FALLBACK_NUMBER = "5531993040342";
+const FALLBACK_MESSAGE = "Olá! Vim pelo site e gostaria de mais informações.";
+
+function getWhatsAppHref(): string {
+  try {
+    const wa = (COMPANY as unknown as { whatsapp?: { number?: unknown; defaultMessage?: unknown } } | undefined)?.whatsapp;
+    const number = typeof wa?.number === "string" && wa.number.length > 0 ? wa.number : FALLBACK_NUMBER;
+    const message = typeof wa?.defaultMessage === "string" && wa.defaultMessage.length > 0 ? wa.defaultMessage : FALLBACK_MESSAGE;
+    return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  } catch {
+    return `https://wa.me/${FALLBACK_NUMBER}?text=${encodeURIComponent(FALLBACK_MESSAGE)}`;
+  }
+}
 
 export function WhatsAppFloat() {
-  const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`;
+  const href = getWhatsAppHref();
   return (
     <a
       href={href}

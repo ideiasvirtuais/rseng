@@ -9,11 +9,25 @@ import { residentialWorks } from "./residential";
 import { houses } from "./houses";
 import { goldenMallCover, goldenMallImages } from "./goldenMall";
 
-const buildingRosario = rosarioPhoto.url;
-const buildingMalbec = malbecPhoto.url;
-const buildingIris = irisPhoto.url;
-const buildingJopena = jopenaPhoto.url;
-const buildingSantorini = santoriniPhoto.url;
+const buildingRosario = assetUrl(rosarioPhoto);
+const buildingMalbec = assetUrl(malbecPhoto);
+const buildingIris = assetUrl(irisPhoto);
+const buildingJopena = assetUrl(jopenaPhoto);
+const buildingSantorini = assetUrl(santoriniPhoto);
+
+/** Acesso defensivo a imports de assets — nunca lança em module evaluation. */
+function assetUrl(input: unknown): string {
+  try {
+    const url = (input as { url?: unknown } | undefined)?.url;
+    if (typeof url === "string" && url.length > 0) return url;
+    const def = (input as { default?: unknown } | undefined)?.default;
+    if (typeof def === "string" && def.length > 0) return def;
+    if (typeof input === "string") return input;
+  } catch {
+    // no-op
+  }
+  return "";
+}
 
 export type GalleryCategory = "Fachadas" | "Áreas Comuns" | "Lançamentos" | "Comerciais" | "Residenciais" | "Casas";
 

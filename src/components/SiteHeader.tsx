@@ -1,49 +1,19 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { LOGO_URL } from "@/lib/images";
-import { SmartImage } from "@/components/SmartImage";
+import { Logo } from "./Logo";
+import { segmentNav } from "./segments";
 
-export type SegmentRoute = "/edificios-residenciais" | "/edificios-comerciais" | "/casas-de-alto-padrao";
-
-export function Logo({ variant = "dark", to = "/" }: { variant?: "dark" | "light"; to?: "/" | SegmentRoute }) {
-  const isLight = variant === "light";
-  return (
-    <Link
-      to={to}
-      aria-label="Rezende Saback Construtora — início"
-      className={`inline-flex items-center ${isLight ? "rounded-md bg-primary-foreground/95 px-3 py-2" : ""}`}
-    >
-      <SmartImage
-        src={LOGO_URL}
-        alt="Rezende Saback Construtora"
-        wrapperClassName="inline-flex"
-        className="h-10 w-auto md:h-12"
-        loading="eager"
-        decoding="async"
-        retryable={false}
-      />
-    </Link>
-  );
-}
-
-/**
- * Navegação de segmentos com rotas literais.
- * O `to` do <Link> do TanStack Router resolve a rota em tempo de execução:
- * manter o tipo como união literal (em vez de `string`) garante em
- * compilação que cada destino existe e impede "route match" inválido
- * que derrubaria a rota com tela branca.
- */
-export const segmentNav: { to: SegmentRoute; label: string }[] = [
-  { to: "/edificios-residenciais", label: "Residenciais" },
-  { to: "/edificios-comerciais", label: "Comerciais" },
-  { to: "/casas-de-alto-padrao", label: "Casas" },
-];
+// Re-export de compatibilidade (type-only → apagado em compilação,
+// sem binding de runtime; não confunde o code-splitter do TanStack).
+export { segmentNav } from "./segments";
+export type { SegmentRoute } from "./segments";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const hashLinks = [
+    { href: "/galeria", label: "Todas as imagens" },
     { href: "/#sobre", label: "Sobre" },
     { href: "/#contato", label: "Contato" },
   ];

@@ -120,6 +120,7 @@ const ROOT_ALLOWLIST = new Set([
   "_headers",
   "robots.txt",
   "sitemap.xml",
+  "CNAME",
 ]);
 
 // O manifesto é gerenciado pelo script — nunca conta como obsoleto nem como

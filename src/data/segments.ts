@@ -147,6 +147,17 @@ export const segments: Segment[] = [
   },
 ];
 
-export function getSegment(slug: SegmentSlug): Segment {
-  return segments.find((s) => s.slug === slug)!;
+export function getSegment(slug: string): Segment | undefined {
+  try {
+    return (segments ?? []).find((s) => s?.slug === slug);
+  } catch {
+    return undefined;
+  }
+}
+
+/** Variante estrita para páginas de segmento — retorna fallback em vez de lançar. */
+export function requireSegment(slug: string): Segment {
+  const found = getSegment(slug);
+  if (found) return found;
+  return (segments ?? [])[0] as Segment;
 }

@@ -1,9 +1,19 @@
 import { AlertTriangle } from "lucide-react";
 import { COMPANY } from "@/data/company";
 
-const WHATSAPP_URL = COMPANY.whatsapp.url;
+const FALLBACK_WHATSAPP_URL = "https://wa.me/5531993040342?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
+
+function getWhatsAppUrl(): string {
+  try {
+    const url = (COMPANY as unknown as { whatsapp?: { url?: unknown } } | undefined)?.whatsapp?.url;
+    return typeof url === "string" && url.length > 0 ? url : FALLBACK_WHATSAPP_URL;
+  } catch {
+    return FALLBACK_WHATSAPP_URL;
+  }
+}
 
 export function SiteNotice() {
+  const whatsappUrl = getWhatsAppUrl();
   return (
     <div
       role="status"
@@ -17,7 +27,7 @@ export function SiteNotice() {
         <span className="opacity-90">
           Qualquer dúvida ou informação, entre em contato pelos{" "}
           <a
-            href={WHATSAPP_URL}
+            href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-2 hover:opacity-80"

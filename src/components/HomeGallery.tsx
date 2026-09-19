@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
-import { ZoomIn } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowUpRight, ZoomIn } from "lucide-react";
 
 import { SmartImage } from "@/components/SmartImage";
 import { galleryCategories, galleryItems, type GalleryFilter } from "@/data/projects";
+import { preloadImages } from "@/lib/image-health";
 
 /**
  * Galeria de obras da home — paridade com https://rsengenharia.eng.br/#galeria.
@@ -18,6 +20,17 @@ export function HomeGallery() {
     if (filter === "Todas") return galleryItems;
     return galleryItems.filter((item) => item.category === filter);
   }, [filter]);
+
+  // Carrega TODAS as fotos da galeria em 2º plano (idle): ao trocar de
+  // filtro, a imagem já está no cache — parece instantâneo.
+  useEffect(() => {
+    try {
+      const urls = galleryItems.map((i) => (typeof i?.src === "string" ? i.src : "")).filter(Boolean);
+      if (urls.length > 0) void preloadImages(urls);
+    } catch {
+      // preload nunca quebra o render
+    }
+  }, []);
 
   return (
     <section id="galeria" aria-labelledby="galeria-title" className="container-x section-y scroll-mt-20">
@@ -69,7 +82,7 @@ export function HomeGallery() {
                 alt={alt}
                 wrapperClassName="absolute inset-0"
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                loading="lazy"
+                loading={index < 6 ? "eager" : "lazy"}
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/10 to-transparent opacity-90 transition group-hover:opacity-100" />
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground">
@@ -90,6 +103,15 @@ export function HomeGallery() {
           Nenhuma foto nesta categoria ainda.
         </div>
       )}
+
+      <div className="mt-8 flex justify-center">
+        <Link
+          to="/galeria"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+        >
+          Carregar todas as imagens <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
+      </div>
     </section>
   );
 }

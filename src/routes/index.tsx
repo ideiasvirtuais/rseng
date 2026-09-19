@@ -4,14 +4,21 @@ import { ArrowUpRight, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
 import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
-import { HERO_FALLBACK_URL, HERO_URL, LOGO_URL, type AssetJson } from "@/lib/images";
+import { HERO_FALLBACK_URL, HERO_URL, type AssetJson } from "@/lib/images";
 import { projects } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
 import { GoldenMallSpotlight } from "@/components/GoldenMallSpotlight";
 import { HeroBackground } from "@/components/HeroBackground";
+// Galeria de obras desabilitada por solicitação (título "Detalhes que só a obra pronta revela").
+// Componente preservado em `src/components/HomeGallery.tsx` para reativação futura.
+// import { HomeGallery } from "@/components/HomeGallery";
+// Galeria "Todas as imagens" removida da home por solicitação (50 fotos pesavam o LCP).
+// Catálogo completo segue disponível em `/galeria` via `src/components/AllImagesGallery.tsx`.
+// import { AllImagesGallery } from "@/components/AllImagesGallery";
 import { HomeInstagram } from "@/components/HomeInstagram";
 import { SmartImage } from "@/components/SmartImage";
-import { segmentNav, type SegmentRoute } from "@/components/SiteHeader";
+import { Logo } from "@/components/Logo";
+import { segmentNav, type SegmentRoute } from "@/components/segments";
 import { SiteFooter } from "@/components/SiteFooter";
 import { segments, type SegmentSlug } from "@/data/segments";
 
@@ -106,30 +113,10 @@ const stats = [
 ];
 
 
-function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
-  const isLight = variant === "light";
-
-  return (
-    <a
-      href="#top"
-      aria-label="Rezende Saback Construtora — início"
-      className={`inline-flex items-center ${isLight ? "rounded-md bg-primary-foreground/95 px-3 py-2" : ""}`}
-    >
-      <SmartImage
-        src={LOGO_URL}
-        alt="Rezende Saback Construtora"
-        wrapperClassName="inline-flex"
-        className="h-10 w-auto md:h-12"
-        loading="eager"
-        decoding="async"
-        retryable={false}
-      />
-    </a>
-  );
-}
-
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Home leve: sem pré-carregamento das 50 fotos (só hero + covers via lazy).
+  // O catálogo completo carrega apenas em `/galeria`.
 
   const navLinks = [
     { href: "#personalizacao", label: "Lançamento" },
@@ -337,8 +324,30 @@ function Index() {
       {/* Feito para você — Destaque lançamento Golden Mall Rosário */}
       <GoldenMallSpotlight />
 
-      {/* Galeria de obras desabilitada na home por solicitação — componente preservado em src/components/HomeGallery.tsx para reativação futura. */}
-      {/* <HomeGallery /> */}
+      {/* Galeria de obras desabilitada por solicitação — seção "Detalhes que só a obra pronta revela" removida da home.
+          Âncora vazia preservada: rotas /obras/$slug linkam para /#galeria; sem o id esses links caíam no topo.
+          Componente mantido em src/components/HomeGallery.tsx para reativação futura. */}
+      <span id="galeria" aria-hidden="true" className="block h-0 w-0 overflow-hidden" />
+
+      {/* Galeria completa removida da home por solicitação (50 fotos).
+          Acesso preservado via CTA leve para `/galeria` — home não baixa mais
+          todas as imagens, apenas hero + covers sob demanda. */}
+      <section aria-label="Ver todas as fotos" className="container-x pb-4">
+        <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center">
+          <div>
+            <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Galeria completa</div>
+            <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+              Quer ver todas as fotos dos empreendimentos? Abra a galeria completa em uma página dedicada.
+            </p>
+          </div>
+          <Link
+            to="/galeria"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+          >
+            Abrir galeria completa <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
 
       {/* Sobre */}
       <section id="sobre" className="container-x section-y">
@@ -441,25 +450,5 @@ function Index() {
         }
       `}</style>
     </div>
-  );
-}
-
-function Field({
-  label,
-  required,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-        {label}
-        {required && <span className="text-accent"> *</span>}
-      </span>
-      {children}
-    </label>
   );
 }

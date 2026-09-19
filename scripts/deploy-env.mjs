@@ -139,7 +139,8 @@ function applyIndexingPolicy() {
     }
     console.log("· staging: robots.txt Disallow + X-Robots-Tag noindex aplicados");
   } else {
-    writeFileSync(robots, "User-agent: *\nAllow: /\n", "utf8");
+    const siteUrl = (process.env.SITE_URL || "https://rsengenharia.eng.br").replace(/\/+$/, "");
+    writeFileSync(robots, `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`, "utf8");
     if (existsSync(htaccess)) {
       const body = readFileSync(htaccess, "utf8");
       if (body.includes("X-Robots-Tag")) {

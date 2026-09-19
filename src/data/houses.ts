@@ -16,9 +16,23 @@ export type House = {
   alt: string;
 };
 
+/** Acesso defensivo a imports `.asset.json` — nunca lança em module evaluation. */
+function assetUrl(input: unknown): string {
+  try {
+    const url = (input as { url?: unknown } | undefined)?.url;
+    if (typeof url === "string" && url.length > 0) return url;
+    const def = (input as { default?: unknown } | undefined)?.default;
+    if (typeof def === "string" && def.length > 0) return def;
+    if (typeof input === "string") return input;
+  } catch {
+    // no-op
+  }
+  return "";
+}
+
 export const houses: House[] = [
   {
-    src: casaModernista.url,
+    src: assetUrl(casaModernista),
     name: "Residência Modernista em Condomínio",
     style: "Casa de alto padrão · Arquitetura modernista",
     alt: "Casa de alto padrão branca com volumes geométricos, varanda envidraçada e garagem coberta",

@@ -73,6 +73,17 @@ export function publicUrl(path: string): string {
 }
 
 export const LOGO_URL = publicUrl("/logo-rezende-saback.png");
+/**
+ * Logo oficial vendorada (content-addressed, `__l5e`): segunda tentativa da
+ * cadeia da logo. É o upload canônico aprovado — se o arquivo de `public/`
+ * na raiz falhar (deploy parcial, cache, rewrite do Apache), esta URL ainda
+ * resolve porque vive em pasta versionada própria.
+ */
+export const LOGO_VENDOR_URL = publicUrl(
+  "/__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png",
+);
+/** Cadeia completa de tentativas da logo: raiz → vendorada (nunca vazia). */
+export const LOGO_CHAIN: readonly string[] = [LOGO_URL, LOGO_VENDOR_URL].filter(Boolean);
 export const FAVICON_URL = publicUrl("/favicon.png");
 
 /** Imagem principal do hero — foto oficial atual (public/hero-rosario.*). */

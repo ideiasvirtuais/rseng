@@ -13,6 +13,7 @@
 
 export const STATIC_ROUTES = [
   "/",
+  "/galeria",
   "/edificios-residenciais",
   "/edificios-comerciais",
   "/casas-de-alto-padrao",

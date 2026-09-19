@@ -4,7 +4,8 @@ import { ArrowUpRight, Diamond, Mail, MapPin, Phone, X, ZoomIn } from "lucide-re
 
 import { COMPANY } from "@/data/company";
 
-import { SiteHeader, segmentNav } from "./SiteHeader";
+import { SiteHeader } from "./SiteHeader";
+import { segmentNav } from "./segments";
 import { SiteFooter } from "./SiteFooter";
 import { ContactForm } from "./ContactForm";
 import { SmartImage } from "./SmartImage";

@@ -90,6 +90,33 @@ if (assetsDir) {
 
 must("favicon.png", "ícone do site");
 
+// ── Sincronização com https://rsengenharia.eng.br ──
+const SITE_URL = (process.env.SITE_URL || "https://rsengenharia.eng.br").replace(/\/+$/, "");
+const robotsFile = must("robots.txt", "robots.txt canônico do domínio");
+if (robotsFile) {
+  const body = readFileSync(robotsFile, "utf8");
+  if (!body.includes("Allow: /")) errors.push("robots.txt sem 'Allow: /' — regenere com `node scripts/generate-seo.mjs`");
+  if (!body.includes(`${SITE_URL}/sitemap.xml`)) errors.push(`robots.txt sem Sitemap ${SITE_URL}/sitemap.xml — regenere com generate-seo`);
+}
+const sitemapFile = must("sitemap.xml", "sitemap.xml do domínio");
+if (sitemapFile) {
+  const body = readFileSync(sitemapFile, "utf8");
+  if (!body.includes(SITE_URL)) errors.push(`sitemap.xml sem URLs ${SITE_URL} — regenere com generate-seo`);
+  if (!body.includes("/obras/golden-mall-rosario")) warnings.push("sitemap.xml sem Golden Mall — confira scripts/prerender-routes.mjs");
+}
+const cnameFile = join(DIST, "CNAME");
+if (!existsSync(cnameFile)) {
+  warnings.push("CNAME ausente em dist/client/ — regenere com `node scripts/generate-seo.mjs` (rsengenharia.eng.br)");
+} else {
+  const cname = readFileSync(cnameFile, "utf8").trim();
+  if (cname !== "rsengenharia.eng.br") warnings.push(`CNAME inesperado ("${cname}") — esperado rsengenharia.eng.br`);
+}
+if (htaccess) {
+  const body = readFileSync(htaccess, "utf8");
+  if (!/RewriteCond %\{HTTPS\} off/i.test(body)) errors.push(".htaccess sem redirect HTTP→HTTPS — regenere com generate-htaccess");
+  if (!/www/i.test(body) || !/R=301/i.test(body)) warnings.push(".htaccess sem redirect www→apex 301 — confira generate-htaccess");
+}
+
 if (errors.length) {
   console.error("\n✗ dist/client/ NÃO está pronto para upload:\n");
   for (const e of errors) console.error(`  - ${e}`);
