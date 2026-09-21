@@ -1,12 +1,15 @@
 # Status de publicação — GitHub + FTP
 
-Data: 2026-09-19 (atualizado — tentativa de deploy executada)
+Data: 2026-09-21 (preview aprovado pelo usuário — envio total ao GitHub)
 Commit local: `7fa3da0` — "chore: publicar projeto via Code In"
-Branch: `main` (em dia com `origin/main`)
+Branch: `main` (com 4 arquivos modificados pendentes de push)
 Build FTP: OK — `dist/client/` regenerado em 2026-09-19 (107 arquivos, 26.13 MB, prerender de 16 páginas) e validado por `preflight-ftp.mjs`.
 Dry-run: OK — v2026.09.19-1 (build #12), 107 a enviar, 0 pulados — relatório em `dist/deploy-report.md`.
+Pendente de push (preview OK): `src/components/Logo.tsx` (v5, wrapper transparente),
+`vite.config.ts` (fix `rolldown-runtime` / tela branca no preview),
+`scripts/publish-logo.mjs` (+ `LOGOMARCA-RS-1024x253.png`), `DEPLOY-STATUS.md`.
 
-## GitHub — BLOQUEADO (token expirado)
+## GitHub — ENVIO EM ANDAMENTO (2026-09-21)
 
 O remote tinha um token embutido expirado (`remote: Invalid username or token`).
 O token foi removido do remote (agora `https://github.com/ideiasvirtuais/rseng.git`),
