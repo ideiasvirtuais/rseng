@@ -13,7 +13,7 @@ export const COMPANY = {
   name: "Rezende Saback Construtora",
   legalName: "Rezende Saback Engenharia Ltda",
   tagline: "Empreendimentos em Betim/MG",
-  foundedYear: 1988,
+  foundedYear: 2005,
   city: "Betim",
   state: "MG",
   address: {
@@ -56,8 +56,8 @@ export const COMPANY = {
   hours: "SegÔÇôSex, 9h ├ás 18h",
 } as const;
 
-/** Anos exibidos no site - ajuste marketing para 20+ (era 38). */
-export const COMPANY_YEARS = 20;
+/** Anos exibidos no site — Desde 2005: 21 anos em 2026 (2 décadas de atuação). */
+export const COMPANY_YEARS = 21;
 
 /**
  * Cr├®dito oficial do rodap├® ÔÇö ag├¬ncia desenvolvedora do site.

@@ -75,7 +75,7 @@ export const segments: Segment[] = [
     summary:
       "Prédios de apartamentos com plantas amplas, áreas comuns funcionais e acabamento diferenciado, entregues nos principais bairros de Betim.",
     intro: [
-      "Desde 1988 a Rezende Saback projeta e executa edifícios residenciais pensados para o dia a dia das famílias de Betim: apartamentos bem ventilados, áreas comuns úteis e um padrão construtivo que se percebe no detalhe.",
+      "Desde 2005 a Rezende Saback projeta e executa edifícios residenciais pensados para o dia a dia das famílias de Betim: apartamentos bem ventilados, áreas comuns úteis e um padrão construtivo que se percebe no detalhe.",
       "Cada torre é acompanhada da concepção à entrega das chaves por equipe própria, com possibilidade de personalização de planta antes da obra ser concluída.",
     ],
     features: [

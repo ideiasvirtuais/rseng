@@ -60,7 +60,7 @@ const _siteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://
 const OG_IMAGE = `${_siteUrl}/og-cover.jpg`;
 const OG_TITLE = `${typeof _companyName === "string" && _companyName ? _companyName : "Rezende Saback"} — ${typeof _tagline === "string" && _tagline ? _tagline : "Empreendimentos em Betim/MG"}`;
 const OG_DESCRIPTION =
-  `Construtora e incorporadora em Betim desde ${typeof _founded === "number" ? _founded : 1988}. Lançamento Golden Mall Rosário com planta customizada e acabamento premium, além de imóveis prontos para morar.`;
+  `Construtora e incorporadora em Betim desde ${typeof _founded === "number" ? _founded : 2005}. Lançamento Golden Mall Rosário com planta customizada e acabamento premium, além de imóveis prontos para morar.`;
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -169,7 +169,7 @@ function Index() {
 
   // Acessos defensivos: COMPANY pode chegar undefined em HMR/navegação
   // parcial — sem optional chaining, o render lançava (tela branca).
-  const foundedYear = COMPANY?.foundedYear ?? 1988;
+  const foundedYear = COMPANY?.foundedYear ?? 2005;
   const city = COMPANY?.city ?? "Betim";
   const phones = COMPANY?.phones ?? [];
   const whatsappUrl = COMPANY?.whatsapp?.url ?? "#contato";
@@ -309,7 +309,7 @@ function Index() {
                 A cidade que <span className="text-accent">cresce</span> com quem constrói para durar.
               </h1>
               <p className="mt-6 max-w-xl text-lg text-primary-foreground/85">
-                Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de mais de três décadas de engenharia.
+                Empreendimentos residenciais e comerciais projetados com acabamento diferenciado, planta customizável e a assinatura de duas décadas de engenharia.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#segmentos" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-primary transition hover:brightness-105">

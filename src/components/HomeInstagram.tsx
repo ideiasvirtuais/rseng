@@ -77,7 +77,7 @@ export function HomeInstagram() {
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wider text-muted-foreground">Entregas</dt>
-              <dd className="mt-1 text-lg font-semibold text-primary">Desde 1988</dd>
+              <dd className="mt-1 text-lg font-semibold text-primary">Desde 2005</dd>
             </div>
           </dl>
         </div>

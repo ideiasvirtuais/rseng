@@ -69,7 +69,7 @@ export function GoldenMallSpotlight() {
       : "5531993040342";
   const foundedYear =
     (COMPANY as { foundedYear?: unknown } | undefined)?.foundedYear;
-  const safeYear = typeof foundedYear === "number" ? foundedYear : 1988;
+  const safeYear = typeof foundedYear === "number" ? foundedYear : 2005;
   const coverSrc = typeof goldenMallCover === "string" ? goldenMallCover : "";
   const whatsappUrl = `https://wa.me/${safeNumber}?text=${encodeURIComponent(
     "Olá! Vi o destaque do Golden Mall Rosário na home e quero receber a tabela e a planta das lojas.",

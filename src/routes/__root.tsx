@@ -127,7 +127,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       const state = (COMPANY as { state?: unknown } | undefined)?.state;
       const safeName = typeof companyName === "string" && companyName ? companyName : "Rezende Saback";
       const safeTagline = typeof tagline === "string" && tagline ? tagline : "Empreendimentos em Betim/MG";
-      const safeFound = typeof foundedYear === "number" ? foundedYear : 1988;
+      const safeFound = typeof foundedYear === "number" ? foundedYear : 2005;
       const safeCity = typeof city === "string" && city ? city : "Betim";
       const safeState = typeof state === "string" && state ? state : "MG";
       const safeSiteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br";
