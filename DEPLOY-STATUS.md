@@ -1,5 +1,40 @@
 # Status de publicação — GitHub + FTP
 
+## Verificação 2026-09-21 — https://rsengenharia.eng.br/ AINDA DESATUALIZADO (causa-raiz corrigida)
+
+Verificado em 2026-09-21 (novo build local + `verify-live.mjs`):
+
+- Build local regenerado: `dist/client/index.html` 68.031 bytes, bundle
+  `assets/index-YpALiY5q.js` — 16 páginas prerenderizadas, preflight FTP OK.
+- Produção ao vivo: 64.311 bytes, bundle `assets/index-D5nMMMw7.js`,
+  `Last-Modified: Fri, 18 Sep 2026 22:31:35 GMT` (LiteSpeed).
+- Conclusão: produção segue servindo o bundle de 18/09. O código local está
+  pronto; falta apenas o deploy chegar ao FTP.
+
+Correção aplicada neste ciclo (por que "não atualizou"):
+
+1. Workflow `.github/workflows/lovable-deploy.yml`: push na `main` publicava
+   só em **staging**; produção exigia `workflow_dispatch` manual. Alterado:
+   push na `main` agora publica em **production** (staging segue via manual).
+   O espelho `stable-website` também passa a rodar no push.
+2. `scripts/verify-live.mjs`: mensagem de diagnóstico atualizada para a nova
+   regra do workflow.
+3. Build FTP regenerado do zero e validado (`bundle-cdn-assets`,
+   `verify-images`, `verify-prerender`, `generate-seo`, `generate-htaccess`,
+   `preflight-ftp` — tudo OK).
+
+Para atualizar o site, falta APENAS (fora do alcance do código):
+
+1. `git push origin main` — dispara o workflow, que agora faz build + deploy
+   em produção automaticamente.
+2. Credenciais FTP KingHost válidas nos Secrets do GitHub (`FTP_HOST`,
+   `FTP_USER`, `FTP_PASSWORD`, ...). O servidor ainda retorna
+   `530 Login authentication failed` — confira usuário/senha no painel
+   KingHost e atualize os Secrets; sem isso nem o CI nem o deploy manual
+   conseguem enviar.
+
+## Histórico anterior (2026-09-21 01:02 BRT)
+
 Data: 2026-09-21 (preview aprovado pelo usuário — envio total ao GitHub)
 Commit local: `7fa3da0` — "chore: publicar projeto via Code In"
 Branch: `main` (com 4 arquivos modificados pendentes de push)

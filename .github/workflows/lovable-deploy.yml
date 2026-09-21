@@ -21,9 +21,10 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # Push na main → staging. Produção só por execução manual (workflow_dispatch).
+    # Push na main → produção (o site rsengenharia.eng.br deve refletir a main).
+    # Staging continua disponível via execução manual (workflow_dispatch + staging).
     env:
-      DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'staging' }}
+      DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
 
     steps:
       - name: "Checkout do Repositorio"

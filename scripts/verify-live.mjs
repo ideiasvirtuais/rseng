@@ -35,7 +35,7 @@ if (localMain === liveMain && localHtml.length === liveHtml.length) {
   process.exit(0);
 } else {
   console.log("\n✗ DESATUALIZADO — hashes de bundle/tamanho divergem da produção.");
-  console.log("  Push na main publica só em staging; produção exige workflow_dispatch");
-  console.log("  (environment=production) + credenciais FTP KingHost válidas (erro 530 atual).");
+  console.log("  Push na main publica em produção via GitHub Actions;");
+  console.log("  confira o run do workflow e as credenciais FTP KingHost (erro 530 atual).");
   process.exit(2);
 }
