@@ -1,18 +1,28 @@
 import { useCallback, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { publicUrl } from "@/lib/images";
-import logoBundled from "@/assets/logomarca-rs-1024x253.png";
+import { logoChain } from "@/lib/images";
 import type { SegmentRoute } from "./segments";
 
 /**
- * Logo oficial da Rezende Saback — componente blindado (v5).
+ * Logo oficial da Rezende Saback — componente blindado (v6).
  *
- * Sem caixa/fundo atrás da logo: wrapper 100% transparente
- * (`bg-transparent`, sem `bg-[#2E3192]`, sem sombra/ring),
+ * Correção definitiva da regressão "estava certa, voltou a dar erro":
+ * a v5 importava o PNG via bundle do Vite
+ * (`import logoBundled from "@/assets/logomarca-rs-1024x253.png"`).
+ * Esse import estático é frágil por natureza — a cada rebuild o hash muda,
+ * o cache do preview/SSR pode servir o bundle antigo e o build quebra com
+ * "Failed to resolve import" sempre que o arquivo/cache muda. Por isso o
+ * erro ia e voltava.
+ *
+ * A v6 NÃO tem nenhum import estático de imagem: a cadeia é resolvida em
+ * tempo de render via `logoChain()` (respeita o BASE_URL vigente) e termina
+ * sempre num SVG inline (data URI) que nunca faz requisição de rede.
+ *
+ * Ordem: public/ nova marca → public/ legada → vendorada `__l5e`
+ * (pasta versionada, sobrevive a deploy parcial) → SVG inline.
+ *
+ * Wrapper 100% transparente (`bg-transparent`, sem fundo/caixa/sombra),
  * conforme solicitado — logo direta sobre o header.
- * Cadeia local e idempotente, sem cache global `image-health`:
- * bundle Vite (hash, base correta) → public/ nova marca →
- * public/ legada → SVG inline (data URI — nunca quebra).
  */
 
 export const LOGO_WIDTH = 1024;
@@ -36,29 +46,20 @@ type LogoProps = {
   imgClassName?: string;
 };
 
-function buildChain(): string[] {
-  const out: string[] = [];
-  const push = (u: string) => {
-    if (u && !out.includes(u)) out.push(u);
-  };
-  // 1. Bundle Vite — URL com hash, sempre com base correta.
-  if (typeof logoBundled === "string" && logoBundled) push(logoBundled);
-  // 2. public/ — marca nova, depois legada.
-  push(publicUrl("/LOGOMARCA-RS-1024x253.png"));
-  push(publicUrl("/logo-rezende-saback.png"));
-  return out;
-}
-
 export function Logo({ variant = "dark", to = "/", className, imgClassName }: LogoProps) {
   void variant;
   const [step, setStep] = useState(0);
 
-  // Cadeia estática por montagem — sem cache global que envenene retries.
-  const [chain] = useState<string[]>(() => buildChain());
+  // Cadeia resolvida por montagem (não no import do módulo): respeita o
+  // BASE_URL do bundle que está servindo a página — sem cache global que
+  // envenene retries entre preview / dev / FTP.
+  const [chain] = useState<string[]>(() => logoChain());
   const src = step < chain.length ? (chain[step] ?? LOGO_INLINE_DATA_URI) : LOGO_INLINE_DATA_URI;
   const isInline = step >= chain.length;
 
   const handleError = useCallback(() => {
+    // Teto rígido: avança no máximo até o SVG inline. Nunca faz loop —
+    // o <img> do SVG não tem onError, então a cadeia sempre termina.
     setStep((s) => (s <= chain.length ? s + 1 : s));
   }, [chain.length]);
 

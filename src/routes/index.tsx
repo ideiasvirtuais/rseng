@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Component, useState, type ReactNode } from "react";
-import { ArrowUpRight, Mail, MapPin, Menu, Phone, X } from "lucide-react";
+import { ArrowUpRight, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
 import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
@@ -191,6 +191,7 @@ function Index() {
             <Logo />
           </div>
           <nav className="hidden items-center gap-6 text-sm font-medium text-primary/80 lg:flex">
+            <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "text-primary font-semibold" }} className="hover:text-primary">Início</Link>
             {segmentNav.map((l) => (
               <Link key={l.to} to={l.to} className="hover:text-primary">{l.label}</Link>
             ))}
@@ -200,6 +201,16 @@ function Index() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <a
+              href={COMPANY.social.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram da Rezende Saback (abre em nova janela)"
+              title="Siga-nos no Instagram"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-primary transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary hover:text-primary-foreground hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <Instagram className="h-4 w-4" aria-hidden="true" />
+            </a>
             <a
               href="#contato"
               className="hidden sm:inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
@@ -224,6 +235,14 @@ function Index() {
           }`}
         >
           <nav className="container-x flex flex-col py-4 text-sm font-medium text-primary">
+            <Link
+              to="/"
+              onClick={() => setMenuOpen(false)}
+              activeOptions={{ exact: true }}
+              className="border-b border-border/60 py-3 hover:text-primary/70"
+            >
+              Início
+            </Link>
             {segmentNav.map((l) => (
               <Link
                 key={l.to}
@@ -240,11 +259,20 @@ function Index() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-border/60 py-3 last:border-0 hover:text-primary/70"
+                className="border-b border-border/60 py-3 hover:text-primary/70"
               >
                 {l.label}
               </a>
             ))}
+            <a
+              href={COMPANY.social.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 border-b border-border/60 py-3 hover:text-primary/70"
+            >
+              <Instagram className="h-4 w-4" aria-hidden="true" /> Instagram
+            </a>
             <a
               href="#contato"
               onClick={() => setMenuOpen(false)}

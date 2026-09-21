@@ -206,6 +206,7 @@ try {
 
   const siteBase = "https://rsengenharia.eng.br";
   console.log(`\n${c.dim}URLs públicas para conferir no navegador:${c.reset}`);
+  console.log(`  ${siteBase}/LOGOMARCA-RS-1024x253.png`);
   console.log(`  ${siteBase}/logo-rezende-saback.png`);
   console.log(`  ${siteBase}/favicon.png`);
   if (okAll) console.log(`\n${c.green}✓ Logomarca publicada e verificada no FTP.${c.reset}`);
