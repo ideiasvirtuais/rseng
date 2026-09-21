@@ -14,9 +14,11 @@ export function SiteHeader() {
 
   // Item fixo do menu: Lançamento (#lancamento na home). Usa "/#..." para
   // funcionar a partir de qualquer rota (/obras, /galeria, segmentos).
+  // NOTA: "Todas as imagens" (/galeria) foi removido do menu por solicitação
+  // do cliente — a rota continua acessível via URL direta, mas não aparece
+  // no header desktop nem mobile.
   const hashLinks = [
     { href: "/#lancamento", label: "Lançamento", highlight: true },
-    { href: "/galeria", label: "Todas as imagens" },
     { href: "/#sobre", label: "Sobre" },
     { href: "/#contato", label: "Contato" },
   ];

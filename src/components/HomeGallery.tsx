@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, ZoomIn } from "lucide-react";
+import { ZoomIn } from "lucide-react";
 
 import { SmartImage } from "@/components/SmartImage";
 import { Lightbox, type LightboxPhoto } from "@/components/Lightbox";
@@ -128,14 +127,8 @@ export function HomeGallery() {
         </div>
       )}
 
-      <div className="mt-8 flex justify-center">
-        <Link
-          to="/galeria"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          Carregar todas as imagens <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
-      </div>
+      {/* CTA "Carregar todas as imagens" (/galeria) removido por solicitação
+          do cliente (2026-09-21): nenhuma UI linka para a galeria completa. */}
 
       <Lightbox
         photos={photos}

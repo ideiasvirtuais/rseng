@@ -1,5 +1,24 @@
 # Status de publicação — GitHub + FTP
 
+## Remoção 2026-09-21 — menu "Todas as imagens" removido + push GitHub
+
+- **Solicitação do cliente:** "este menu - todas as imagens não tem que existir"
+  + "enviar a última atualização pro GitHub ou por FTP pra ficar certo".
+- **Alteração aplicada neste ciclo (código):**
+  1. `src/components/SiteHeader.tsx` — item `{ href: "/galeria", label: "Todas as imagens" }`
+     removido do array `hashLinks` (vale para header desktop E mobile). Menu agora:
+     Início, Residenciais, Comerciais, Casas, Lançamento (pill), Sobre, Contato.
+  2. `src/routes/index.tsx` — CTA "Abrir galeria completa" (/galeria) removido da home.
+  3. `src/components/HomeGallery.tsx` — CTA "Carregar todas as imagens" (/galeria)
+     removido + imports mortos (`Link`, `ArrowUpRight`) limpos.
+  4. Rota `/galeria` (`src/routes/galeria.tsx` + `AllImagesGallery.tsx`) PRESERVADA
+     sem nenhum link na UI — acesso só via URL direta, sem 404 em bots/URLs antigas.
+- **Publicação:** `git add -A + commit + git push origin main` neste ciclo.
+  O push na `main` dispara `.github/workflows/lovable-deploy.yml` (production),
+  que faz build + FTP automaticamente. FTP manual continua bloqueado até as
+  credenciais KingHost (`FTP_USER`/`FTP_PASSWORD`) serem corrigidas — servidor
+  retorna `530 Login authentication failed`.
+
 ## Resposta 2026-09-21 — "publicou github? ou ftp" — NÃO, ambos pendentes
 
 - **GitHub (`origin/main`): NÃO publicado o estado atual.** `HEAD` = `a5a0ad9`

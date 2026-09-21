@@ -455,25 +455,10 @@ function Index() {
           Componente mantido em src/components/HomeGallery.tsx para reativação futura. */}
       <span id="galeria" aria-hidden="true" className="block h-0 w-0 overflow-hidden" />
 
-      {/* Galeria completa removida da home por solicitação (50 fotos).
-          Acesso preservado via CTA leve para `/galeria` — home não baixa mais
-          todas as imagens, apenas hero + covers sob demanda. */}
-      <section aria-label="Ver todas as fotos" className="container-x pb-4">
-        <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center">
-          <div>
-            <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Galeria completa</div>
-            <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-              Quer ver todas as fotos dos empreendimentos? Abra a galeria completa em uma página dedicada.
-            </p>
-          </div>
-          <Link
-            to="/galeria"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-          >
-            Abrir galeria completa <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
+      {/* Galeria completa removida por solicitação do cliente (2026-09-21):
+          nenhum ponto de entrada "/galeria" ou "Todas as imagens" aparece na
+          UI — nem na home, nem no header. A rota `/galeria` segue existindo
+          via URL direta (sem link), para não gerar 404 em bots/URLs antigas. */}
 
       {/* Sobre */}
       <section id="sobre" className="container-x section-y">
