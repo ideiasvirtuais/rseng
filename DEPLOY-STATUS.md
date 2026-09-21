@@ -14,8 +14,10 @@
   4. Rota `/galeria` (`src/routes/galeria.tsx` + `AllImagesGallery.tsx`) PRESERVADA
      sem nenhum link na UI — acesso só via URL direta, sem 404 em bots/URLs antigas.
 - **Publicação:** `git add -A + commit + git push origin main` neste ciclo.
-  O push na `main` dispara `.github/workflows/lovable-deploy.yml` (production),
-  que faz build + FTP automaticamente. FTP manual continua bloqueado até as
+  Push confirmado: `8b657ee..824a85f main -> main`, working tree clean, `main`
+  em dia com `origin/main`. O push na `main` dispara
+  `.github/workflows/lovable-deploy.yml` (production), que faz build + FTP
+  automaticamente. FTP manual continua bloqueado até as
   credenciais KingHost (`FTP_USER`/`FTP_PASSWORD`) serem corrigidas — servidor
   retorna `530 Login authentication failed`.
 
