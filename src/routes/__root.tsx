@@ -263,6 +263,7 @@ function RootComponent() {
       const prefix = !base || base === "/" || base === "./" ? "" : base.replace(/\/$/, "");
       warmCriticalImage(`${prefix}/hero-rosario.jpg`);
       warmCriticalImage(`${prefix}/LOGOMARCA-RS-1024x253.png`);
+      warmCriticalImage(`${prefix}/logomarca-rs-1024x253.png`);
       warmCriticalImage(`${prefix}/logo-rezende-saback.png`);
       warmCriticalImage(
         `${prefix}/__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png`,

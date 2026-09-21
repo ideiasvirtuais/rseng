@@ -114,6 +114,8 @@ const ROOT_ALLOWLIST = new Set([
   "favicon.ico",
   "apple-touch-icon.png",
   "logo-rezende-saback.png",
+  "LOGOMARCA-RS-1024x253.png",
+  "logomarca-rs-1024x253.png",
   "hero-rosario.jpg",
   "hero-rosario.webp",
   "og-cover.jpg",

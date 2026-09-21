@@ -1,10 +1,10 @@
-/**
- * Fonte única de informações oficiais da Rezende Saback.
- * Sincronizado com https://rsengenharia.eng.br/ (site em atualização em 09/2026 —
+﻿/**
+ * Fonte ├║nica de informa├º├Áes oficiais da Rezende Saback.
+ * Sincronizado com https://rsengenharia.eng.br/ (site em atualiza├º├úo em 09/2026 ÔÇö
  * canal oficial: WhatsApp 31 99304-0342) + dados institucionais do projeto.
  *
  * IMPORTANTE: altere aqui e todo o site (header, home, segmentos, obras,
- * contato, rodapé, WhatsApp, SEO) reflete automaticamente.
+ * contato, rodap├®, WhatsApp, SEO) reflete automaticamente.
  */
 
 export const SITE_URL = "https://rsengenharia.eng.br";
@@ -17,7 +17,7 @@ export const COMPANY = {
   city: "Betim",
   state: "MG",
   address: {
-    street: "Av. Teotônio Parreira Coelho, 613 — 6º andar",
+    street: "Av. Teot├┤nio Parreira Coelho, 613 ÔÇö 6┬║ andar",
     district: "Jardim da Cidade",
     city: "Betim",
     state: "MG",
@@ -31,8 +31,8 @@ export const COMPANY = {
   whatsapp: {
     number: "5531993040342",
     display: "(31) 99304-0342",
-    /** Mensagem padrão usada no botão flutuante e no aviso do site oficial. */
-    defaultMessage: "Olá! Vim pelo site e gostaria de mais informações.",
+    /** Mensagem padr├úo usada no bot├úo flutuante e no aviso do site oficial. */
+    defaultMessage: "Ol├í! Vim pelo site e gostaria de mais informa├º├Áes.",
     get url() {
       return `https://wa.me/${this.number}?text=${encodeURIComponent(this.defaultMessage)}`;
     },
@@ -53,14 +53,15 @@ export const COMPANY = {
       url: "https://www.facebook.com/rezendesaback",
     },
   },
-  hours: "Seg–Sex, 9h às 18h",
+  hours: "SegÔÇôSex, 9h ├ás 18h",
 } as const;
 
-export const COMPANY_YEARS = new Date().getFullYear() - COMPANY.foundedYear;
+/** Anos exibidos no site - ajuste marketing para 20+ (era 38). */
+export const COMPANY_YEARS = 20;
 
 /**
- * Crédito oficial do rodapé — agência desenvolvedora do site.
- * Todos os links externos do rodapé abrem em nova janela
+ * Cr├®dito oficial do rodap├® ÔÇö ag├¬ncia desenvolvedora do site.
+ * Todos os links externos do rodap├® abrem em nova janela
  * (target="_blank" + rel="noopener noreferrer").
  */
 export const DEVELOPER = {
