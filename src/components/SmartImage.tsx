@@ -350,6 +350,13 @@ export function SmartImage({
   }
 
   // Placeholder final: renderiza direto (sem skeleton, sem retry loop).
+  // ANTI-CRASH button>button: este componente vive aninhado dentro de
+  // <button> nas galerias (SegmentPage, obras.$slug, AllImagesGallery,
+  // HomeGallery). Um <button> nativo aqui geraria
+  // "button cannot contain a nested button" e tela branca assim que
+  // qualquer imagem esgotasse os fallbacks. Por isso o retry usa
+  // <span role="button"> (nunca valida como botão aninhado) + stopPropagation
+  // para não disparar o onOpen do card pai.
   if (isPlaceholder) {
     return (
       <span className={cn("relative block overflow-hidden", skeletonClassName, wrapperClassName)}>
@@ -365,14 +372,34 @@ export function SmartImage({
         />
         {retryable && (
           <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/70 to-transparent p-3">
-            <button
-              type="button"
-              onClick={handleRetry}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/30 px-3 py-1.5 text-[11px] font-medium text-white transition hover:bg-white/10"
+            <span
+              role="button"
+              tabIndex={0}
+              aria-label="Tentar carregar a imagem de novo"
+              onClick={(e) => {
+                try {
+                  e?.stopPropagation?.();
+                } catch {
+                  // no-op
+                }
+                handleRetry();
+              }}
+              onKeyDown={(e) => {
+                try {
+                  if (e?.key === "Enter" || e?.key === " ") {
+                    e?.preventDefault?.();
+                    e?.stopPropagation?.();
+                    handleRetry();
+                  }
+                } catch {
+                  // no-op
+                }
+              }}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/30 px-3 py-1.5 text-[11px] font-medium text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
             >
               <RefreshCw className="h-3 w-3" aria-hidden="true" />
               Tentar carregar de novo
-            </button>
+            </span>
           </span>
         )}
       </span>

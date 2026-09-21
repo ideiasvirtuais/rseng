@@ -324,6 +324,7 @@ function ProjectDetail() {
               <SmartImage
                 src={src}
                 alt={alt}
+                retryable={false}
                 wrapperClassName="absolute inset-0"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />

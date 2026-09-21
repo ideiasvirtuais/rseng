@@ -37,6 +37,7 @@ function GalleryCard({ item, index, cardKey, onOpen }: GalleryCardProps) {
         <SmartImage
           src={item.src}
           alt={item.alt}
+          retryable={false}
           wrapperClassName={cn("absolute inset-0", isLogo && "bg-white p-8")}
           className={cn(
             "h-full w-full transition duration-700 group-hover:scale-105",

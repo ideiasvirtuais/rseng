@@ -102,6 +102,7 @@ export function HomeGallery() {
                 <SmartImage
                   src={src}
                   alt={alt}
+                  retryable={false}
                   wrapperClassName="absolute inset-0"
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   loading={index < 6 ? "eager" : "lazy"}
