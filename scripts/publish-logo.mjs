@@ -84,6 +84,7 @@ const c = { reset: "\x1b[0m", dim: "\x1b[2m", green: "\x1b[32m", red: "\x1b[31m"
 
 const VENDOR_DIR = "__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb";
 const FILES = [
+  "LOGOMARCA-RS-1024x253.png",
   "logo-rezende-saback.png",
   `${VENDOR_DIR}/logo-rezende-saback.png`,
   "favicon.png",

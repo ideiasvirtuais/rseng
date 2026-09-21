@@ -1,9 +1,10 @@
 # Status de publicação — GitHub + FTP
 
-Data: 2026-09-19
-Commit local: `83aff84` — "feat: galeria completa, Logo desacoplado, SEO/canonical e pipeline FTP estavel"
-Branch: `main` (1 commit à frente de `origin/main`)
-Build FTP: OK — `dist/client/` gerado (105 arquivos, prerender de 13 rotas + `/galeria`) e validado por `preflight-ftp.mjs`.
+Data: 2026-09-19 (atualizado — tentativa de deploy executada)
+Commit local: `7fa3da0` — "chore: publicar projeto via Code In"
+Branch: `main` (em dia com `origin/main`)
+Build FTP: OK — `dist/client/` regenerado em 2026-09-19 (107 arquivos, 26.13 MB, prerender de 16 páginas) e validado por `preflight-ftp.mjs`.
+Dry-run: OK — v2026.09.19-1 (build #12), 107 a enviar, 0 pulados — relatório em `dist/deploy-report.md`.
 
 ## GitHub — BLOQUEADO (token expirado)
 
@@ -20,9 +21,17 @@ git push origin main
 Use um **Personal Access Token (classic)** com escopo `repo` como senha.
 Gere em: GitHub → Settings → Developer settings → Personal access tokens.
 
-## FTP KingHost — BLOQUEADO (530 Login authentication failed)
+## FTP KingHost — BLOQUEADO (530 Login authentication failed — tentativa em 2026-09-19)
 
-Problemas encontrados no `.env.ftp` (arquivo local, não versionado):
+Correção aplicada neste ciclo: `FTP_USER` sanitizado de `rs engenharia` → `rsengenharia`
+(espaço removido; login FTP nunca tem espaço). Reteste executado:
+
+- `node scripts/test-ftp-connection.mjs` → `530 Login authentication failed`
+- `node scripts/deploy-ftp.mjs --delete` (com env de `.env.ftp`) → `530 Login authentication failed`
+  como `rsengenharia@ftp.rsengenharia.eng.br:21`
+
+Conclusão: usuário normalizado, mas servidor rejeitou usuário+senha atuais.
+Problemas no `.env.ftp` (arquivo local, não versionado):
 
 1. `FTP_USER=rs engenharia` — contém um espaço; usuário FTP nunca tem espaço.
    Tentado também como `rsengenharia` → mesmo erro 530.
