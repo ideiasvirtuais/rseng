@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, ZoomIn } from "lucide-react";
 
 import { SmartImage } from "@/components/SmartImage";
+import { Lightbox, type LightboxPhoto } from "@/components/Lightbox";
 import { galleryCategories, galleryItems, type GalleryFilter } from "@/data/projects";
 import { preloadImages } from "@/lib/image-health";
 
@@ -15,11 +16,23 @@ import { preloadImages } from "@/lib/image-health";
  */
 export function HomeGallery() {
   const [filter, setFilter] = useState<GalleryFilter>("Todas");
+  const [lightbox, setLightbox] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     if (filter === "Todas") return galleryItems;
     return galleryItems.filter((item) => item.category === filter);
   }, [filter]);
+
+  const photos = useMemo<LightboxPhoto[]>(
+    () =>
+      filtered.map((item, i) => ({
+        src: typeof item?.src === "string" ? item.src : "",
+        alt: typeof item?.alt === "string" && item.alt ? item.alt : (typeof item?.project === "string" ? item.project : `Foto ${i + 1}`),
+        eyebrow: typeof item?.category === "string" ? item.category : "",
+        title: typeof item?.project === "string" ? item.project : "",
+      })),
+    [filtered]
+  );
 
   // Carrega TODAS as fotos da galeria em 2º plano (idle): ao trocar de
   // filtro, a imagem já está no cache — parece instantâneo.
@@ -50,7 +63,10 @@ export function HomeGallery() {
             <button
               key={category}
               type="button"
-              onClick={() => setFilter(category)}
+              onClick={() => {
+                setFilter(category);
+                setLightbox(null);
+              }}
               aria-pressed={active}
               className={`rounded-full border px-4 py-2 text-sm transition ${
                 active
@@ -77,15 +93,22 @@ export function HomeGallery() {
               key={`${project}-${category}-${src}-${index}`}
               className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-card"
             >
-              <SmartImage
-                src={src}
-                alt={alt}
-                wrapperClassName="absolute inset-0"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                loading={index < 6 ? "eager" : "lazy"}
-              />
+              <button
+                type="button"
+                onClick={() => setLightbox(index)}
+                aria-label={`Ampliar foto: ${alt}`}
+                className="absolute inset-0 h-full w-full cursor-zoom-in text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+              >
+                <SmartImage
+                  src={src}
+                  alt={alt}
+                  wrapperClassName="absolute inset-0"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  loading={index < 6 ? "eager" : "lazy"}
+                />
+              </button>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/10 to-transparent opacity-90 transition group-hover:opacity-100" />
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-primary-foreground">
                 <div className="min-w-0">
                   <div className="text-[11px] font-medium uppercase tracking-[0.2em] text-accent">
                     {category}
@@ -112,6 +135,13 @@ export function HomeGallery() {
           Carregar todas as imagens <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
+
+      <Lightbox
+        photos={photos}
+        index={lightbox}
+        onClose={() => setLightbox(null)}
+        onNavigate={setLightbox}
+      />
     </section>
   );
 }

@@ -23,10 +23,29 @@ export const getRouter = () => {
 
   const router = createRouter({
     routeTree,
+    // Contexto nunca-nulo: se uma rota filha ler `Route.useRouteContext()`
+    // durante HMR/navegação parcial, o fallback no __root evita
+    // desestruturação de `undefined` (tela branca via MatchesInner).
     context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
+    // Fallbacks de última linha: se algum match lançar antes do boundary
+    // da rota, o router ainda renderiza algo em vez de tela branca.
+    // (Os componentes dedicados vivem em `routes/__root.tsx`.)
+    defaultPendingMinMs: 0,
   });
+
+  // Registra o router no warmup do HMR: se o módulo for reavaliado sem
+  // contexto válido, o update é invalidado em vez de hidratar nulo.
+  if (typeof window !== "undefined" && import.meta.hot) {
+    import.meta.hot.dispose(() => {
+      try {
+        router.invalidate();
+      } catch {
+        // teardown — nunca pode lançar
+      }
+    });
+  }
 
   return router;
 };

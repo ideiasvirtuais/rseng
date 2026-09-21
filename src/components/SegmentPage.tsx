@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Diamond, Mail, MapPin, Phone, X, ZoomIn } from "lucide-react";
+import { ArrowUpRight, Diamond, Mail, MapPin, Phone, ZoomIn } from "lucide-react";
 
 import { COMPANY } from "@/data/company";
 
@@ -9,6 +9,7 @@ import { segmentNav } from "./segments";
 import { SiteFooter } from "./SiteFooter";
 import { ContactForm } from "./ContactForm";
 import { SmartImage } from "./SmartImage";
+import { Lightbox, type LightboxPhoto } from "./Lightbox";
 import type { Segment } from "@/data/segments";
 
 export function SegmentPage({ segment }: { segment: Segment }) {
@@ -16,7 +17,7 @@ export function SegmentPage({ segment }: { segment: Segment }) {
   // Segmento pode chegar incompleto em HMR/navegação parcial: defaults
   // defensivos impedem throw no render (tela branca).
   const safeSegment = (segment ?? {}) as Partial<Segment>;
-  const photos = Array.isArray(safeSegment.photos) ? safeSegment.photos : [];
+  const photosRaw = Array.isArray(safeSegment.photos) ? safeSegment.photos : [];
   const label = typeof safeSegment.label === "string" ? safeSegment.label : "Empreendimentos";
   const slug = typeof safeSegment.slug === "string" ? safeSegment.slug : "";
   const cover = typeof safeSegment.cover === "string" ? safeSegment.cover : "";
@@ -41,7 +42,22 @@ export function SegmentPage({ segment }: { segment: Segment }) {
   const address = COMPANY?.address;
   // `?? null` impede acesso a índice inexistente (ex: lista trocada com
   // o lightbox aberto), que lançava e derrubava a rota.
-  const photo = photoIndex !== null ? (photos[photoIndex] ?? null) : null;
+  const photos = useMemo<LightboxPhoto[]>(
+    () =>
+      photosRaw.map((p, i) => ({
+        src: typeof (p as { src?: unknown })?.src === "string" ? (p as { src: string }).src : "",
+        alt:
+          typeof (p as { alt?: unknown })?.alt === "string" && (p as { alt: string }).alt
+            ? (p as { alt: string }).alt
+            : "Foto ampliada",
+        eyebrow: typeof (p as { caption?: unknown })?.caption === "string" ? (p as { caption: string }).caption : "",
+        title:
+          typeof (p as { title?: unknown })?.title === "string" && (p as { title: string }).title
+            ? (p as { title: string }).title
+            : `Foto ${i + 1}`,
+      })),
+    [photosRaw]
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -175,9 +191,9 @@ export function SegmentPage({ segment }: { segment: Segment }) {
         <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Galeria</div>
         <h2 className="mt-4 max-w-2xl">Fotos de {label.toLowerCase()}.</h2>
 
-        {photos.length > 0 ? (
+        {photosRaw.length > 0 ? (
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {photos.map((item, i) => {
+            {photosRaw.map((item, i) => {
               if (!item || typeof item !== "object") return null;
               const src = typeof item.src === "string" ? item.src : "";
               const alt = typeof item.alt === "string" ? item.alt : "Foto do empreendimento";
@@ -217,39 +233,13 @@ export function SegmentPage({ segment }: { segment: Segment }) {
         )}
       </section>
 
-      {photo && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Visualização ampliada"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/95 p-4 backdrop-blur-sm"
-          onClick={() => setPhotoIndex(null)}
-        >
-          <button
-            type="button"
-            aria-label="Fechar"
-            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/30 text-primary-foreground transition hover:bg-primary-foreground/10"
-            onClick={(e) => {
-              e.stopPropagation();
-              setPhotoIndex(null);
-            }}
-          >
-            <X className="h-5 w-5" />
-          </button>
-          <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <SmartImage
-              src={typeof photo.src === "string" ? photo.src : ""}
-              alt={typeof photo.alt === "string" ? photo.alt : "Foto ampliada"}
-              wrapperClassName="block w-full"
-              className="max-h-[80vh] w-auto rounded-2xl object-contain shadow-2xl"
-              loading="eager"
-            />
-            <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
-              <span className="text-accent">{typeof photo.caption === "string" ? photo.caption : ""}</span> · {typeof photo.title === "string" ? photo.title : ""}
-            </figcaption>
-          </figure>
-        </div>
-      )}
+      <Lightbox
+        photos={photos}
+        index={photoIndex}
+        onClose={() => setPhotoIndex(null)}
+        onNavigate={setPhotoIndex}
+        tone="brand"
+      />
 
       {/* Outros segmentos */}
       <section className="border-y border-border bg-secondary">

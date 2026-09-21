@@ -6,8 +6,19 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { COMPANY, SITE_URL } from "@/data/company";
 import { countAllImages } from "@/lib/all-images";
 
-const OG_IMAGE = `${SITE_URL}/og-cover.jpg`;
-const OG_TITLE = `Todas as imagens — ${COMPANY.name}`;
+/**
+ * Constantes defensivas: acesso via optional chaining para nunca lançar
+ * em module evaluation (derrubaria o match da rota e cairia no
+ * CatchBoundary global — tela branca reportada em Matches.js).
+ */
+const _siteUrl = typeof SITE_URL === "string" && SITE_URL ? SITE_URL : "https://rsengenharia.eng.br";
+const _companyName =
+  typeof (COMPANY as { name?: unknown } | undefined)?.name === "string" &&
+  (COMPANY as { name?: string }).name
+    ? (COMPANY as { name?: string }).name
+    : "Rezende Saback";
+const OG_IMAGE = `${_siteUrl}/og-cover.jpg`;
+const OG_TITLE = `Todas as imagens — ${_companyName}`;
 const OG_DESCRIPTION = `Galeria completa com todas as fotos do site: hero, lançamento Golden Mall, edifícios residenciais, obras comerciais e casas de alto padrão em Betim/MG.`;
 
 export const Route = createFileRoute("/galeria")({
@@ -19,14 +30,14 @@ export const Route = createFileRoute("/galeria")({
       { property: "og:title", content: OG_TITLE },
       { property: "og:description", content: OG_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/galeria` },
+      { property: "og:url", content: `${_siteUrl}/galeria` },
       { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: OG_TITLE },
       { name: "twitter:description", content: OG_DESCRIPTION },
       { name: "twitter:image", content: OG_IMAGE },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/galeria` }],
+    links: [{ rel: "canonical", href: `${_siteUrl}/galeria` }],
   }),
 });
 

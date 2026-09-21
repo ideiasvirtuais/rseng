@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, Images, Loader2, RefreshCw, X, ZoomIn } from "lucide-react";
+import { CheckCircle2, Images, Loader2, RefreshCw, ZoomIn } from "lucide-react";
 import { SmartImage } from "@/components/SmartImage";
+import { Lightbox, type LightboxPhoto } from "@/components/Lightbox";
 import { getAllImages, type CatalogImage } from "@/lib/all-images";
 import { usePreloadAllImages } from "@/hooks/usePreloadAllImages";
 import { clearAllFailures } from "@/lib/image-health";
@@ -80,7 +81,16 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
     return images.filter((i) => i.group === filter);
   }, [images, filter]);
 
-  const activePhoto = lightbox !== null ? (filtered[lightbox] ?? null) : null;
+  const photos = useMemo<LightboxPhoto[]>(
+    () =>
+      filtered.map((i) => ({
+        src: typeof i?.src === "string" ? i.src : "",
+        alt: typeof i?.alt === "string" && i.alt ? i.alt : (typeof i?.title === "string" ? i.title : "Foto"),
+        eyebrow: typeof i?.group === "string" ? i.group : "",
+        title: typeof i?.title === "string" ? i.title : "",
+      })),
+    [filtered]
+  );
 
   const handleRetryAll = () => {
     try {
@@ -206,60 +216,13 @@ export function AllImagesGallery({ eager = true }: { eager?: boolean }) {
         </div>
       )}
 
-      {activePhoto ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Visualização ampliada"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/95 p-4 backdrop-blur-sm"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            type="button"
-            aria-label="Fechar"
-            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/30 text-primary-foreground transition hover:bg-primary-foreground/10"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightbox(null);
-            }}
-          >
-            <X className="h-5 w-5" />
-          </button>
-          <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <SmartImage
-              src={activePhoto.src}
-              alt={activePhoto.alt}
-              wrapperClassName="block w-full"
-              className="max-h-[78vh] w-auto rounded-2xl object-contain shadow-2xl"
-              loading="eager"
-            />
-            <figcaption className="mt-4 text-center text-sm text-primary-foreground/90">
-              <span className="text-accent">{activePhoto.group}</span> · {activePhoto.title}
-              <span className="mt-1 block text-xs opacity-70">
-                {lightbox !== null ? lightbox + 1 : 0} de {filtered.length}
-              </span>
-            </figcaption>
-            <div className="mt-3 flex justify-center gap-2">
-              <button
-                type="button"
-                disabled={lightbox === 0}
-                onClick={() => setLightbox((i) => (i !== null && i > 0 ? i - 1 : i))}
-                className="rounded-full border border-primary-foreground/30 px-4 py-2 text-xs text-primary-foreground transition hover:bg-primary-foreground/10 disabled:opacity-40"
-              >
-                ← Anterior
-              </button>
-              <button
-                type="button"
-                disabled={lightbox === null || lightbox >= filtered.length - 1}
-                onClick={() => setLightbox((i) => (i !== null && i < filtered.length - 1 ? i + 1 : i))}
-                className="rounded-full border border-primary-foreground/30 px-4 py-2 text-xs text-primary-foreground transition hover:bg-primary-foreground/10 disabled:opacity-40"
-              >
-                Próxima →
-              </button>
-            </div>
-          </figure>
-        </div>
-      ) : null}
+      <Lightbox
+        photos={photos}
+        index={lightbox}
+        onClose={() => setLightbox(null)}
+        onNavigate={setLightbox}
+        tone="brand"
+      />
     </section>
   );
 }

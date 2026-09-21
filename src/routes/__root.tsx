@@ -237,10 +237,14 @@ function RootComponent() {
   // Cliente de fallback para o caso extremo de o contexto do roteador
   // chegar vazio (ex: HMR recriando o router). Sem isso, a
   // desestruturação lançaria e derrubaria todas as rotas filhas.
+  // O acesso usa optional chaining em cada nível: se `Route`, o contexto
+  // ou `queryClient` estiverem nulos (módulo reavaliado, navegação
+  // parcial), caímos no fallback em vez de lançar `null.useContext`,
+  // erro que o CatchBoundary global reportaria em Matches.js.
   const [fallbackClient] = useState(() => new QueryClient());
   let contextClient: QueryClient | undefined;
   try {
-    contextClient = Route.useRouteContext()?.queryClient;
+    contextClient = Route?.useRouteContext?.()?.queryClient ?? undefined;
   } catch {
     contextClient = undefined;
   }
@@ -271,7 +275,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {/* ShellGuard: se um match filho lançar (contexto nulo em HMR, dados
+          parciais), o guard descarta só a subárvore em vez de permitir que o
+          erro suba até o CatchBoundary global (tela branca / Matches.js). */}
+      <ShellGuard>
+        <Outlet />
+      </ShellGuard>
     </QueryClientProvider>
   );
 }

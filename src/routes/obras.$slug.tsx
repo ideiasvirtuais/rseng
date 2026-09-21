@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, MapPin, Phone, ZoomIn, X, Diamond } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, ZoomIn, Diamond } from "lucide-react";
 
 import { getProjectBySlug, projects, type GalleryCategory, type Project } from "@/data/projects";
 import { COMPANY, SITE_URL } from "@/data/company";
 import { SmartImage } from "@/components/SmartImage";
+import { Lightbox, type LightboxPhoto } from "@/components/Lightbox";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -147,7 +148,16 @@ function ProjectDetail() {
   );
   // Clamp do índice: trocar o filtro com o lightbox aberto não pode
   // deixar `filteredGallery[i]` undefined e quebrar a rota.
-  const lightboxItem = lightbox !== null ? (filteredGallery[lightbox] ?? null) : null;
+  const photos = useMemo<LightboxPhoto[]>(
+    () =>
+      filteredGallery.map((g, i) => ({
+        src: typeof g?.src === "string" ? g.src : "",
+        alt: typeof g?.alt === "string" && g.alt ? g.alt : "Foto da obra",
+        eyebrow: typeof g?.category === "string" ? g.category : "",
+        title: typeof g?.alt === "string" && g.alt ? g.alt : `Foto ${i + 1}`,
+      })),
+    [filteredGallery]
+  );
 
   const selectFilter = (cat: "Todas" | GalleryCategory) => {
     setFilter(cat);
@@ -333,39 +343,12 @@ function ProjectDetail() {
         )}
       </section>
 
-      {lightboxItem && typeof lightboxItem === "object" ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={typeof lightboxItem.alt === "string" ? lightboxItem.alt : "Foto ampliada"}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightbox(null);
-            }}
-            aria-label="Fechar imagem"
-            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
-          >
-            <X className="h-5 w-5" aria-hidden="true" />
-          </button>
-          <figure className="max-h-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <SmartImage
-              src={typeof lightboxItem.src === "string" ? lightboxItem.src : ""}
-              alt={typeof lightboxItem.alt === "string" ? lightboxItem.alt : "Foto da obra"}
-              wrapperClassName="block w-full"
-              className="max-h-[80vh] w-auto rounded-xl object-contain"
-              loading="eager"
-            />
-            <figcaption className="mt-3 text-center text-sm text-white/80">
-              <span className="text-accent">{typeof lightboxItem.category === "string" ? lightboxItem.category : ""}</span> · {typeof lightboxItem.alt === "string" ? lightboxItem.alt : ""}
-            </figcaption>
-          </figure>
-        </div>
-      ) : null}
+      <Lightbox
+        photos={photos}
+        index={lightbox}
+        onClose={() => setLightbox(null)}
+        onNavigate={setLightbox}
+      />
 
       {/* CTA + relacionados */}
       <section id="contato" className="bg-primary text-primary-foreground">
