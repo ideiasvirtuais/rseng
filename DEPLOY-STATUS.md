@@ -9,7 +9,31 @@ Pendente de push (preview OK): `src/components/Logo.tsx` (v5, wrapper transparen
 `vite.config.ts` (fix `rolldown-runtime` / tela branca no preview),
 `scripts/publish-logo.mjs` (+ `LOGOMARCA-RS-1024x253.png`), `DEPLOY-STATUS.md`.
 
-## GitHub — ENVIO EM ANDAMENTO (2026-09-21)
+## Verificação 2026-09-21 — https://rsengenharia.eng.br/ DESATUALIZADO
+
+Verificado em 2026-09-21 01:02 BRT (04:02 UTC):
+
+- GitHub `origin/main`: OK — `c62c114` (2026-09-21), working tree clean, branch em dia.
+- Build local `dist/client/index.html`: 67.917 bytes, bundle `assets/index-58s_7DMl.js`
+  (`routes-BV-1_NZC`, `SiteFooter-C7kRl4PO`, `projects-LI29Ony5`).
+- Produção ao vivo: 64.311 bytes, bundle `assets/index-D5nMMMw7.js`
+  (`routes-BVCGmjac`, `SiteFooter-rGHMrWXR`), header
+  `Last-Modified: Fri, 18 Sep 2026 22:31:35 GMT` (LiteSpeed).
+- Conclusão: produção está ~3 dias defasada (último FTP ok: v2026.09.18-4).
+  Título/meta iguais, mas JS/CSS com hashes diferentes = código antigo no ar.
+
+Causas:
+
+1. Workflow `lovable-deploy.yml`: push na `main` publica só em **staging**;
+   produção exige `workflow_dispatch` manual com `environment: production`.
+2. FTP KingHost segue com `530 Login authentication failed`
+   (`ftp.rsengenharia.eng.br:21`, user `rsengenharia`, `/www`).
+   Conferir usuário/senha no painel KingHost antes de qualquer retry.
+
+Para publicar após corrigir credenciais: rode o `workflow_dispatch`
+com `production` ou o deploy manual documentado abaixo.
+
+## GitHub — SINCRONIZADO (2026-09-21)
 
 O remote tinha um token embutido expirado (`remote: Invalid username or token`).
 O token foi removido do remote (agora `https://github.com/ideiasvirtuais/rseng.git`),
