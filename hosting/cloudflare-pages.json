@@ -1,0 +1,4 @@
+{
+  "$schema": "https://developers.cloudflare.com/pages/platform/functions/bindings/",
+  "note": "Cloudflare Pages — sem config obrigatória. Via dashboard: Build command `npm run build:static`, output `dist/client`. Via CLI: `npx wrangler pages deploy dist/client`. O _redirects/_headers do pacote já resolvem SPA + cache."
+}

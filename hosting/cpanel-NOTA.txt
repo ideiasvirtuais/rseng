@@ -1,0 +1,11 @@
+# cPanel / hospedagem compartilhada genérica (HostGator, Hostinger, Locaweb, KingHost...)
+#
+# 1. Faça upload do conteúdo de dist/rseng-static.zip para:
+#    - Domínio principal → public_html/
+#    - Domínio adicional → public_html/meudominio/
+#    - Subpasta         → public_html/minha-pasta/ (+ BASE_PATH=/minha-pasta/)
+# 2. O .htaccess já vai junto — nada a configurar.
+# 3. Exiba arquivos ocultos no Gerenciador de Arquivos para conferir o .htaccess.
+# 4. Force HTTPS no painel (ou mantenha o redirect do .htaccess).
+#
+# Nada de Node, npm ou SSH no servidor — é só arquivo estático.

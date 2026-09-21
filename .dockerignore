@@ -1,0 +1,12 @@
+node_modules
+dist
+.output
+.git
+.github
+.env
+.env.*
+!.env.example
+!.env.static.example
+!.env.ftp.example
+Dockerfile
+docker-compose*

@@ -12,7 +12,10 @@ export type { SegmentRoute } from "./segments";
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Item fixo do menu: Lançamento (#lancamento na home). Usa "/#..." para
+  // funcionar a partir de qualquer rota (/obras, /galeria, segmentos).
   const hashLinks = [
+    { href: "/#lancamento", label: "Lançamento", highlight: true },
     { href: "/galeria", label: "Todas as imagens" },
     { href: "/#sobre", label: "Sobre" },
     { href: "/#contato", label: "Contato" },
@@ -24,12 +27,12 @@ export function SiteHeader() {
         <div className="min-w-0">
           <Logo />
         </div>
-        <nav className="hidden items-center gap-6 text-sm font-medium text-primary/80 lg:flex">
+        <nav aria-label="Navegação principal" className="hidden shrink-0 items-center gap-5 text-sm font-medium text-primary/80 lg:flex xl:gap-6">
           <Link
             to="/"
             activeProps={{ className: "text-primary font-semibold" }}
             activeOptions={{ exact: true }}
-            className="hover:text-primary"
+            className="shrink-0 whitespace-nowrap hover:text-primary"
           >
             Início
           </Link>
@@ -38,16 +41,27 @@ export function SiteHeader() {
               key={l.to}
               to={l.to}
               activeProps={{ className: "text-primary font-semibold" }}
-              className="hover:text-primary"
+              className="shrink-0 whitespace-nowrap hover:text-primary"
             >
               {l.label}
             </Link>
           ))}
-          {hashLinks.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-primary">
-              {l.label}
-            </a>
-          ))}
+          {hashLinks.map((l) =>
+            (l as { highlight?: boolean }).highlight ? (
+              <a
+                key={l.href}
+                href={l.href}
+                className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-accent/60 bg-accent/15 px-4 py-1.5 font-semibold text-primary transition hover:-translate-y-px hover:bg-accent hover:shadow-md"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                {l.label}
+              </a>
+            ) : (
+              <a key={l.href} href={l.href} className="shrink-0 whitespace-nowrap hover:text-primary">
+                {l.label}
+              </a>
+            ),
+          )}
         </nav>
         <div className="flex items-center gap-2">
           <a
@@ -103,16 +117,28 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
-          {hashLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setMenuOpen(false)}
-              className="border-b border-border/60 py-3 hover:text-primary/70"
-            >
-              {l.label}
-            </a>
-          ))}
+          {hashLinks.map((l) =>
+            (l as { highlight?: boolean }).highlight ? (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-accent/60 bg-accent/15 px-5 py-3 font-semibold text-primary"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                {l.label} — Golden Mall Rosário
+              </a>
+            ) : (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className="border-b border-border/60 py-3 hover:text-primary/70"
+              >
+                {l.label}
+              </a>
+            ),
+          )}
           <a
             href={COMPANY.social.instagram.url}
             target="_blank"

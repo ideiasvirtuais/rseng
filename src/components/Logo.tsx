@@ -5,7 +5,7 @@ import { logoChain } from "@/lib/images";
 import type { SegmentRoute } from "./segments";
 
 /**
- * Logo oficial da Rezende Saback — componente blindado (v7).
+ * Logo oficial da Rezende Saback — componente blindado (v8).
  *
  * Causas-raiz da falha "logo quebra em algumas páginas", corrigidas aqui:
  *
@@ -13,14 +13,18 @@ import type { SegmentRoute } from "./segments";
  *    o asset do bundle (`/assets/logomarca-rs-HASH.png`, import estático da v5),
  *    enquanto a v6 resolveu tudo via `public/` em runtime. Deploy parcial de FTP
  *    (pasta `assets/` nova + `public/` antiga, ou vice-versa) ou HTML em cache
- *    com hash antigo ⇒ 404 só nas páginas servidas daquele HTML. A v7 usa UMA
+ *    com hash antigo ⇒ 404 só nas páginas servidas daquele HTML. A v7/v8 usa UMA
  *    cadeia determinística: o bundle (viaja junto com o JS, mesma base, mesmo
  *    deploy) é o PRIMÁRIO — idêntico no SSR/prerender e no cliente, sem
  *    hydration mismatch — e `public/` entra como fallback.
- * 2. CASE-SENSITIVITY LINUX — `public/LOGOMARCA-RS-1024x253.png` (maiúscula) ×
- *    `src/assets/logomarca-rs-1024x253.png` (minúscula). No Windows/dev tudo
- *    resolve; no Apache/Linux só a casa exata. A cadeia tenta as duas casas
- *    (mais alias minúsculo em `public/`), além da legada e da vendorada `__l5e`.
+ * 2. CASE-SENSITIVITY LINUX — `public/LOGOMARCA-RS-1024x253.png` (maiúscula) é o
+ *    arquivo canônico; `src/assets/logomarca-rs-1024x253.png` (minúscula) é só
+ *    o import do Vite (vira `/assets/logomarca-rs-HASH.png` no bundle). A v7
+ *    tentava ainda um alias lowercase via `public/` que NÃO existe em disco
+ *    (repo Windows com `core.ignorecase=true` nem permite as duas casas no
+ *    git) — no Apache/Linux esse pedido dava 404 garantido, com flicker e
+ *    delay do watchdog a cada carregamento. A v8 remove o alias fantasma: a
+ *    cadeia pede apenas URLs que existem de verdade.
  * 3. VARIANTE LIGHT IGNORADA — a v6 fazia `void variant`: no rodapé azul-escuro
  *    (`bg-primary`) a logomarca nova (subtítulo azul + banner azul) ficava
  *    camuflada/invisível, parecendo "logo quebrada". A v7 envolve a variante
@@ -30,7 +34,7 @@ import type { SegmentRoute } from "./segments";
  *    então mesmo no pior caso nunca há <img> quebrado nem mancha estranha.
  *
  * Ordem da cadeia: bundle Vite (hash, base correta) → public/ nova marca
- * (UPPERCASE) → public/ alias (lowercase) → public/ legada → vendorada `__l5e`
+ * (UPPERCASE canônica) → public/ legada → vendorada `__l5e`
  * → SVG inline (data URI, zero rede). Teto rígido, sem loops.
  */
 

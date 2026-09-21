@@ -1,11 +1,17 @@
 # RS Engenharia — Site institucional
 
-Site em TanStack Start (SPA mode com prerender via Vite) hospedado na **KingHost** através da **Ideias Virtuais**, com deploy automático a partir do GitHub Actions para a branch `stable-website`.
+> **Pacote estático independente.** O build (`dist/client/` + `dist/rseng-static.zip`)
+> publica em **qualquer hospedagem** sem servidor, banco ou provedor obrigatório.
+> GitHub e KingHost são apenas **opções** — veja `docs/PUBLISH-ANYWHERE.md`,
+> `docs/PORTABILITY.md` e a página `/publicar` no próprio site.
+
+Site em TanStack Start (SPA mode com prerender via Vite).
 
 - **Domínio:** https://rsengenharia.eng.br/
-- **DNS:** `ns1.ideiasvirtuais.blog.br`
-- **Preview Lovable:** https://id-preview--26dd9025-0687-4cac-b168-992e9f045114.lovable.app
-- **Published Lovable:** https://rseng.lovable.app
+- **Pacote universal:** `npm run build:static && npm run package` → `dist/rseng-static.zip`
+- **Guia de publicação:** `docs/PUBLISH-ANYWHERE.md` · página `/publicar`
+- **DNS (opção KingHost):** `ns1.ideiasvirtuais.blog.br`
+- **Preview Lovable (opcional):** https://id-preview--26dd9025-0687-4cac-b168-992e9f045114.lovable.app
 
 ---
 
@@ -186,17 +192,18 @@ O workflow escreve este `.htaccess` dentro do `deploy_dir` para funcionar no Apa
 ## Rodando localmente
 
 ```bash
-bun install
-bun run dev           # servidor de desenvolvimento
-bun run build         # build de produção (mesmo comando que o CI roda)
-bun run preview       # servir o build localmente
+npm install
+npm run dev             # servidor de desenvolvimento
+npm run build:static    # pacote universal (qualquer hospedagem)
+npm run preview:static  # serve dist/client/ localmente
+npm run package         # gera dist/rseng-static.zip
 ```
 
-Para simular o que o CI vê:
+Para simular o que qualquer hospedagem vê:
 
 ```bash
-bun run build
-ls -la dist/client/   # deve conter index.html, _shell.html, assets/, .htaccess
+npm run build:static
+ls dist/client/   # index.html, 404.html, _shell.html, assets/, .htaccess, _redirects, web.config
 ```
 
 ---

@@ -49,6 +49,25 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  /* Âncora canônica do Lançamento + alias legado: compensa o header fixo
+     (h-24 = 96px) para a seção nunca ficar escondida ao clicar no menu. */
+  #lancamento,
+  #personalizacao,
+  #sobre,
+  #contato,
+  #segmentos,
+  #galeria {
+    scroll-margin-top: 6.5rem;
+  }
+  @media (min-width: 1024px) {
+    #lancamento,
+    #personalizacao {
+      scroll-margin-top: 7rem;
+    }
+  }
   * {
     border-color: var(--color-border);
   }

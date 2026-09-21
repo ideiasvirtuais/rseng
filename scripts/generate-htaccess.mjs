@@ -64,8 +64,17 @@ RewriteRule ^ _shell.html [L]
   <FilesMatch "index\\.html$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
   </FilesMatch>
-  <FilesMatch "\\.(?:js|css|woff2|woff|svg|png|jpg|jpeg|webp|avif|gif|ico)$">
+  # Assets com hash do Vite (imutáveis — o nome muda a cada build, então
+  # 1 ano de immutable é seguro e acelera a navegação).
+  <FilesMatch "\\.(?:js|css|woff2|woff)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # Imagens de public/ NAO tem hash no nome (LOGOMARCA-*.png, hero-*.jpg,
+  # instagram-*.jpg, og-cover.jpg, favicons): a troca de arquivo mantem a
+  # mesma URL. Com immutable de 1 ano o visitante travava na logo/hero
+  # antiga ("atualizacao nao efetivada"). Revalidacao diaria resolve.
+  <FilesMatch "\\.(?:png|jpe?g|webp|avif|gif|svg|ico)$">
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
   </FilesMatch>
 </IfModule>
 

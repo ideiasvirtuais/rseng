@@ -6,8 +6,25 @@ const isFtpBuild =
   process.argv.includes("--mode=ftp") ||
   process.argv.some((arg, index, argv) => arg === "--mode" && argv[index + 1] === "ftp");
 
+// PORTABILIDADE MÁXIMA: o mesmo build publica em qualquer hospedagem.
+// - BUILD_TARGET=static (default, `npm run build:static`) ou ftp (legado KingHost)
+// - BASE_PATH / VITE_BASE_PATH permite publicar em subpasta (GitHub Pages de
+//   projeto, /staging, addon de cPanel...) sem trocar código.
+// - SITE_URL / VITE_SITE_URL define o canônico do SEO sem travar no oficial.
+const isStaticBuild =
+  process.env.BUILD_TARGET === "static" || process.env.BUILD_TARGET === undefined || isFtpBuild;
+
+const basePath = (() => {
+  const raw = process.env.BASE_PATH ?? process.env.VITE_BASE_PATH ?? "/";
+  const withLeading = raw.startsWith("/") ? raw : `/${raw}`;
+  const normalized = withLeading.endsWith("/") ? withLeading : `${withLeading}/`;
+  return normalized.replace(/\/\//g, "/");
+})();
+
 export default defineConfig({
   vite: {
+    // `base` portátil: raiz por default, subpasta via BASE_PATH.
+    base: basePath,
     // Correção do erro "rolldown-runtime-*.js does not exist in optimize deps":
     // o cache de node_modules/.vite/deps fica obsoleto após upgrade do Vite
     // e o pre-transform tenta ler o arquivo removido. Desligar o
@@ -37,14 +54,15 @@ export default defineConfig({
       preTransformRequests: false,
     },
   },
-  nitro: isFtpBuild ? false : true,
+  nitro: isStaticBuild ? false : true,
   tanstackStart: {
-    ...(isFtpBuild
+    ...(isStaticBuild
       ? {
           spa: { enabled: true },
           // Prerenderiza home, páginas de segmento e cada /obras/<slug>
-          // (inclui golden-mall-rosario) para que o Apache/KingHost sirva
-          // HTML estático com SEO em vez de depender só do _shell.html.
+          // (inclui golden-mall-rosario) + /publicar para que QUALQUER
+          // hospedagem estática (Apache, Nginx, S3, Netlify, IIS...)
+          // sirva HTML com SEO em vez de depender só do _shell.html.
           pages: PRERENDER_ROUTES.map((path) => ({ path })),
           prerender: { enabled: true, crawlLinks: true },
         }

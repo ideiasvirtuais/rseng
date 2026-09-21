@@ -75,13 +75,17 @@ function DeployPage() {
           <div className="container-x relative py-16 md:py-20">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
               <CloudUpload className="h-3.5 w-3.5" aria-hidden="true" />
-              Publicação · FTP
+              Publicação · FTP (opcional)
             </div>
             <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
-              Enviar o site por FTP para a KingHost.
+              Enviar o site por FTP para a KingHost — uma das opções.
             </h1>
             <p className="mt-4 max-w-2xl text-primary-foreground/85">
-              Destino{" "}
+              O pacote estático publica em <strong>qualquer hospedagem</strong> (veja{" "}
+              <Link to="/publicar" className="underline underline-offset-2">
+                /publicar
+              </Link>
+              ). Esta página cobre apenas a opção FTP Napoleon/KingHost. Destino{" "}
               <code className="rounded bg-primary-foreground/15 px-1.5 py-0.5 font-mono text-sm">
                 {SAFE_FTP_HOST}
               </code>{" "}

@@ -1,0 +1,15 @@
+# Netlify — configuração do pacote estático universal (OPCIONAL).
+# Alternativa ao arrastar dist/client/ no dashboard.
+[build]
+  command = "npm run build:static"
+  publish = "dist/client"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

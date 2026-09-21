@@ -31,6 +31,12 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://rsengenharia.eng.br/publicar</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://rsengenharia.eng.br/obras/golden-mall-rosario</loc>
     <lastmod>2026-09-21</lastmod>
     <changefreq>weekly</changefreq>

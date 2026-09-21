@@ -16,6 +16,7 @@ import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-come
 import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as HealthRouteImport } from './routes/health'
+import { Route as PublicarRouteImport } from './routes/publicar'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
 import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/client-error'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
@@ -55,6 +56,11 @@ const HealthRoute = HealthRouteImport.update({
   path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublicarRoute = PublicarRouteImport.update({
+  id: '/publicar',
+  path: '/publicar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ObrasSlugRoute = ObrasSlugRouteImport.update({
   id: '/obras/$slug',
   path: '/obras/$slug',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/galeria': typeof GaleriaRoute
   '/health': typeof HealthRoute
+  '/publicar': typeof PublicarRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/galeria': typeof GaleriaRoute
   '/health': typeof HealthRoute
+  '/publicar': typeof PublicarRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/galeria': typeof GaleriaRoute
   '/health': typeof HealthRoute
+  '/publicar': typeof PublicarRoute
   '/obras/$slug': typeof ObrasSlugRoute
   '/api/public/client-error': typeof ApiPublicClientErrorRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/edificios-residenciais'
     | '/galeria'
     | '/health'
+    | '/publicar'
     | '/obras/$slug'
     | '/api/public/client-error'
     | '/api/public/health'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/edificios-residenciais'
     | '/galeria'
     | '/health'
+    | '/publicar'
     | '/obras/$slug'
     | '/api/public/client-error'
     | '/api/public/health'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/edificios-residenciais'
     | '/galeria'
     | '/health'
+    | '/publicar'
     | '/obras/$slug'
     | '/api/public/client-error'
     | '/api/public/health'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   EdificiosResidenciaisRoute: typeof EdificiosResidenciaisRoute
   GaleriaRoute: typeof GaleriaRoute
   HealthRoute: typeof HealthRoute
+  PublicarRoute: typeof PublicarRoute
   ObrasSlugRoute: typeof ObrasSlugRoute
   ApiPublicClientErrorRoute: typeof ApiPublicClientErrorRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/publicar': {
+      id: '/publicar'
+      path: '/publicar'
+      fullPath: '/publicar'
+      preLoaderRoute: typeof PublicarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/obras/$slug': {
       id: '/obras/$slug'
       path: '/obras/$slug'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   EdificiosResidenciaisRoute: EdificiosResidenciaisRoute,
   GaleriaRoute: GaleriaRoute,
   HealthRoute: HealthRoute,
+  PublicarRoute: PublicarRoute,
   ObrasSlugRoute: ObrasSlugRoute,
   ApiPublicClientErrorRoute: ApiPublicClientErrorRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,

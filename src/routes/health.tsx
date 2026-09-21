@@ -1,6 +1,39 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState, useTransition } from "react";
-import { getHealth, type HealthStatus } from "@/lib/health.functions";
+import { getStaticHealth } from "@/lib/health-static";
+
+type UiHealth = {
+  ok: boolean;
+  timestamp: string;
+  uptimeSeconds: number | null;
+  runtime: { name: string; nodeVersion: string | null };
+  request: { host: string | null; userAgent: string | null };
+  env: { mode: string };
+  database: { configured: boolean; ok: boolean | null; latencyMs: number | null; error: string | null };
+  note?: string;
+};
+
+/** Loader portátil: tenta o server-fn; em host 100% estático cai no /health.json. */
+async function loadHealthPortable(): Promise<UiHealth> {
+  try {
+    const mod = await import("@/lib/health.functions");
+    const server = await (mod.getHealth() as unknown as Promise<UiHealth>);
+    if (server && typeof server === "object" && "ok" in server) return server;
+  } catch {
+    /* host sem backend (Netlify/S3/cPanel...) — segue para modo estático */
+  }
+  const s = await getStaticHealth();
+  return {
+    ok: s.ok,
+    timestamp: s.timestamp,
+    uptimeSeconds: null,
+    runtime: { name: "static", nodeVersion: null },
+    request: { host: s.host, userAgent: s.userAgent },
+    env: { mode: "static" },
+    database: s.database,
+    note: s.note,
+  };
+}
 
 export const Route = createFileRoute("/health")({
   head: () => ({
@@ -9,7 +42,7 @@ export const Route = createFileRoute("/health")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  loader: () => getHealth(),
+  loader: () => loadHealthPortable(),
   component: HealthPage,
 });
 
@@ -30,18 +63,19 @@ function Dot({ ok }: { ok: boolean | null }) {
   return <span className={`inline-block h-2.5 w-2.5 rounded-full ${color}`} />;
 }
 
-const HEALTH_FALLBACK: HealthStatus = {
-  ok: false,
+const HEALTH_FALLBACK: UiHealth = {
+  ok: true,
   timestamp: new Date().toISOString(),
   uptimeSeconds: null,
-  runtime: { name: "unknown", nodeVersion: null },
+  runtime: { name: "static", nodeVersion: null },
   request: { host: null, userAgent: null },
-  env: { mode: "unknown", hasSupabaseUrl: false, hasSupabasePublishableKey: false, hasSupabaseServiceRole: false },
+  env: { mode: "static" },
   database: { configured: false, ok: null, latencyMs: null, error: null },
+  note: "Pacote estático — sem backend.",
 };
 
 function HealthPage() {
-  const loaded = Route.useLoaderData() as HealthStatus | undefined;
+  const loaded = Route.useLoaderData() as UiHealth | undefined;
   const initial = loaded ?? HEALTH_FALLBACK;
   let router: ReturnType<typeof useRouter> | undefined;
   try {
@@ -56,7 +90,7 @@ function HealthPage() {
   const refresh = async () => {
     setRefreshing(true);
     try {
-      const next = await getHealth();
+      const next = await loadHealthPortable();
       setData(next ?? HEALTH_FALLBACK);
       startTransition(() => {
         try {
@@ -139,20 +173,10 @@ function HealthPage() {
 
       <section>
         <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-2">
-          Variáveis
+          Pacote
         </h2>
-        <Row
-          label="SUPABASE_URL"
-          value={data?.env?.hasSupabaseUrl ? "definida" : "—"}
-        />
-        <Row
-          label="SUPABASE_PUBLISHABLE_KEY"
-          value={data?.env?.hasSupabasePublishableKey ? "definida" : "—"}
-        />
-        <Row
-          label="SUPABASE_SERVICE_ROLE_KEY"
-          value={data?.env?.hasSupabaseServiceRole ? "definida" : "—"}
-        />
+        <Row label="Modo" value={data?.env?.mode ?? "static"} />
+        <Row label="Nota" value={data?.note ?? "Site estático — sem backend obrigatório."} />
       </section>
     </div>
   );

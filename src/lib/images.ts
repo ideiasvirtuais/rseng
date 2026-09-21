@@ -74,12 +74,14 @@ export function publicUrl(path: string): string {
 
 export const LOGO_URL = publicUrl("/LOGOMARCA-RS-1024x253.png");
 /**
- * Alias lowercase da nova marca em `public/` (v7): o bundle usa
- * `src/assets/logomarca-rs-1024x253.png` (minúscula) e o Apache/Linux é
- * case-sensitive — este alias garante que a casa minúscula também resolva
- * via `public/`, independente de qual casa o HTML/JS pedir.
+ * Nome canônico da marca em `public/` é UPPERCASE (`LOGOMARCA-RS-1024x253.png`).
+ * NÃO existe alias lowercase em disco: o repo usa `core.ignorecase=true`
+ * (Windows) e o bundle usa `src/assets/logomarca-rs-1024x253.png` (lowercase)
+ * só como import Vite — no Linux essas casas são arquivos distintos, então
+ * pedir `/logomarca-rs-1024x253.png` via `public/` gerava 404 garantido em
+ * produção (CI Linux) e flicker na logo. A cadeia abaixo pede apenas o que
+ * existe de verdade.
  */
-export const LOGO_URL_LOWERCASE = publicUrl("/logomarca-rs-1024x253.png");
 /**
  * Logo oficial vendorada (content-addressed, `__l5e`): segunda tentativa da
  * cadeia da logo. É o upload canônico aprovado — se o arquivo de `public/`
@@ -91,8 +93,8 @@ export const LOGO_VENDOR_URL = publicUrl(
   "/__l5e/assets-v1/be9bf3cd-9321-41a5-b79d-f2a010d07cfb/logo-rezende-saback.png",
 );
 export const LOGO_LEGACY_URL = publicUrl("/logo-rezende-saback.png");
-/** Cadeia completa de tentativas da logo: nova marca (2 casas) → legada → vendorada (nunca vazia). */
-export const LOGO_CHAIN: readonly string[] = [LOGO_URL, LOGO_URL_LOWERCASE, LOGO_LEGACY_URL, LOGO_VENDOR_URL].filter(
+/** Cadeia completa de tentativas da logo: nova marca (canônica UPPERCASE) → legada → vendorada (nunca vazia). */
+export const LOGO_CHAIN: readonly string[] = [LOGO_URL, LOGO_LEGACY_URL, LOGO_VENDOR_URL].filter(
   Boolean,
 );
 
@@ -106,12 +108,13 @@ export const LOGO_CHAIN: readonly string[] = [LOGO_URL, LOGO_URL_LOWERCASE, LOGO
  * erro de carregamento". Resolvendo aqui, a cada render, a base vigente
  * (import.meta.env.BASE_URL do bundle servido) é respeitada.
  *
- * Ordem (v7): bundle Vite (hash, sempre com base correta — primário, viaja
- * com o deploy) → public/ nova marca (UPPERCASE, arquivo canônico) →
- * public/ alias (lowercase, anti case-sensitivity do Apache/Linux) →
- * public/ legada → vendorada `__l5e` → (o componente Logo acrescenta o SVG
- * inline final). Entradas duplicadas são removidas.
-  */
+ * Ordem (v8): bundle Vite (hash, sempre com base correta — primário, viaja
+ * com o deploy) → public/ nova marca (UPPERCASE, arquivo canônico, único
+ * pedido via public/) → public/ legada → vendorada `__l5e` → (o componente
+ * Logo acrescenta o SVG inline final). Entradas duplicadas são removidas.
+ * Sem alias lowercase: esse arquivo não existe em disco (repo Windows com
+ * core.ignorecase) e o pedido gerava 404 garantido no Apache/Linux.
+   */
 export function logoChain(bundledUrl?: ImageInput): string[] {
   const out: string[] = [];
   const push = (u: string) => {
@@ -123,7 +126,6 @@ export function logoChain(bundledUrl?: ImageInput): string[] {
     // bundle ausente — segue para public/
   }
   push(publicUrl("/LOGOMARCA-RS-1024x253.png"));
-  push(publicUrl("/logomarca-rs-1024x253.png"));
   push(publicUrl("/logo-rezende-saback.png"));
   push(
     publicUrl(

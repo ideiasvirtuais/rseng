@@ -1,0 +1,21 @@
+# Projeto 100% independente — Docker Compose portátil.
+# Sobe o pacote estático em Nginx sem GitHub, Lovable ou FTP.
+#
+# Uso:
+#   npm run build:static
+#   docker compose -f docker-compose.portable.yml up -d --build
+#   curl http://localhost:8080/health.json
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rseng-static:local
+    ports:
+      - "${PORT:-8080}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health.json"]
+      interval: 30s
+      timeout: 3s
+      retries: 3

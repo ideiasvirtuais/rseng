@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Component, useState, type ReactNode } from "react";
+import { Component, useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
 import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
@@ -161,11 +161,38 @@ function Index() {
   // Home leve: sem pré-carregamento das 50 fotos (só hero + covers via lazy).
   // O catálogo completo carrega apenas em `/galeria`.
 
+  // Navegação por âncoras da home — "Lançamento" é item fixo do menu
+  // (âncora canônica #lancamento; #personalizacao mantida como alias legado).
   const navLinks = [
-    { href: "#personalizacao", label: "Lançamento" },
+    { href: "#lancamento", label: "Lançamento", highlight: true },
     { href: "#sobre", label: "Sobre" },
     { href: "#contato", label: "Contato" },
   ];
+
+  // Normaliza a âncora legada #personalizacao -> #lancamento e garante o
+  // scroll ao chegar de outra rota (ex: /obras -> /#lancamento). Sem isso, o
+  // menu "Lançamento" parecia não funcionar vindo de páginas internas.
+  useEffect(() => {
+    try {
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      if (!hash) return;
+      const target = hash === "#personalizacao" ? "#lancamento" : hash;
+      if (hash === "#personalizacao" && typeof window.history?.replaceState === "function") {
+        window.history.replaceState(null, "", `#${"lancamento"}`);
+      }
+      // Aguarda a hidratação para o elemento existir no DOM.
+      const t = window.setTimeout(() => {
+        try {
+          document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch {
+          // scroll opcional — nunca quebra a home
+        }
+      }, 60);
+      return () => window.clearTimeout(t);
+    } catch {
+      return undefined;
+    }
+  }, []);
 
   // Acessos defensivos: COMPANY pode chegar undefined em HMR/navegação
   // parcial — sem optional chaining, o render lançava (tela branca).
@@ -190,14 +217,25 @@ function Index() {
           <div className="min-w-0">
             <Logo />
           </div>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-primary/80 lg:flex">
-            <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "text-primary font-semibold" }} className="hover:text-primary">Início</Link>
+          <nav aria-label="Navegação principal" className="hidden shrink-0 items-center gap-5 text-sm font-medium text-primary/80 lg:flex xl:gap-6">
+            <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "text-primary font-semibold" }} className="shrink-0 whitespace-nowrap hover:text-primary">Início</Link>
             {segmentNav.map((l) => (
-              <Link key={l.to} to={l.to} className="hover:text-primary">{l.label}</Link>
+              <Link key={l.to} to={l.to} className="shrink-0 whitespace-nowrap hover:text-primary">{l.label}</Link>
             ))}
-            {navLinks.map((l) => (
-              <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
-            ))}
+            {navLinks.map((l) =>
+              (l as { highlight?: boolean }).highlight ? (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-accent/60 bg-accent/15 px-4 py-1.5 font-semibold text-primary transition hover:-translate-y-px hover:bg-accent hover:text-primary hover:shadow-md"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                  {l.label}
+                </a>
+              ) : (
+                <a key={l.href} href={l.href} className="shrink-0 whitespace-nowrap hover:text-primary">{l.label}</a>
+              ),
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -253,17 +291,28 @@ function Index() {
                 {l.label}
               </Link>
             ))}
-            {navLinks.map((l) => (
-
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="border-b border-border/60 py-3 hover:text-primary/70"
-              >
-                {l.label}
-              </a>
-            ))}
+            {navLinks.map((l) =>
+              (l as { highlight?: boolean }).highlight ? (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-accent/60 bg-accent/15 px-5 py-3 font-semibold text-primary"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                  {l.label} — Golden Mall Rosário
+                </a>
+              ) : (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="border-b border-border/60 py-3 hover:text-primary/70"
+                >
+                  {l.label}
+                </a>
+              ),
+            )}
             <a
               href={COMPANY.social.instagram.url}
               target="_blank"
@@ -392,7 +441,11 @@ function Index() {
       </section>
 
 
-      {/* Feito para você — Destaque lançamento Golden Mall Rosário */}
+      {/* Lançamento — Golden Mall Rosário (âncora canônica #lancamento).
+          Alias legado #personalizacao preservado logo acima para que a URL
+          antiga https://rsengenharia.eng.br/#personalizacao continue rolando
+          para a mesma seção. */}
+      <span id="personalizacao" aria-hidden="true" className="block h-0 w-0 overflow-hidden" />
       <SectionGuard>
         <GoldenMallSpotlight />
       </SectionGuard>

@@ -77,9 +77,9 @@ export function GoldenMallSpotlight() {
 
   return (
     <section
-      id="personalizacao"
+      id="lancamento"
       aria-labelledby="golden-mall-spotlight-title"
-      className="relative scroll-mt-20 overflow-hidden bg-primary text-primary-foreground"
+      className="relative scroll-mt-24 overflow-hidden bg-primary text-primary-foreground lg:scroll-mt-28"
     >
       {/* Textura / glow de fundo */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">

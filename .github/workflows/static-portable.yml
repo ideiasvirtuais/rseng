@@ -1,0 +1,56 @@
+name: Static portable (opcional — GitHub Pages)
+
+# OPCIONAL. O pacote dist/rseng-static.zip já publica em qualquer hospedagem
+# sem este workflow. Ative apenas se quiser o GitHub Pages como UM dos destinos.
+# KingHost/FTP segue via scripts/deploy-*.mjs locais (nunca obrigatório no CI).
+#
+# Para ativar: Actions → enable + Environment `github-pages` (ou deixe em dry-run).
+# Para desativar: apague este arquivo — nada no build depende dele.
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Destino"
+        type: choice
+        default: pages
+        options: [pages, dry-run]
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "docs/**"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-portable
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci || npm install
+      - run: npm run build:static
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://rsengenharia.eng.br' }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/client
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

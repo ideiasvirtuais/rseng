@@ -111,12 +111,14 @@ for (const file of pointers) {
 }
 console.log(`✓ vendorados: ${okVendor}/${pointers.length} assets __l5e presentes em public/`);
 
-// 2. Imagens públicas obrigatórias
+// 2. Imagens públicas obrigatórias (todas lowercase canônico, exceto a
+// marca oficial que é UPPERCASE — ver guarda anti-case abaixo).
 const REQUIRED = [
   "hero-rosario.jpg",
   "hero-rosario.webp",
   "LOGOMARCA-RS-1024x253.png",
   "logo-rezende-saback.png",
+  "instagram-rs.jpg",
   "og-cover.jpg",
   "favicon.png",
   "apple-touch-icon.png",
@@ -130,6 +132,24 @@ for (const img of REQUIRED) {
   }
 }
 console.log(`✓ public/: ${REQUIRED.filter((i) => existsSync(join(PUBLIC, i))).length}/${REQUIRED.length} obrigatórias`);
+
+// 2b. Guarda anti-case: extensões/nomes UPPERCASE em public/ quebram no
+// Apache/Linux quando o código pede lowercase (e o Windows nem percebe).
+// `instagram-rs.JPG` renomeado para `instagram-rs.jpg` em 2026-09-21 — se
+// alguma variante maiúscula ressurgir, falhar aqui em vez de 404 em prod.
+for (const entry of readdirSync(PUBLIC)) {
+  const full = join(PUBLIC, entry);
+  try {
+    if (statSync(full).isDirectory()) continue;
+  } catch {
+    continue;
+  }
+  if (/\.JPG$/.test(entry) || /\.JPEG$/.test(entry) || /\.PNG$/.test(entry)) {
+    errors.push(
+      `Case proibido em public/: ${entry} — renomeie para lowercase (código e CDN pedem minúsculas; Linux é case-sensitive)`,
+    );
+  }
+}
 
 // 6. Imagens Vite referenciadas diretamente pelo código
 const VITE_REFS = [

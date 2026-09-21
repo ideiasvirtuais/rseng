@@ -1,5 +1,69 @@
 # Status de publicação — GitHub + FTP
 
+## Resposta 2026-09-21 — "publicou github? ou ftp" — NÃO, ambos pendentes
+
+- **GitHub (`origin/main`): NÃO publicado o estado atual.** `HEAD` = `a5a0ad9`
+  em dia com `origin/main` (`rev-list 0 0`), porém working tree sujo:
+  19 arquivos modificados + 33 não rastreados (inclui `public/instagram-rs.jpg`
+  renomeado, `Logo.tsx`, `images.ts`, `vite.config.ts`, rota `publicar.tsx`,
+  `vercel.json`/`netlify.toml`). Precisa `git add -A + commit + git push origin main`.
+- **FTP KingHost (`ftp.rsengenharia.eng.br/www`): NÃO publicado.**
+  Último envio OK foi `v2026.09.18-4` (18/09). Produção segue no bundle
+  `index-D5nMMMw7.js` de 18/09. Tentativas atuais retornam
+  `530 Login authentication failed`. Precisa corrigir `FTP_USER`/`FTP_PASSWORD`
+  no painel KingHost + Secrets e rodar `deploy-ftp.mjs --delete`.
+- **Como publicar (após credenciais):** `git push origin main` dispara
+  `.github/workflows/lovable-deploy.yml` (push na main = production) que faz
+  build + FTP automaticamente.
+
+## Verificação 2026-09-21 — instabilidade logo/imagens + atualização não efetivada (causas-raiz corrigidas no código)
+
+Diagnóstico deste ciclo (build local Windows OK × produção CI Linux 404):
+
+1. `public/instagram-rs.JPG` (extensão UPPERCASE) × código pedindo
+   `/instagram-rs.jpg` (lowercase) em `HomeInstagram.tsx` e `all-images.ts`.
+   No Windows/dev resolve; no Apache/Linux (build do CI) dá 404 e o
+   SmartImage cai para placeholder — parecia "imagem instável".
+   Correção: `git mv public/instagram-rs.JPG → public/instagram-rs.jpg`
+   (canônico lowercase) + `instagram-rs.jpg` no REQUIRED do
+   `verify-images.mjs` + guarda que falha se `.JPG/.JPEG/.PNG` ressurgir.
+2. Cadeia da logo pedia `/logomarca-rs-1024x253.png` (lowercase) via
+   `public/`, mas esse arquivo NÃO existe em disco (só
+   `public/LOGOMARCA-RS-1024x253.png` UPPERCASE; repo Windows com
+   `core.ignorecase=true` nem permite as duas casas no git). 404 garantido
+   por page-view no Linux + warm desnecessário. Correção: removido o alias
+   fantasma de `logoChain()`/`LOGO_CHAIN` (`src/lib/images.ts`), do
+   `warmCriticalImage` (`src/routes/__root.tsx`) e atualizado o docblock da
+   `Logo.tsx` (v8). Cadeia agora: bundle hash → UPPERCASE → legada →
+   vendorada `__l5e` → SVG inline.
+3. `.htaccess` marcava TODA imagem como `immutable 1 ano`, mas arquivos de
+   `public/` (logo, hero, instagram, og-cover, favicons) NÃO têm hash no
+   nome — visitante travava na logo/hero antiga ("atualização não
+   efetivada"). Correção (`scripts/generate-htaccess.mjs` + `dist/`):
+   `immutable 1 ano` só para `js/css/woff`; imagens passam a
+   `max-age=86400, must-revalidate`. HTML segue `no-cache`.
+4. Remote git continha token expirado embutido
+   (`https://x-access-token:gho_…@github.com/…`) → `git ls-remote/push`
+   falhava com `Invalid username or token`, o workflow nunca rodava e a
+   produção ficava congelada no bundle de 18/09. Correção: remote saneado
+   para `https://github.com/ideiasvirtuais/rseng.git` (sem segredo).
+   Credencial nunca mais deve ir para a URL do remote.
+5. `ROOT_ALLOWLIST` do `deploy-ftp.mjs` agora inclui `instagram-rs.jpg` e o
+   fantasma `instagram-rs.JPG` (limpeza com `--delete` remove o obsoleto).
+
+Validado neste ciclo: `tsc --noEmit` limpo, `verify-images.mjs` OK (8/8
+public, 46/46 vendorados, 13/13 vite), `.htaccess` regenerado,
+`preflight-ftp.mjs` OK.
+
+Pendente (fora do alcance do código — exige ação manual):
+
+1. `git push origin main` (vai pedir login + Personal Access Token com
+   escopo `repo`; o Windows guarda depois) — dispara o workflow, que agora
+   publica em produção automaticamente.
+2. Credenciais FTP KingHost válidas nos Secrets do GitHub (`FTP_HOST`,
+   `FTP_USER`, `FTP_PASSWORD`, …). Servidor ainda retorna `530 Login
+   authentication failed`; sem isso nem CI nem deploy manual enviam.
+
 ## Verificação 2026-09-21 — https://rsengenharia.eng.br/ AINDA DESATUALIZADO (causa-raiz corrigida)
 
 Verificado em 2026-09-21 (novo build local + `verify-live.mjs`):

@@ -1,0 +1,3 @@
+# Pacote estático universal — SPA fallback
+# Netlify + Cloudflare Pages. Apache/IIS usam .htaccess/web.config próprios.
+/*  /index.html  200
