@@ -1,6 +1,264 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.09.23-1 — 2026-09-23T01:02:29.492Z
+
+- **Commit:** `e7c8adb` (edit/edt-76cbc01b-cf27-4ce2-98d3-48fc5d31e1c2) — Publicou site no domínio
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 58 novo(s), 16 alterado(s), 17 removido(s), 61 inalterado(s) — 26.99 MB enviados
+
+**Adicionados (58)**
+
+- `_headers`
+- `_redirects`
+- `.nojekyll`
+- `404.html`
+- `assets/all-images--bfZLXxt.js`
+- `assets/arrow-left-CyRRl1_z.js`
+- `assets/building-iris-oUQQoZy8.jpg`
+- `assets/building-jopena-Cwn6C_D1.jpg`
+- `assets/building-malbec-D_mxWdeG.jpg`
+- `assets/building-rosario-hbmMCdYh.jpg`
+- `assets/casas-de-alto-padrao-D-cofbP3.js`
+- `assets/circle-check-B4aU6S7p.js`
+- `assets/ContactForm-BKRZBkph.js`
+- `assets/deploy-rEFge2tH.js`
+- `assets/diagnostico-imagens-CiIPL5tm.js`
+- `assets/diamond-CT43B66a.js`
+- `assets/edificios-comerciais-BS5a_tli.js`
+- `assets/edificios-residenciais-BLtOQGsw.js`
+- `assets/galeria-33cIDN_3.js`
+- `assets/health-BLjI5pvH.js`
+- `assets/health.functions-Cpp6G3Q3.js`
+- `assets/hero-building-CRfGEp0V.webp`
+- `assets/index-BqEJvixc.js`
+- `assets/interior-custom-9nvRngDY.jpg`
+- `assets/invariant-DEEwAagU.js`
+- `assets/Lightbox-DydtxwOU.js`
+- `assets/link-CIUJ0isy.js`
+- `assets/loader-circle-D6_qlzf7.js`
+- `assets/logo-rezende-saback-BHWLi5gN.png`
+- `assets/logomarca-rs-1024x253-C2mS5mdH.png`
+- `assets/obras._slug-B0lj7Eel.js`
+- `assets/obras._slug-Cb27Ufbc.js`
+- `assets/obras._slug-CJMdxblI.js`
+- `assets/og-cover-D-errj70.jpg`
+- `assets/projects-Br-Xq0ld.js`
+- `assets/publicar-DfWcIB4M.js`
+- `assets/redirect-DCb_aIiF.js`
+- `assets/routes-DpADmdj4.js`
+- `assets/SegmentPage-Bb438ttY.js`
+- `assets/shield-check-B0dA7JAy.js`
+- `assets/SiteFooter-bW-7ptS2.js`
+- `assets/SiteHeader-BLQ9i3PD.js`
+- `assets/SmartImage-DHx-ZQa1.js`
+- `assets/styles-DU02rgCH.css`
+- `assets/utils-BJQHrqAS.js`
+- `CNAME`
+- `diagnostico-imagens/index.html`
+- `favicon.ico`
+- `galeria/index.html`
+- `health.json`
+- `instagram-rs.jpg`
+- `LOGOMARCA-RS-1024x253.png`
+- `manifest.webmanifest`
+- `nginx.conf`
+- `package.sha256.txt`
+- `publicar/index.html`
+- `sitemap.xml`
+- `web.config`
+
+**Modificados (16)**
+
+- `_shell.html`
+- `.htaccess`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `index.html`
+- `logo-rezende-saback.png`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+- `robots.txt`
+
+**Removidos (17)**
+
+- `assets/ContactForm-D9Gw7a3I.js`
+- `assets/SegmentPage-DPa8GDNT.js`
+- `assets/SiteFooter-rGHMrWXR.js`
+- `assets/casas-de-alto-padrao-qMsDp8hP.js`
+- `assets/deploy-Clsj2MWz.js`
+- `assets/edificios-comerciais-DZZHgC7Q.js`
+- `assets/edificios-residenciais-DaGkww_K.js`
+- `assets/health-1ma7agJr.js`
+- `assets/index-D5nMMMw7.js`
+- `assets/link-DLDY-uBQ.js`
+- `assets/obras._slug-BGUtr4T-.js`
+- `assets/obras._slug-BQpil23V.js`
+- `assets/obras._slug-DJMLHhDC.js`
+- `assets/routes-BVCGmjac.js`
+- `assets/styles-BQ9S-4uu.css`
+- `assets/zoom-in-B0xnygom.js`
+- `instagram-rs.JPG`
+
+---
+
+## v2026.09.18-7 — 2026-09-18T22:32:24.951Z
+
+- **Commit:** `12defb9` (edit/edt-5d19d45c-506e-46b1-ad0f-d638452027af) — Changes
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 14 novo(s), 13 alterado(s), 14 removido(s), 67 inalterado(s) — 1.16 MB enviados
+
+**Adicionados (14)**
+
+- `assets/casas-de-alto-padrao-qMsDp8hP.js`
+- `assets/ContactForm-D9Gw7a3I.js`
+- `assets/deploy-Clsj2MWz.js`
+- `assets/edificios-comerciais-DZZHgC7Q.js`
+- `assets/edificios-residenciais-DaGkww_K.js`
+- `assets/health-1ma7agJr.js`
+- `assets/index-D5nMMMw7.js`
+- `assets/obras._slug-BGUtr4T-.js`
+- `assets/obras._slug-BQpil23V.js`
+- `assets/obras._slug-DJMLHhDC.js`
+- `assets/routes-BVCGmjac.js`
+- `assets/SegmentPage-DPa8GDNT.js`
+- `assets/SiteFooter-rGHMrWXR.js`
+- `assets/zoom-in-B0xnygom.js`
+
+**Modificados (13)**
+
+- `_shell.html`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `index.html`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+
+**Removidos (14)**
+
+- `assets/ContactForm-hVgfI9yd.js`
+- `assets/SegmentPage-BYFZ2SYs.js`
+- `assets/SiteFooter-n4WmuDOy.js`
+- `assets/casas-de-alto-padrao-CrL6qD3T.js`
+- `assets/deploy-C6ngntgs.js`
+- `assets/edificios-comerciais-CgxGMuIt.js`
+- `assets/edificios-residenciais-BoLg1sTw.js`
+- `assets/health-8lLBFtNY.js`
+- `assets/index-DkKTzsYo.js`
+- `assets/obras._slug-CIYp6vOv.js`
+- `assets/obras._slug-DK00PiEn.js`
+- `assets/obras._slug-Dctp8oKv.js`
+- `assets/routes-Cxua-EjQ.js`
+- `assets/zoom-in-Ffo8yL5_.js`
+
+---
+
+## v2026.09.18-6 — 2026-09-18T22:29:52.905Z
+
+- **Commit:** `4bb83fd` (edit/edt-5d19d45c-506e-46b1-ad0f-d638452027af) — Changes
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 0 novo(s), 1 alterado(s), 0 removido(s), 93 inalterado(s) — 2.0 KB enviados
+
+**Modificados (1)**
+
+- `.htaccess`
+
+---
+
+## v2026.09.18-5 — 2026-09-18T22:27:26.355Z
+
+- **Commit:** `8c0424b` (edit/edt-5d19d45c-506e-46b1-ad0f-d638452027af) — Corrigiu e reenviou imagens
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 17 novo(s), 13 alterado(s), 33 removido(s), 64 inalterado(s) — 25.53 MB enviados
+
+**Adicionados (17)**
+
+- `assets/casas-de-alto-padrao-CrL6qD3T.js`
+- `assets/ContactForm-hVgfI9yd.js`
+- `assets/deploy-C6ngntgs.js`
+- `assets/edificios-comerciais-CgxGMuIt.js`
+- `assets/edificios-residenciais-BoLg1sTw.js`
+- `assets/health-8lLBFtNY.js`
+- `assets/index-DkKTzsYo.js`
+- `assets/link-DLDY-uBQ.js`
+- `assets/obras._slug-CIYp6vOv.js`
+- `assets/obras._slug-Dctp8oKv.js`
+- `assets/obras._slug-DK00PiEn.js`
+- `assets/routes-Cxua-EjQ.js`
+- `assets/SegmentPage-BYFZ2SYs.js`
+- `assets/SiteFooter-n4WmuDOy.js`
+- `assets/styles-BQ9S-4uu.css`
+- `assets/zoom-in-Ffo8yL5_.js`
+- `robots.txt`
+
+**Modificados (13)**
+
+- `_shell.html`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `health/index.html`
+- `index.html`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+
+**Removidos (33)**
+
+- `assets/ContactForm-B5h18Bph.js`
+- `assets/ContactForm-CXqRKIzO.js`
+- `assets/SegmentPage-BnkdaCZC.js`
+- `assets/SegmentPage-C1iScA9G.js`
+- `assets/SiteFooter-BwyG3ODV.js`
+- `assets/SiteFooter-Dw91rIj_.js`
+- `assets/SmartImage-Bt7E7iDH.js`
+- `assets/casas-de-alto-padrao-B8QcRkfe.js`
+- `assets/casas-de-alto-padrao-Bn4XSm2A.js`
+- `assets/deploy-CGF82TBV.js`
+- `assets/deploy-xLqGXHLG.js`
+- `assets/edificios-comerciais-BMmmJThP.js`
+- `assets/edificios-comerciais-BQ3qtLXf.js`
+- `assets/edificios-residenciais-CTvkxq-G.js`
+- `assets/edificios-residenciais-D4NtwNq2.js`
+- `assets/health-BWcNXJBs.js`
+- `assets/health-C42KBsBH.js`
+- `assets/index-6-g6Z7Rr.js`
+- `assets/index-ioehRTYx.js`
+- `assets/jsx-dev-runtime-BjSf4xY7.js`
+- `assets/obras._slug-BkkX16tO.js`
+- `assets/obras._slug-D1olASS1.js`
+- `assets/obras._slug-D6T-TpF6.js`
+- `assets/obras._slug-DyGASaJe.js`
+- `assets/obras._slug-L85DvnSw.js`
+- `assets/obras._slug-spgwWxDH.js`
+- `assets/og-cover-D-errj70.jpg`
+- `assets/routes-BTN6ej64.js`
+- `assets/routes-CUqrt_WH.js`
+- `assets/styles-D5sUOMPP.css`
+- `assets/styles-DDnIpnGS.css`
+- `assets/zoom-in-D0X_9zcb.js`
+- `assets/zoom-in-kuiOroHB.js`
+
+---
+
 ## v2026.09.18-4 — 2026-09-18T15:08:36.171Z
 
 - **Commit:** `a09ccea` (main) — chore: publicar projeto via Code In
