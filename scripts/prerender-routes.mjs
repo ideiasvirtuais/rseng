@@ -18,6 +18,7 @@ export const STATIC_ROUTES = [
   "/edificios-comerciais",
   "/casas-de-alto-padrao",
   "/publicar",
+  "/diagnostico-imagens",
   "/health",
   "/deploy",
 ];

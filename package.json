@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:static": "BUILD_TARGET=static vite build --mode ftp && node scripts/bundle-cdn-assets.mjs && node scripts/verify-images.mjs && node scripts/verify-prerender.mjs && node scripts/generate-seo.mjs && node scripts/generate-htaccess.mjs && node scripts/generate-universal.mjs && node scripts/verify-static.mjs",
     "build:ftp": "BUILD_TARGET=ftp vite build --mode ftp",
-    "postbuild:ftp": "node scripts/bundle-cdn-assets.mjs && node scripts/verify-images.mjs && node scripts/verify-prerender.mjs && node scripts/generate-seo.mjs && node scripts/generate-htaccess.mjs && node scripts/generate-universal.mjs",
+    "postbuild:ftp": "node scripts/bundle-cdn-assets.mjs && node scripts/generate-seo.mjs && node scripts/generate-htaccess.mjs && node scripts/generate-universal.mjs && node scripts/verify-images.mjs && node scripts/verify-prerender.mjs",
     "verify:static": "node scripts/verify-static.mjs",
     "package": "node scripts/package-static.mjs",
     "preview:static": "vite preview --outDir dist/client --port 4173",
