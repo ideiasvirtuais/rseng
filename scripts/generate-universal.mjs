@@ -58,6 +58,10 @@ log("✓ health.json");
 const shell = resolve(OUT_DIR, "_shell.html");
 const index = resolve(OUT_DIR, "index.html");
 const notFound = resolve(OUT_DIR, "404.html");
+if (!existsSync(index) && existsSync(shell)) {
+  copyFileSync(shell, index);
+  log("✓ index.html (copiado do prerender da rota inicial)");
+}
 if (!existsSync(notFound)) {
   const src = existsSync(shell) ? shell : existsSync(index) ? index : null;
   if (src) {
