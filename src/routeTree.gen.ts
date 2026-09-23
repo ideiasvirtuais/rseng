@@ -14,6 +14,7 @@ import { Route as HealthRouteImport } from './routes/health'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
 import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-comerciais'
+import { Route as DiagnosticoImagensRouteImport } from './routes/diagnostico-imagens'
 import { Route as DeployRouteImport } from './routes/deploy'
 import { Route as CasasDeAltoPadraoRouteImport } from './routes/casas-de-alto-padrao'
 import { Route as IndexRouteImport } from './routes/index'
@@ -44,6 +45,11 @@ const EdificiosResidenciaisRoute = EdificiosResidenciaisRouteImport.update({
 const EdificiosComerciaisRoute = EdificiosComerciaisRouteImport.update({
   id: '/edificios-comerciais',
   path: '/edificios-comerciais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticoImagensRoute = DiagnosticoImagensRouteImport.update({
+  id: '/diagnostico-imagens',
+  path: '/diagnostico-imagens',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeployRoute = DeployRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
   '/deploy': typeof DeployRoute
+  '/diagnostico-imagens': typeof DiagnosticoImagensRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/galeria': typeof GaleriaRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
   '/deploy': typeof DeployRoute
+  '/diagnostico-imagens': typeof DiagnosticoImagensRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/galeria': typeof GaleriaRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/casas-de-alto-padrao': typeof CasasDeAltoPadraoRoute
   '/deploy': typeof DeployRoute
+  '/diagnostico-imagens': typeof DiagnosticoImagensRoute
   '/edificios-comerciais': typeof EdificiosComerciaisRoute
   '/edificios-residenciais': typeof EdificiosResidenciaisRoute
   '/galeria': typeof GaleriaRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/casas-de-alto-padrao'
     | '/deploy'
+    | '/diagnostico-imagens'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
     | '/galeria'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/casas-de-alto-padrao'
     | '/deploy'
+    | '/diagnostico-imagens'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
     | '/galeria'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/casas-de-alto-padrao'
     | '/deploy'
+    | '/diagnostico-imagens'
     | '/edificios-comerciais'
     | '/edificios-residenciais'
     | '/galeria'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CasasDeAltoPadraoRoute: typeof CasasDeAltoPadraoRoute
   DeployRoute: typeof DeployRoute
+  DiagnosticoImagensRoute: typeof DiagnosticoImagensRoute
   EdificiosComerciaisRoute: typeof EdificiosComerciaisRoute
   EdificiosResidenciaisRoute: typeof EdificiosResidenciaisRoute
   GaleriaRoute: typeof GaleriaRoute
@@ -208,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/edificios-comerciais'
       fullPath: '/edificios-comerciais'
       preLoaderRoute: typeof EdificiosComerciaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostico-imagens': {
+      id: '/diagnostico-imagens'
+      path: '/diagnostico-imagens'
+      fullPath: '/diagnostico-imagens'
+      preLoaderRoute: typeof DiagnosticoImagensRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/deploy': {
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CasasDeAltoPadraoRoute: CasasDeAltoPadraoRoute,
   DeployRoute: DeployRoute,
+  DiagnosticoImagensRoute: DiagnosticoImagensRoute,
   EdificiosComerciaisRoute: EdificiosComerciaisRoute,
   EdificiosResidenciaisRoute: EdificiosResidenciaisRoute,
   GaleriaRoute: GaleriaRoute,
