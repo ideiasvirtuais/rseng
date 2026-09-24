@@ -50,6 +50,9 @@ RewriteRule ^ https://${SITE_HOST}%{REQUEST_URI} [R=301,L,NE]
 # browser tentava decodificar HTML como imagem -> erro silencioso de carga.
 # Com a regra abaixo, midia ausente responde 404 de verdade e o
 # SmartImage consegue cair para o fallback local em vez de quebrar.
+# A condicao !-f e obrigatoria: sem ela, o Apache devolve 404 inclusive
+# para imagens que foram corretamente enviadas ao FTP.
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule \\.(?:png|jpe?g|webp|avif|gif|svg|ico|woff2?)$ - [R=404,L]
 
 # SPA fallback: rotas inexistentes caem no _shell.html (exceto arquivos reais)
