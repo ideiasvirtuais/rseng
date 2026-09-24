@@ -165,8 +165,8 @@ export function SegmentPage({ segment }: SegmentPageProps) {
       {/* Lightbox */}
       {lightboxIndex !== null && uniquePhotos[lightboxIndex] ? (
         <Lightbox
-          items={uniquePhotos.map((p: SegmentPhoto) => ({ src: p.src, alt: p.alt }))}
-          currentIndex={lightboxIndex}
+          photos={uniquePhotos.map((p: SegmentPhoto) => ({ src: p.src, alt: p.alt }))}
+          index={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
           onNavigate={(newIdx: number) => setLightboxIndex(newIdx)}
         />

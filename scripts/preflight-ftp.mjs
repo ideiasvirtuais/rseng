@@ -76,6 +76,11 @@ if (htaccess) {
   if (!/R=404/.test(body)) {
     errors.push(".htaccess sem regra R=404 para mídia — imagem ausente voltaria como _shell.html e 'daria erro de carregamento'");
   }
+  const mediaRuleIndex = body.indexOf("RewriteRule \\\\.(?:png|jpe?g|webp|avif|gif|svg|ico|woff2?)$ - [R=404,L]");
+  const mediaRulePrefix = mediaRuleIndex >= 0 ? body.slice(Math.max(0, mediaRuleIndex - 100), mediaRuleIndex) : "";
+  if (mediaRuleIndex < 0 || !/RewriteCond %\{REQUEST_FILENAME\} !-f\s*$/m.test(mediaRulePrefix)) {
+    errors.push(".htaccess bloqueia imagens existentes — falta a condição !-f antes da regra R=404 de mídia");
+  }
 }
 
 const assetsDir = must("assets", "bundles JS/CSS gerados pelo Vite");
