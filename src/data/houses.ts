@@ -1,13 +1,13 @@
 import casaModernista from "@/assets/casas/casa-modernista-condominio.webp.asset.json";
-import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg";
-import casaJoelma from "@/assets/casas/joelma.jpg";
-import casaJoseMaria from "@/assets/casas/jose-maria.jpg";
-import casaMarioLucio from "@/assets/casas/mario-lucio-casa.jpg";
-import casaNatalicioFiladelfia from "@/assets/casas/natalicio-filadelfia.jpg";
-import casaNatalicioMontSerrat from "@/assets/casas/natalicio-mont-serrat-2.jpg";
-import casaRenatoBrito from "@/assets/casas/renato-brito.jpg";
-import casaSmart from "@/assets/casas/smart.jpg";
-import casaWagner from "@/assets/casas/wagner-casa.jpg";
+import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg.asset.json";
+import casaJoelma from "@/assets/casas/joelma.jpg.asset.json";
+import casaJoseMaria from "@/assets/casas/jose-maria.jpg.asset.json";
+import casaMarioLucio from "@/assets/casas/mario-lucio-casa.jpg.asset.json";
+import casaNatalicioFiladelfia from "@/assets/casas/natalicio-filadelfia.jpg.asset.json";
+import casaNatalicioMontSerrat from "@/assets/casas/natalicio-mont-serrat-2.jpg.asset.json";
+import casaRenatoBrito from "@/assets/casas/renato-brito.jpg.asset.json";
+import casaSmart from "@/assets/casas/smart.jpg.asset.json";
+import casaWagner from "@/assets/casas/wagner-casa.jpg.asset.json";
 
 export type House = {
   src: string;
@@ -17,10 +17,11 @@ export type House = {
 };
 
 /**
- * Acesso defensivo a imports — nunca lança em module evaluation.
+ * Acesso defensivo a imports `.asset.json` — nunca lança em module evaluation.
  * Segue o mesmo padrão de commercial.ts e residential.ts.
- * Para imports .asset.json retorna assetUrl; para imports diretos
- * (string), retorna a string. Garante string vazia em vez de throw.
+ * Para imports `.asset.json` retorna a URL do campo `url`;
+ * para imports diretos (string), retorna a string.
+ * Garante string vazia em vez de throw.
  */
 function assetUrl(input: unknown): string {
   try {
