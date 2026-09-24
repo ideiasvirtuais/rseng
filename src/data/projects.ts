@@ -1,19 +1,21 @@
 import heroBuilding from "@/assets/hero-building.jpg";
 import rosarioPhoto from "@/assets/residenciais/edificio-rosario.jpg.asset.json";
-import irisPhoto from "@/assets/residenciais/edificio-iris.webp.asset.json";
+import irisWebp from "@/assets/residenciais/edificio-iris.webp.asset.json";
 import jopenaPhoto from "@/assets/residenciais/edificio-jo-pena-duarte.jpg.asset.json";
 import malbecPhoto from "@/assets/residenciais/edificio-malbec.jpg.asset.json";
-import santoriniPhoto from "@/assets/residenciais/edificio-santorini.webp.asset.json";
+import santoriniWebp from "@/assets/residenciais/edificio-santorini.webp.asset.json";
 import { commercialWorks } from "./commercial";
 import { residentialWorks } from "./residential";
 import { houses } from "./houses";
 import { goldenMallCover, goldenMallImages } from "./goldenMall";
 
+// Variantes leves (webp) como primárias. Os .jpg vendorados têm 1-2 MB
+// e MIME divergente em alguns CDNs (já documentado em residential.ts).
 const buildingRosario = assetUrl(rosarioPhoto);
 const buildingMalbec = assetUrl(malbecPhoto);
-const buildingIris = assetUrl(irisPhoto);
+const buildingIris = assetUrl(irisWebp);
 const buildingJopena = assetUrl(jopenaPhoto);
-const buildingSantorini = assetUrl(santoriniPhoto);
+const buildingSantorini = assetUrl(santoriniWebp);
 
 /** Acesso defensivo a imports de assets — nunca lança em module evaluation. */
 function assetUrl(input: unknown): string {
@@ -87,9 +89,9 @@ export const projects: Project[] = [
       "Excelente visibilidade para sua marca",
     ],
     categories: ["Lançamentos", "Comerciais"],
-    gallery: goldenMallImages.map((image, index) => ({
+    gallery: goldenMallImages.map((image, i) => ({
       ...image,
-      category: index === goldenMallImages.length - 1 ? "Comerciais" as const : "Lançamentos" as const,
+      category: i === goldenMallImages.length - 1 ? "Comerciais" as const : "Lançamentos" as const,
     })),
   },
   {
@@ -119,9 +121,7 @@ export const projects: Project[] = [
       "Elevadores de alta performance",
     ],
     categories: ["Lançamentos"],
-    gallery: [
-      { src: buildingRosario, alt: "Fachada do Edifício Rosário", category: "Lançamentos" },
-    ],
+    gallery: [{ src: buildingRosario, alt: "Fachada do Edifício Rosário", category: "Lançamentos" }],
   },
   {
     slug: "edificio-iris",
@@ -152,9 +152,7 @@ export const projects: Project[] = [
       "Água, luz e gás individualizados",
     ],
     categories: ["Fachadas"],
-    gallery: [
-      { src: buildingIris, alt: "Fachada do Edifício Íris", category: "Fachadas" },
-    ],
+    gallery: [{ src: buildingIris, alt: "Fachada do Edifício Íris", category: "Fachadas" }],
   },
   {
     slug: "edificio-jo-pena-duarte",
@@ -183,9 +181,7 @@ export const projects: Project[] = [
       "2 vagas por unidade",
     ],
     categories: ["Fachadas"],
-    gallery: [
-      { src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", category: "Fachadas" },
-    ],
+    gallery: [{ src: buildingJopena, alt: "Fachada do Edifício Jó Pena Duarte", category: "Fachadas" }],
   },
   {
     slug: "edificio-malbec",
@@ -247,7 +243,11 @@ export const projects: Project[] = [
     ],
     categories: ["Fachadas"],
     gallery: [
-      { src: buildingSantorini, alt: "Fachada branca e cinza do Edifício Santorini com varandas e faixas em pastilha preta", category: "Fachadas" },
+      {
+        src: buildingSantorini,
+        alt: "Fachada branca e cinza do Edifício Santorini com varandas e faixas em pastilha preta",
+        category: "Fachadas",
+      },
       { src: heroBuilding, alt: "Vista do entorno do Edifício Santorini", category: "Fachadas" },
     ],
   },
@@ -272,9 +272,6 @@ export const galleryItems: GalleryItem[] = (() => {
       project: w?.name ?? "",
       category: "Residenciais" as GalleryCategory,
     })),
-    // commercialWorks[0] reutiliza o mesmo src/cover do Golden Mall já listado
-    // acima como "Lançamentos" — filtrar evita chave duplicada
-    // (`Golden Mall – Rosário-<src>`) e foto repetida no filtro "Todas".
     ...commercialWorks
       .filter((w) => (w?.src ?? "") !== (goldenMallCover ?? ""))
       .map((w) => ({
@@ -290,8 +287,6 @@ export const galleryItems: GalleryItem[] = (() => {
       category: "Casas" as GalleryCategory,
     })),
   ];
-  // Dedupe defensivo por `project|src|category`: garante keys únicas mesmo
-  // se duas fontes voltarem a convergir para o mesmo arquivo.
   const seen = new Set<string>();
   return raw.filter((item) => {
     const src = typeof item?.src === "string" ? item.src : "";
