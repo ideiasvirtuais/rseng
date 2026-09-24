@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import logoBundled from "@/assets/logo-rezende-saback.png";
+import logoBundled from "@/assets/logomarca-rs-1024x253.png";
 import { logoChain } from "@/lib/images";
 import type { SegmentRoute } from "./segments";
 
