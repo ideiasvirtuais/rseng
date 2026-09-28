@@ -27,7 +27,6 @@ function assetUrl(input: unknown): string {
 // Os antigos ponteiros dessas fotos continham "@/assets/..." no campo `url`;
 // esse alias só funciona em imports de código e virava uma requisição HTTP 404.
 import casaModernistaWebp from "@/assets/casas/casa-modernista-condominio.webp.asset.json";
-import casaModernistaPng from "@/assets/casas/casa-modernista-condominio.png.asset.json";
 import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg";
 import casaJoelma from "@/assets/casas/joelma.jpg";
 import casaJoseMaria from "@/assets/casas/jose-maria.jpg";
@@ -47,8 +46,7 @@ export type House = {
 
 export const houses: House[] = [
   {
-    // webp é mais leve; png fallback para a versão que não tem webp
-    src: assetUrl(casaModernistaWebp) || assetUrl(casaModernistaPng),
+    src: assetUrl(casaModernistaWebp),
     name: "Residência Modernista em Condomínio",
     style: "Casa de alto padrão · Arquitetura modernista",
     alt: "Casa de alto padrão branca com volumes geométricos, varanda envidraçada e garagem coberta",
