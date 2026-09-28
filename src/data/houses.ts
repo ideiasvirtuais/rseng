@@ -22,19 +22,21 @@ function assetUrl(input: unknown): string {
   return "";
 }
 
-// Imports estáticos — cada um isolado; se UM falhar, os outros continuam.
-// Usamos .asset.json quando existe; fallback .jpg quando só existe jpg.
+// A casa modernista usa o asset CDN já publicado. As demais fotos são imports
+// Vite diretos para que recebam uma URL real no build e sejam incluídas no FTP.
+// Os antigos ponteiros dessas fotos continham "@/assets/..." no campo `url`;
+// esse alias só funciona em imports de código e virava uma requisição HTTP 404.
 import casaModernistaWebp from "@/assets/casas/casa-modernista-condominio.webp.asset.json";
 import casaModernistaPng from "@/assets/casas/casa-modernista-condominio.png.asset.json";
-import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg.asset.json";
-import casaJoelma from "@/assets/casas/joelma.jpg.asset.json";
-import casaJoseMaria from "@/assets/casas/jose-maria.jpg.asset.json";
-import casaMarioLucio from "@/assets/casas/mario-lucio-casa.jpg.asset.json";
-import casaNatalicioFiladelfia from "@/assets/casas/natalicio-filadelfia.jpg.asset.json";
-import casaNatalicioMontSerrat from "@/assets/casas/natalicio-mont-serrat-2.jpg.asset.json";
-import casaRenatoBrito from "@/assets/casas/renato-brito.jpg.asset.json";
-import casaSmart from "@/assets/casas/smart.jpg.asset.json";
-import casaWagner from "@/assets/casas/wagner-casa.jpg.asset.json";
+import casaJoaoBosco from "@/assets/casas/joao-bosco.jpg";
+import casaJoelma from "@/assets/casas/joelma.jpg";
+import casaJoseMaria from "@/assets/casas/jose-maria.jpg";
+import casaMarioLucio from "@/assets/casas/mario-lucio-casa.jpg";
+import casaNatalicioFiladelfia from "@/assets/casas/natalicio-filadelfia.jpg";
+import casaNatalicioMontSerrat from "@/assets/casas/natalicio-mont-serrat-2.jpg";
+import casaRenatoBrito from "@/assets/casas/renato-brito.jpg";
+import casaSmart from "@/assets/casas/smart.jpg";
+import casaWagner from "@/assets/casas/wagner-casa.jpg";
 
 export type House = {
   src: string;
