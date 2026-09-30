@@ -117,7 +117,7 @@ export function SiteFooter({ fixed = false }: { fixed?: boolean }) {
   }
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-primary text-primary-foreground">
+    <footer className="relative -mb-px overflow-hidden border-y border-white/10 bg-primary pb-px text-primary-foreground">
       {/* Glow decorativo sutil */}
       <div
         aria-hidden="true"
