@@ -1,6 +1,137 @@
 # Changelog de Deploy — Rezende Saback
 
 Gerado automaticamente por `bun run deploy:ftp`. Cada versão lista o que mudou no build enviado por FTP.
+## v2026.09.30-1 — 2026-09-30T13:39:52.124Z
+
+- **Commit:** `cf66749` (edit/edt-81a174f2-fc37-4b18-82d2-1116075b08ee) — Removido footer branco
+- **Destino:** `ftp.rsengenharia.eng.br/www`
+- **Resumo:** 27 novo(s), 20 alterado(s), 67 removido(s), 87 inalterado(s) — 1.51 MB enviados
+
+**Adicionados (27)**
+
+- `assets/all-images-DAL2QS9u.js`
+- `assets/arrow-right-Ci4aPlYi.js`
+- `assets/casas-de-alto-padrao-43T9zxwz.js`
+- `assets/circle-check-B3l7aEae.js`
+- `assets/deploy-CtzrjrjE.js`
+- `assets/diagnostico-imagens-B1xTDYSy.js`
+- `assets/edificios-comerciais-D-Vjr6oP.js`
+- `assets/edificios-residenciais-DmH9W6lt.js`
+- `assets/galeria-DYt_f8KC.js`
+- `assets/health-ELtjUbT3.js`
+- `assets/health.functions-B-dtYl-6.js`
+- `assets/index-BIMk-UQQ.js`
+- `assets/Lightbox-CNvc6wjt.js`
+- `assets/loader-circle-G8bXY5ri.js`
+- `assets/obras._slug-BFIjjYaA.js`
+- `assets/obras._slug-CVIwZPsm.js`
+- `assets/obras._slug-KpVMk1do.js`
+- `assets/publicar-COJ5ujqr.js`
+- `assets/routes-cmevyUSe.js`
+- `assets/SegmentPage-mHh4uCTZ.js`
+- `assets/shield-check-CPA2o75h.js`
+- `assets/SiteFooter-CQ8BytS9.js`
+- `assets/SiteHeader-BCjmWYpQ.js`
+- `assets/SmartImage-D0Y5uo-Y.js`
+- `assets/styles-DI1xDe1N.css`
+- `assets/utils-1JU2d_4z.js`
+- `assets/zoom-in-CcMzYzgl.js`
+
+**Modificados (20)**
+
+- `_shell.html`
+- `404.html`
+- `casas-de-alto-padrao/index.html`
+- `deploy/index.html`
+- `diagnostico-imagens/index.html`
+- `edificios-comerciais/index.html`
+- `edificios-residenciais/index.html`
+- `galeria/index.html`
+- `health.json`
+- `health/index.html`
+- `index.html`
+- `obras/edificio-iris/index.html`
+- `obras/edificio-jo-pena-duarte/index.html`
+- `obras/edificio-malbec/index.html`
+- `obras/edificio-rosario/index.html`
+- `obras/edificio-santorini/index.html`
+- `obras/golden-mall-rosario/index.html`
+- `package.sha256.txt`
+- `publicar/index.html`
+- `sitemap.xml`
+
+**Removidos (67)**
+
+- `assets/Lightbox-C0qIP9ky.js`
+- `assets/Lightbox-CShQbYw4.js`
+- `assets/SegmentPage-BppQUJgN.js`
+- `assets/SegmentPage-DGO7fLdl.js`
+- `assets/SiteFooter-BYMLb3Ra.js`
+- `assets/SiteFooter-C2cI3AmZ.js`
+- `assets/SiteHeader-CFcPe5pj.js`
+- `assets/SiteHeader-Da9tRlLK.js`
+- `assets/SmartImage-DPQQipuX.js`
+- `assets/SmartImage-R6S71SgY.js`
+- `assets/all-images-BQijMtFm.js`
+- `assets/all-images-g7N_us4y.js`
+- `assets/arrow-right-2bjD2bO-.js`
+- `assets/arrow-right-Dabxer81.js`
+- `assets/casa-modernista-condominio.webp.asset-bNNXO5u-.js`
+- `assets/casas-de-alto-padrao-CgcU7Wa8.js`
+- `assets/casas-de-alto-padrao-DibnW7Ch.js`
+- `assets/circle-check-BxH94-uU.js`
+- `assets/circle-check-DZw8nC8L.js`
+- `assets/deploy-CbxSDo_9.js`
+- `assets/deploy-DgnSRxTi.js`
+- `assets/diagnostico-imagens-BQ5vNn4z.js`
+- `assets/diagnostico-imagens-Dpapbbq3.js`
+- `assets/edificios-comerciais-CuZZXJK6.js`
+- `assets/edificios-comerciais-bC4OVVcV.js`
+- `assets/edificios-residenciais-CfRiG7TE.js`
+- `assets/edificios-residenciais-V9-uxwx-.js`
+- `assets/galeria-DJ7sYlZW.js`
+- `assets/galeria-FSBuoBRn.js`
+- `assets/health-Cu4T8kbh.js`
+- `assets/health-DvlBaf3m.js`
+- `assets/health.functions-D65m3wHg.js`
+- `assets/health.functions-DySOripl.js`
+- `assets/images-BHpjVcr4.js`
+- `assets/images-C8CfsSNN.js`
+- `assets/index-DEC5wlTq.js`
+- `assets/index-RjiE1cj0.js`
+- `assets/joao-bosco.jpg.asset-BkGYY6Sz.js`
+- `assets/joelma.jpg.asset-azbHqkTx.js`
+- `assets/jose-maria.jpg.asset-KE43Ois0.js`
+- `assets/loader-circle-Bg760X4j.js`
+- `assets/loader-circle-CFL9R6UB.js`
+- `assets/mario-lucio-casa.jpg.asset-KZtrp0t8.js`
+- `assets/natalicio-filadelfia.jpg.asset-BiFNNZB8.js`
+- `assets/natalicio-mont-serrat-2.jpg.asset-Csaf-Rz5.js`
+- `assets/obras._slug-B6kbPZZ1.js`
+- `assets/obras._slug-BSEiSFfP.js`
+- `assets/obras._slug-CzSJvt3I.js`
+- `assets/obras._slug-DbXaof1c.js`
+- `assets/obras._slug-h3tFyNK2.js`
+- `assets/obras._slug-oDJDUntv.js`
+- `assets/preload-helper-zJ_50EbN.js`
+- `assets/projects-B2iSn0ip.js`
+- `assets/publicar-CF5_S271.js`
+- `assets/publicar-Cz7Qpi0U.js`
+- `assets/renato-brito.jpg.asset-CBBV-JIQ.js`
+- `assets/routes-BU2S4uJU.js`
+- `assets/routes-DttIyfAG.js`
+- `assets/shield-check-Bb_O6RpW.js`
+- `assets/shield-check-CFU98g6l.js`
+- `assets/smart.jpg.asset-DerrGH1Z.js`
+- `assets/styles-BU8t-iwM.css`
+- `assets/utils-B3Vc-fgG.js`
+- `assets/utils-BJ-slC8X.js`
+- `assets/wagner-casa.jpg.asset-CPMMycGl.js`
+- `assets/zoom-in-DTQEqKZw.js`
+- `assets/zoom-in-YPXXeype.js`
+
+---
+
 ## v2026.09.28-1 — 2026-09-28T21:22:14.271Z
 
 - **Commit:** `f9c8ab1` (edit/edt-368307c3-557c-4dfd-b636-adb579adbc99) — Changes
