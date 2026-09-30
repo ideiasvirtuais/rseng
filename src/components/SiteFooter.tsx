@@ -47,7 +47,7 @@ function ExternalCard({
   );
 }
 
-export function SiteFooter() {
+export function SiteFooter({ fixed = false }: { fixed?: boolean }) {
   const currentYear = new Date().getFullYear();
   const devYear = (DEVELOPER as { year?: unknown } | undefined)?.year;
   const devName = (DEVELOPER as { name?: unknown } | undefined)?.name;
@@ -88,6 +88,33 @@ export function SiteFooter() {
   const instaUrl = typeof company.social?.instagram?.url === "string" && company.social.instagram.url ? company.social.instagram.url : "https://www.instagram.com/rezendesabackengenharia/";
   const fbHandle = typeof company.social?.facebook?.handle === "string" ? company.social.facebook.handle : "/rezendesaback";
   const fbUrl = typeof company.social?.facebook?.url === "string" && company.social.facebook.url ? company.social.facebook.url : "https://www.facebook.com/rezendesaback";
+
+  if (fixed) {
+    return (
+      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-white/15 bg-primary text-primary-foreground shadow-[0_-10px_30px_-18px_rgba(0,0,0,0.55)]">
+        <div className="container-x flex min-h-14 flex-col items-center justify-between gap-1 py-2 text-center sm:flex-row sm:text-left">
+          <p className="text-xs leading-snug text-primary-foreground/85">
+            © {displayYear} {companyName} e Incorporadora · {companyHours}. Todos os direitos reservados.
+          </p>
+          <div className="flex shrink-0 items-center gap-4 text-xs">
+            <a href={emailHref} className="inline-flex items-center gap-1.5 transition hover:text-accent">
+              <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+              <span className="hidden md:inline">{emailAddress}</span>
+              <span className="md:hidden">E-mail</span>
+            </a>
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 transition hover:text-accent"
+            >
+              <Phone className="h-3.5 w-3.5" aria-hidden="true" /> WhatsApp
+            </a>
+          </div>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-primary text-primary-foreground">

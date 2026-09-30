@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { SmartImage } from "@/components/SmartImage";
 import { Lightbox } from "@/components/Lightbox";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import type { Project } from "@/data/projects";
 import type { Segment, SegmentPhoto } from "@/data/segments";
 
@@ -35,7 +37,9 @@ export function SegmentPage({ segment }: SegmentPageProps) {
   }, [segment?.slug]);
 
   return (
-    <main className="bg-background pb-24 pt-12 md:pt-16">
+    <div className="min-h-screen bg-background">
+      <SiteHeader fixed />
+      <main className="pb-28 pt-36 md:pt-40">
       {/* Cabeçalho */}
       <section className="container-x">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/70">
@@ -171,6 +175,8 @@ export function SegmentPage({ segment }: SegmentPageProps) {
           onNavigate={(newIdx: number) => setLightboxIndex(newIdx)}
         />
       ) : null}
-    </main>
+      </main>
+      <SiteFooter fixed />
+    </div>
   );
 }
