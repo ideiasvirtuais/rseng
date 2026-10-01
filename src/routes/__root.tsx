@@ -16,7 +16,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { installClientErrorReporter, reportClientError } from "../lib/client-error-reporter";
 import { warmCriticalImage } from "../lib/image-health";
 import { WhatsAppFloat } from "../components/WhatsAppFloat";
-import { SiteNotice } from "../components/SiteNotice";
 
 function NotFoundComponent() {
   return (
@@ -217,9 +216,6 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ShellGuard>
-          <SiteNotice />
-        </ShellGuard>
         {children}
         <ShellGuard>
           <WhatsAppFloat />
