@@ -336,7 +336,7 @@ function Index() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="relative h-[92vh] min-h-[640px] w-full">
+        <div className="relative h-auto min-h-[760px] w-full md:h-[92vh] md:min-h-[640px]">
           <HeroBackground
             src={heroSrc}
             fallbackSrc={heroFallback}
@@ -348,13 +348,13 @@ function Index() {
           <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/30 to-primary/80" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
-          <div className="container-x relative flex h-full flex-col justify-end pb-16 pt-32">
+          <div className="container-x relative flex min-h-[760px] flex-col justify-start pb-12 pt-12 md:h-full md:min-h-0 md:justify-end md:pb-16 md:pt-32">
             <div className="max-w-3xl text-primary-foreground">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 Desde {foundedYear} · {city}, Minas Gerais
               </div>
-              <h1>
+              <h1 className="text-4xl leading-[1.08] sm:text-5xl md:text-[clamp(2.5rem,5vw,4.25rem)]">
                 A cidade que <span className="text-accent">cresce</span> com quem constrói para durar.
               </h1>
               <p className="mt-6 max-w-xl text-lg text-primary-foreground/85">
