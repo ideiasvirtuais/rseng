@@ -270,6 +270,53 @@ function RootComponent() {
     }
   }, []);
 
+  // A faixa "Site em atualização" ainda é servida no markup de alguma seção do
+  // site. Este guard esconde o bloco assim que o app hidrata e revalida logo em
+  // seguida, cobrindo o conteúdo que só aparece depois da primeira pintura.
+  useEffect(() => {
+    const marks = [
+      "Site em atualização",
+      "entre em contato pelos canais de atendimento",
+    ];
+
+    const hideNotice = () => {
+      if (typeof document === "undefined") return;
+      const nodes = Array.from(
+        document.querySelectorAll<HTMLElement>("main, section, aside, header, div, p"),
+      );
+      nodes.forEach((node) => {
+        if (!node.isConnected) return;
+        const text = (node.textContent ?? "").trim();
+        if (!text || !marks.some((mark) => text.includes(mark))) return;
+        let target: HTMLElement = node;
+        while (
+          target.parentElement &&
+          target.parentElement !== document.body &&
+          (target.parentElement.textContent ?? "").trim() === text
+        ) {
+          target = target.parentElement;
+        }
+        target.style.display = "none";
+      });
+    };
+
+    try {
+      hideNotice();
+    } catch {
+      // guard visual — nunca pode quebrar a renderização
+    }
+
+    const timers = [250, 1200, 3000].map((delay) => window.setTimeout(() => {
+      try {
+        hideNotice();
+      } catch {
+        // guard visual — nunca pode quebrar a renderização
+      }
+    }, delay));
+
+    return () => timers.forEach((id) => window.clearTimeout(id));
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
