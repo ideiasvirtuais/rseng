@@ -1,0 +1,26 @@
+name: "Testar Conexão FTP"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ftp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout do Repositorio"
+        uses: actions/checkout@v4
+
+      - name: "Configurar Bun"
+        uses: oven-sh/setup-bun@v2
+
+      - name: "Instalar Dependencias"
+        run: bun install --frozen-lockfile
+
+      - name: "Rodar Teste de Conexão FTP"
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
+          FTP_SECURE: ${{ secrets.FTP_SECURE }}
+        run: node scripts/test-ftp-connection.mjs
