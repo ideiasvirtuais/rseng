@@ -205,7 +205,7 @@ function Index() {
   const emailAddress = COMPANY?.email?.address ?? "";
   const address = COMPANY?.address;
   const hours = (COMPANY as { hours?: string } | undefined)?.hours ?? "";
-  const heroSrc = typeof HERO_URL === "string" ? HERO_URL : "";
+  const heroSrc = "/uploads/colado-20261003-151312.png";
   const heroFallback = typeof HERO_FALLBACK_URL === "string" ? HERO_FALLBACK_URL : "";
 
 
@@ -340,7 +340,7 @@ function Index() {
           <HeroBackground
             src={heroSrc}
             fallbackSrc={heroFallback}
-            alt="Empreendimento da Rezende Saback no bairro Angola, Betim/MG — foto oficial atualizada"
+            alt="Edifício Golden Mall Rosário, empreendimento comercial no bairro Angola, Betim/MG"
           />
           {/* Overlay de legibilidade: escurece o topo para o texto e faz a
               transição suave para o fundo da página na base — sem cobrir a
