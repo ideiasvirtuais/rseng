@@ -1,8 +1,7 @@
 name: Static portable (opcional — GitHub Pages)
 
 # OPCIONAL. O pacote dist/rseng-static.zip já publica em qualquer hospedagem
-# sem este workflow. Ative apenas se quiser o GitHub Pages como UM dos destinos.
-# KingHost/FTP segue via scripts/deploy-*.mjs locais (nunca obrigatório no CI).
+# sem este workflow. KingHost/FTP segue via scripts/deploy-*.mjs locais (nunca obrigatório no CI).
 #
 # Para ativar: Actions → enable + Environment `github-pages` (ou deixe em dry-run).
 # Para desativar: apague este arquivo — nada no build depende dele.
@@ -13,11 +12,9 @@ on:
       target:
         description: "Destino"
         type: choice
-        default: pages
+        required: true
+        default: dry-run
         options: [pages, dry-run]
-  push:
-    branches: [main]
-    paths-ignore: ["**.md", "docs/**"]
 
 permissions:
   contents: read
@@ -45,7 +42,7 @@ jobs:
           path: dist/client
 
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    if: inputs.target == 'pages'
     needs: build
     runs-on: ubuntu-latest
     environment:
