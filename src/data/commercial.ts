@@ -76,21 +76,21 @@ export const commercialWorks: CommercialWork[] = [
   },
   {
     src: assetUrl(janio),
-    name: "Edifício Jânio",
+    name: "Edifício Comercial",
     type: "Uso misto · Lojas + escritório",
-    alt: "Edifício Jânio com fachada em pastilhas bege, volume curvo e lojas no térreo",
+    alt: "Edifício comercial com fachada em pastilhas bege, volume curvo e lojas no térreo",
   },
   {
     src: assetUrl(marcelo),
-    name: "Edifício Marcelo — Av. Amazonas",
+    name: "Edifício Comercial",
     type: "Loja + salas comerciais",
     alt: "Edifício comercial na Avenida Amazonas com loja no térreo e salas no pavimento superior",
   },
   {
     src: assetUrl(nilza),
-    name: "Edifício Nilza",
+    name: "Edifício Comercial",
     type: "Salas comerciais",
-    alt: "Edifício Nilza com fachada em pastilhas verdes e janelas corridas nas salas comerciais",
+    alt: "Edifício comercial com fachada em pastilhas verdes e janelas corridas nas salas comerciais",
   },
   {
     src: assetUrl(galpaoMarcoTulio),
