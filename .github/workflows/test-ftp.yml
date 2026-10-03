@@ -25,4 +25,5 @@ jobs:
           FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '/www' }}
+          FTP_TIMEOUT: '60000'
         run: node scripts/test-ftp-connection.mjs

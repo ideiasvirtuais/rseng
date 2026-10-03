@@ -74,6 +74,7 @@ const {
   FTP_MANIFEST_NAME = ".deploy-manifest.json",
   FTP_REPORT_FILE = "dist/deploy-report.json",
   FTP_REPORT_MD = "dist/deploy-report.md",
+  FTP_TIMEOUT = "60000",
 } = process.env;
 
 const FTP_USER = FTP_USERNAME || FTP_USER_VALUE;
@@ -103,9 +104,9 @@ const FORCE =
   process.env.FTP_FORCE === "true" ||
   process.env.FTP_FORCE === "1";
 
-const CONCURRENCY = intEnv("FTP_CONCURRENCY", 3, "concurrency");
-const MAX_RETRIES = intEnv("FTP_MAX_RETRIES", 3, "retries");
-const RETRY_DELAY_MS = intEnv("FTP_RETRY_DELAY_MS", 1000);
+const CONCURRENCY = intEnv("FTP_CONCURRENCY", 1, "concurrency");
+const MAX_RETRIES = intEnv("FTP_MAX_RETRIES", 5, "retries");
+const RETRY_DELAY_MS = intEnv("FTP_RETRY_DELAY_MS", 1500);
 
 // Nomes na raiz remota que podemos remover se sumirem do build local.
 // Fora dessa lista, raiz não é tocada (protege index.php, wp-*, cgi-bin etc.).
@@ -137,7 +138,13 @@ const MANIFEST_REMOTE_PATH = `${FTP_REMOTE_DIR}/${FTP_MANIFEST_NAME}`;
 // ── validação básica ─────────────────────────────────────────────────────────
 const missing = DRY_RUN
   ? []
-  : ["FTP_HOST", "FTP_USER", "FTP_PASSWORD"].filter((k) => !process.env[k]);
+  : [
+      ["FTP_HOST", FTP_HOST],
+      ["FTP_USER", FTP_USER],
+      ["FTP_PASSWORD", FTP_PASSWORD],
+    ]
+      .filter(([, value]) => !value)
+      .map(([key]) => key);
 if (missing.length) {
   console.error(`\n✗ Variáveis de ambiente ausentes: ${missing.join(", ")}\n`);
   console.error("  Configure antes de rodar. Exemplo:");
@@ -295,7 +302,7 @@ async function hashAll(files, parallel = 8) {
 
 // ── pool de conexões FTP ─────────────────────────────────────────────────────
 async function makeClient() {
-  const cli = new Client(30_000);
+  const cli = new Client(Number.parseInt(FTP_TIMEOUT, 10) || 60_000);
   cli.ftp.verbose = false;
   await cli.access({
     host: FTP_HOST,

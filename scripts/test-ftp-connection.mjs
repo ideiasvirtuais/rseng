@@ -59,7 +59,7 @@ if (/\s/.test(USER)) {
   process.exit(1);
 }
 
-const client = new Client(20_000);
+const client = new Client(Number(env.FTP_TIMEOUT ?? 60000));
 try {
   await client.access({ host: HOST, port: PORT, user: USER, password: PASSWORD, secure: SECURE });
   console.log(`✓ Conectado a ${HOST}:${PORT} como ${USER} (secure=${env.FTP_SECURE ?? "false"})`);
@@ -70,7 +70,13 @@ try {
   }
   console.log("\n✓ Conexão FTP pronta para deploy.");
 } catch (err) {
-  console.error(`\n✗ Falha na conexão FTP: ${err?.message ?? err}\n`);
+  const message = err?.message ?? String(err);
+  console.error(`\n✗ Falha na conexão FTP: ${message}\n`);
+  if (/530|authentication|login|password|not logged in/i.test(message)) {
+    console.error("  O servidor recusou o login antes do upload.");
+    console.error("  Confira FTP_USER ou FTP_USERNAME e redefina FTP_PASSWORD no painel FTP.");
+    console.error("  Depois atualize os mesmos valores nos Secrets do GitHub.\n");
+  }
   process.exit(1);
 } finally {
   client.close();

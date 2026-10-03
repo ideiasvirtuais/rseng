@@ -47,6 +47,19 @@ jobs:
       - name: "Validar artefatos (preflight FTP)"
         run: bun run verify:ftp
 
+      # ── Validação antecipada da conexão FTP ─────────────────────────────────
+      - name: "Validar conexão FTP (${{ env.DEPLOY_ENV }})"
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
+          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
+          FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '/www' }}
+          FTP_TIMEOUT: '60000'
+        run: node scripts/test-ftp-connection.mjs
+
       # ── Deploy FTP no ambiente selecionado ──────────────────────────────────
       - name: "Deploy via FTP (${{ env.DEPLOY_ENV }})"
         env:
@@ -57,8 +70,10 @@ jobs:
           FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '/www' }}
-          FTP_CONCURRENCY: ${{ secrets.FTP_CONCURRENCY }}
-          FTP_MAX_RETRIES: ${{ secrets.FTP_MAX_RETRIES }}
+          FTP_CONCURRENCY: ${{ secrets.FTP_CONCURRENCY || '1' }}
+          FTP_MAX_RETRIES: ${{ secrets.FTP_MAX_RETRIES || '5' }}
+          FTP_RETRY_DELAY_MS: ${{ secrets.FTP_RETRY_DELAY_MS || '1500' }}
+          FTP_TIMEOUT: '60000'
           # Overrides opcionais por ambiente (se existirem nos secrets)
           STAGING_FTP_HOST: ${{ secrets.STAGING_FTP_HOST }}
           STAGING_FTP_USER: ${{ secrets.STAGING_FTP_USER }}
