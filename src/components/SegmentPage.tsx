@@ -118,7 +118,7 @@ export function SegmentPage({ segment }: SegmentPageProps) {
                 <div className="flex flex-1 flex-col gap-2 p-5">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center rounded-full bg-accent/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
-                      {p.tag}
+                      {p.slug === "edificio-rosario" ? "Edifício Pronto" : p.tag}
                     </span>
                     <span className="text-xs text-muted-foreground">{p.year}</span>
                   </div>
