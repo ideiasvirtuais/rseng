@@ -166,9 +166,8 @@ export function GoldenMallSpotlight() {
           </h2>
 
           <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-primary-foreground/90">
-            Planta customizada, instalações elétricas e hidráulicas sob medida e
-            acabamentos diferenciados escolhidos antes mesmo da mudança. Você entra em
-            um apartamento pensado exatamente do jeito que sempre quis.
+            Planta customizada e instalações elétricas e hidráulicas sob medida. Você
+            entra em um apartamento pensado exatamente do jeito que sempre quis.
           </p>
           <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-primary-foreground/75">
             No Golden Mall Rosário, esse mesmo padrão de personalização se traduz em
