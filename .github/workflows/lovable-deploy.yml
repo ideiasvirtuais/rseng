@@ -18,11 +18,15 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # Push na main → produção (o site rsengenharia.eng.br deve refletir a main).
-    # Staging continua disponível via execução manual (workflow_dispatch + staging).
+    # Push na main publica automaticamente em produção.
+    # Staging e produção também podem ser escolhidos manualmente.
     env:
       DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
 
@@ -47,26 +51,24 @@ jobs:
       - name: "Validar artefatos (preflight FTP)"
         run: bun run verify:ftp
 
-      # ── Validação antecipada da conexão FTP ─────────────────────────────────
-      - name: "Validar conexão FTP (${{ env.DEPLOY_ENV }})"
+      - name: "Validar configuração FTP (${{ env.DEPLOY_ENV }})"
         env:
-          FTP_HOST: ${{ secrets.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
-          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD || 'sdf45f34hgrtD45d$d' }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '/www' }}
           FTP_TIMEOUT: '60000'
         run: node scripts/test-ftp-connection.mjs
 
-      # ── Deploy FTP no ambiente selecionado ──────────────────────────────────
       - name: "Deploy via FTP (${{ env.DEPLOY_ENV }})"
         env:
-          FTP_HOST: ${{ secrets.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
-          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD || 'sdf45f34hgrtD45d$d' }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '/www' }}
@@ -74,7 +76,6 @@ jobs:
           FTP_MAX_RETRIES: ${{ secrets.FTP_MAX_RETRIES || '5' }}
           FTP_RETRY_DELAY_MS: ${{ secrets.FTP_RETRY_DELAY_MS || '1500' }}
           FTP_TIMEOUT: '60000'
-          # Overrides opcionais por ambiente (se existirem nos secrets)
           STAGING_FTP_HOST: ${{ secrets.STAGING_FTP_HOST }}
           STAGING_FTP_USER: ${{ secrets.STAGING_FTP_USER }}
           STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
@@ -98,7 +99,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-      # ── Espelho estatico na branch stable-website (somente produção) ────────
       - name: "Deploy para a Branch stable-website"
         if: env.DEPLOY_ENV == 'production'
         uses: JamesIves/github-pages-deploy-action@v4
