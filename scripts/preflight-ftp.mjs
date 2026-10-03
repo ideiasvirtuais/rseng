@@ -76,10 +76,33 @@ if (htaccess) {
   if (!/R=404/.test(body)) {
     errors.push(".htaccess sem regra R=404 para mídia — imagem ausente voltaria como _shell.html e 'daria erro de carregamento'");
   }
-  const mediaRuleIndex = body.indexOf("RewriteRule \\\\.(?:png|jpe?g|webp|avif|gif|svg|ico|woff2?)$ - [R=404,L]");
-  const mediaRulePrefix = mediaRuleIndex >= 0 ? body.slice(Math.max(0, mediaRuleIndex - 100), mediaRuleIndex) : "";
-  if (mediaRuleIndex < 0 || !/RewriteCond %\{REQUEST_FILENAME\} !-f\s*$/m.test(mediaRulePrefix)) {
-    errors.push(".htaccess bloqueia imagens existentes — falta a condição !-f antes da regra R=404 de mídia");
+  // Regra de 404 para mídia ausente: o escape do ponto pode vir com uma ou
+  // duas barras invertidas, então a checagem aceita os dois formatos.
+  const mediaRuleRe = /^[ \t]*RewriteRule\s+\\+\.\([^)]*\)\$\s+-[ \t]*\[R=404,L\]/m;
+  const mediaRule = body.match(mediaRuleRe);
+  if (!mediaRule) {
+    if (/R=404/.test(body)) {
+      warnings.push(
+        ".htaccess tem R=404 mas a regra de mídia não casou com o padrão esperado — confira scripts/generate-htaccess.mjs",
+      );
+    }
+  } else {
+    // Valem apenas as linhas RewriteCond imediatamente acima da regra.
+    const linesBefore = body.slice(0, mediaRule.index).split("\n");
+    const conds = [];
+    for (let i = linesBefore.length - 1; i >= 0; i--) {
+      const line = linesBefore[i].trim();
+      if (!line) {
+        if (conds.length) break;
+        continue;
+      }
+      if (!/^RewriteCond\b/.test(line)) break;
+      conds.push(line);
+    }
+    const hasFileGuard = conds.some((l) => /%\{REQUEST_FILENAME\}\s+!-f\b/.test(l));
+    if (!hasFileGuard) {
+      errors.push(".htaccess bloqueia imagens existentes — falta a condição !-f antes da regra R=404 de mídia");
+    }
   }
 }
 
