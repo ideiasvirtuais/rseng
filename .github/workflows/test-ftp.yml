@@ -19,8 +19,8 @@ jobs:
       - name: "Rodar Teste de Conexão FTP"
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
-          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
+          FTP_USERNAME: ${{ secrets.FTP_USER || secrets.FTP_USERNAME }}
+          FTP_USER: ${{ secrets.FTP_USER || secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
