@@ -30,12 +30,6 @@ const PERKS: SpotlightPerk[] = [
       "No Golden Mall Rosário, módulos de 90 m² a 140 m² que se combinam conforme a operação — loja, sobreloja, estoque ou atendimento.",
   },
   {
-    icon: Sparkles,
-    title: "Acabamentos premium à sua escolha",
-    description:
-      "Fachada, piso e forro com padrão diferenciado, definidos com você antes mesmo da entrega das chaves.",
-  },
-  {
     icon: PlugZap,
     title: "Instalações elétricas customizadas",
     description:
