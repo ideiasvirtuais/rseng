@@ -1,5 +1,11 @@
 # Status de publicação — GitHub + FTP
 
+## Solicitação de publicação FTP — https://rsengenharia.eng.br/
+
+- **Solicitação do cliente:** Enviar todas as atualizações para o domínio próprio por FTP (https://rsengenharia.eng.br/).
+- **Ação:** Atualização registrada para disparar o workflow `.github/workflows/lovable-deploy.yml` na branch `main`.
+- **Publicação:** O workflow compila o projeto (`bun run build:ftp`), executa as verificações prévias (`preflight-ftp.mjs`) e realiza a sincronização via FTP com o servidor web do domínio principal.
+
 ## Remoção 2026-09-21 — menu "Todas as imagens" removido + push GitHub
 
 - **Solicitação do cliente:** "este menu - todas as imagens não tem que existir"
