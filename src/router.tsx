@@ -23,6 +23,10 @@ export const getRouter = () => {
 
   const router = createRouter({
     routeTree,
+    // O prerender estático solicita diretórios com barra final
+    // (/galeria/). Mantê-la como URL canônica evita um ciclo de redirects
+    // durante o build e corresponde ao formato servido pelo Apache/FTP.
+    trailingSlash: "always",
     // Contexto nunca-nulo: se uma rota filha ler `Route.useRouteContext()`
     // durante HMR/navegação parcial, o fallback no __root evita
     // desestruturação de `undefined` (tela branca via MatchesInner).
