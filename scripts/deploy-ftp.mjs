@@ -63,7 +63,8 @@ import {
 // ── env & flags ──────────────────────────────────────────────────────────────
 const {
   FTP_HOST,
-  FTP_USER,
+  FTP_USERNAME,
+  FTP_USER: FTP_USER_VALUE,
   FTP_PASSWORD,
   FTP_PORT = "21",
   FTP_SECURE = "false",
@@ -74,6 +75,8 @@ const {
   FTP_REPORT_FILE = "dist/deploy-report.json",
   FTP_REPORT_MD = "dist/deploy-report.md",
 } = process.env;
+
+const FTP_USER = FTP_USERNAME || FTP_USER_VALUE;
 
 function flagValue(name) {
   const hit = process.argv.find((a) => a.startsWith(`--${name}=`));

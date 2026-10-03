@@ -89,6 +89,7 @@ for (const [k, v] of Object.entries(fileEnv)) {
 // Overrides com prefixo do alvo (ambiente real ou arquivos .env.ftp*)
 const OVERRIDABLE = [
   "FTP_HOST",
+  "FTP_USERNAME",
   "FTP_USER",
   "FTP_PASSWORD",
   "FTP_PORT",
@@ -101,6 +102,9 @@ for (const key of OVERRIDABLE) {
   const value = process.env[PREFIX + key] ?? fileEnv[PREFIX + key];
   if (value != null && value !== "") env[key] = value;
 }
+
+if (!env.FTP_USER && env.FTP_USERNAME) env.FTP_USER = env.FTP_USERNAME;
+if (!env.FTP_USERNAME && env.FTP_USER) env.FTP_USERNAME = env.FTP_USER;
 
 // ── defaults por alvo ────────────────────────────────────────────────────────
 const baseRemote = (env.FTP_REMOTE_DIR || "/www").replace(/\/+$/, "") || "/www";

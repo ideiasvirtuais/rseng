@@ -18,9 +18,11 @@ jobs:
 
       - name: "Rodar Teste de Conexão FTP"
         env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER }}
+          FTP_HOST: ${{ secrets.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
+          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || 'rsengenharia' }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_PORT: ${{ secrets.FTP_PORT }}
-          FTP_SECURE: ${{ secrets.FTP_SECURE }}
+          FTP_PORT: ${{ secrets.FTP_PORT || '21' }}
+          FTP_SECURE: ${{ secrets.FTP_SECURE || 'false' }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '/www' }}
         run: node scripts/test-ftp-connection.mjs
