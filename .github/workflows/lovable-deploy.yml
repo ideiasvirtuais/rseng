@@ -54,8 +54,8 @@ jobs:
       - name: "Validar configuração FTP (${{ env.DEPLOY_ENV }})"
         env:
           FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
-          FTP_USER: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME || 'rsengenharia' }}
-          FTP_USERNAME: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME || 'rsengenharia' }}
+          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || vars.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || vars.FTP_SECURE || 'false' }}
@@ -66,8 +66,8 @@ jobs:
       - name: "Deploy via FTP (${{ env.DEPLOY_ENV }})"
         env:
           FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
-          FTP_USER: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME || 'rsengenharia' }}
-          FTP_USERNAME: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME || 'rsengenharia' }}
+          FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || vars.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || vars.FTP_SECURE || 'false' }}
