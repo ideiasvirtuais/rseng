@@ -10,7 +10,7 @@ on:
         description: "Ambiente de deploy"
         type: choice
         required: true
-        default: staging
+        default: production
         options:
           - staging
           - production
@@ -26,9 +26,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     # Push na main publica automaticamente em produção.
-    # Staging e produção também podem ser escolhidos manualmente.
+    # Pelo botão "Run workflow" o ambiente pode ser escolhido manualmente
+    # (o padrão já é produção, para atualizar https://rsengenharia.eng.br/).
     env:
       DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+      SITE_URL: "https://rsengenharia.eng.br"
+      SITE_HEALTH_URL: "https://rsengenharia.eng.br/health.json"
 
     steps:
       - name: "Checkout do Repositorio"
@@ -50,6 +53,24 @@ jobs:
 
       - name: "Validar artefatos (preflight FTP)"
         run: bun run verify:ftp
+
+      # Confere se os Secrets existem antes de tentar conectar.
+      # Nenhum valor de credencial é impresso no log.
+      - name: "Conferir Secrets de publicação (FTP_HOST, FTP_USER, FTP_PASSWORD)"
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD || secrets.PROD_FTP_PASSWORD }}
+        run: |
+          missing=""
+          [ -n "$FTP_HOST" ] || missing="$missing FTP_HOST"
+          [ -n "$FTP_USER" ] || missing="$missing FTP_USER"
+          [ -n "$FTP_PASSWORD" ] || missing="$missing FTP_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error title=Secrets de FTP ausentes::Faltam os Secrets:$missing. Abra o repositorio ideiasvirtuais/rseng em Settings -> Secrets and variables -> Actions, cadastre/atualize esses valores com os mesmos dados do servidor KingHost (eles nao sao sincronizados automaticamente) e rode este workflow novamente."
+            exit 1
+          fi
+          echo "OK - Secrets de publicacao presentes (os valores nao sao exibidos)."
 
       - name: "Validar configuração FTP (${{ env.DEPLOY_ENV }})"
         env:
@@ -107,3 +128,14 @@ jobs:
           branch: stable-website
           folder: dist/client
           clean: true
+
+      # Resumo final: mostra o que foi publicado e como conferir.
+      # Não imprime nenhuma credencial.
+      - name: "Resumo da publicação"
+        if: always()
+        run: |
+          echo "Ambiente: ${DEPLOY_ENV}"
+          echo "Site: ${SITE_URL}/"
+          echo "Conferir versao publicada: ${SITE_HEALTH_URL}"
+          echo "Lembrete: o botao Publish do Lovable nao envia arquivos para o FTP da KingHost."
+          echo "Se alguma etapa acima ficou vermelha, envie o texto dessa etapa (sem a senha) para ajuste."

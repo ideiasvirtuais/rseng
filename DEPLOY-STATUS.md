@@ -1,5 +1,16 @@
 # Status de publicação — GitHub + FTP
 
+## Padrão de publicação — https://rsengenharia.eng.br/ (pelo GitHub)
+
+Para atualizar o domínio, o caminho oficial é a publicação pelo GitHub no repositório `ideiasvirtuais/rseng`:
+
+1. Settings → Secrets and variables → Actions: manter `FTP_HOST`, `FTP_USER` e `FTP_PASSWORD` iguais aos dados do servidor KingHost. Esses valores não são sincronizados automaticamente.
+2. Actions → "Build e Deploy FTP (KingHost)" → Run workflow → ambiente `production` (já vem selecionado por padrão).
+3. Aguardar a execução terminar em verde. Se alguma etapa falhar, enviar o texto da etapa vermelha — o log nunca mostra o valor da senha.
+4. O botão Publish do Lovable não envia arquivos para o FTP da KingHost, ou seja, não substitui este workflow.
+
+O workflow compila (`bun run build:ftp`), valida os artefatos (`preflight-ftp.mjs`), confere se os Secrets de FTP existem, testa a conexão e sincroniza `dist/client` com `/www` do domínio. Conferência rápida depois do deploy: https://rsengenharia.eng.br/health.json
+
 ## Solicitação de publicação FTP — https://rsengenharia.eng.br/
 
 - **Solicitação do cliente:** Enviar todas as atualizações para o domínio próprio por FTP (https://rsengenharia.eng.br/).
