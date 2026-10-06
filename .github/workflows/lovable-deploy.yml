@@ -56,7 +56,7 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
           FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD || secrets.PROD_FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || vars.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || vars.FTP_SECURE || 'false' }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR || '/www' }}
@@ -68,7 +68,7 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
           FTP_USER: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || vars.FTP_USERNAME || vars.FTP_USER || 'rsengenharia' }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD || secrets.PROD_FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT || vars.FTP_PORT || '21' }}
           FTP_SECURE: ${{ secrets.FTP_SECURE || vars.FTP_SECURE || 'false' }}
           FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR || '/www' }}
@@ -82,7 +82,7 @@ jobs:
           STAGING_FTP_REMOTE_DIR: ${{ secrets.STAGING_FTP_REMOTE_DIR || vars.STAGING_FTP_REMOTE_DIR }}
           PROD_FTP_HOST: ${{ secrets.PROD_FTP_HOST || vars.PROD_FTP_HOST }}
           PROD_FTP_USER: ${{ secrets.PROD_FTP_USER || vars.PROD_FTP_USER }}
-          PROD_FTP_PASSWORD: ${{ secrets.PROD_FTP_PASSWORD }}
+          PROD_FTP_PASSWORD: ${{ secrets.PROD_FTP_PASSWORD || secrets.FTP_PASSWORD }}
           PROD_FTP_REMOTE_DIR: ${{ secrets.PROD_FTP_REMOTE_DIR || vars.PROD_FTP_REMOTE_DIR }}
         run: node scripts/deploy-env.mjs --env=${{ env.DEPLOY_ENV }} --force --delete
 
