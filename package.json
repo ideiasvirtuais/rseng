@@ -26,6 +26,7 @@
     "predeploy:ftp": "node scripts/preflight-ftp.mjs",
     "test:ftp": "node scripts/test-ftp-connection.mjs",
     "verify:ftp": "node scripts/preflight-ftp.mjs",
+    "verify:live": "node scripts/verify-live.mjs",
     "deploy:ftp:full": "bun run build:ftp && node scripts/deploy-ftp.mjs",
     "predeploy:staging": "node scripts/preflight-ftp.mjs",
     "deploy:staging": "node scripts/deploy-env.mjs --env=staging",
