@@ -35,7 +35,8 @@ const fileEnv = parseEnvFile(resolve(process.cwd(), ".env.ftp"));
 const env = { ...fileEnv, ...process.env };
 
 const HOST = env.FTP_HOST;
-const USER = env.FTP_USERNAME || env.FTP_USER;
+// FTP_USER é o nome canônico; FTP_USERNAME fica como compatibilidade.
+const USER = env.FTP_USER || env.FTP_USERNAME;
 const PASSWORD = env.FTP_PASSWORD;
 const PORT = Number(env.FTP_PORT ?? 21);
 const REMOTE_DIR = env.FTP_REMOTE_DIR ?? "/www";

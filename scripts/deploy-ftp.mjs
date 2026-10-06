@@ -63,8 +63,8 @@ import {
 // ── env & flags ──────────────────────────────────────────────────────────────
 const {
   FTP_HOST,
-  FTP_USERNAME,
   FTP_USER: FTP_USER_VALUE,
+  FTP_USERNAME,
   FTP_PASSWORD,
   FTP_PORT = "21",
   FTP_SECURE = "false",
@@ -77,7 +77,9 @@ const {
   FTP_TIMEOUT = "60000",
 } = process.env;
 
-const FTP_USER = FTP_USERNAME || FTP_USER_VALUE;
+// FTP_USER é o nome canônico usado pelo painel e pelos Secrets do GitHub.
+// FTP_USERNAME permanece como compatibilidade com configurações antigas.
+const FTP_USER = FTP_USER_VALUE || FTP_USERNAME;
 
 function flagValue(name) {
   const hit = process.argv.find((a) => a.startsWith(`--${name}=`));
