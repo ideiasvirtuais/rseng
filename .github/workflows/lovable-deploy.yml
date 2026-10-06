@@ -84,7 +84,7 @@ jobs:
           PROD_FTP_USER: ${{ secrets.PROD_FTP_USER || vars.PROD_FTP_USER }}
           PROD_FTP_PASSWORD: ${{ secrets.PROD_FTP_PASSWORD }}
           PROD_FTP_REMOTE_DIR: ${{ secrets.PROD_FTP_REMOTE_DIR || vars.PROD_FTP_REMOTE_DIR }}
-        run: node scripts/deploy-env.mjs --env=${{ env.DEPLOY_ENV }} --delete
+        run: node scripts/deploy-env.mjs --env=${{ env.DEPLOY_ENV }} --force --delete
 
       - name: "Upload relatorio de deploy"
         if: always()
