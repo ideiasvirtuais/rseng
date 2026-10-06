@@ -34,11 +34,17 @@ function parseEnvFile(file) {
 const fileEnv = parseEnvFile(resolve(process.cwd(), ".env.ftp"));
 const env = { ...fileEnv, ...process.env };
 
-const HOST = env.FTP_HOST;
+function cleanValue(value) {
+  if (value == null) return "";
+  const cleaned = String(value).trim();
+  return cleaned.replace(/^(FTP_HOST|FTP_USER|FTP_USERNAME|FTP_PASSWORD)\\s*:\\s*/i, "").trim();
+}
+
+const HOST = cleanValue(env.FTP_HOST);
 // FTP_USER é o nome canônico; FTP_USERNAME fica como compatibilidade.
-const USER = env.FTP_USER || env.FTP_USERNAME;
-const PASSWORD = env.FTP_PASSWORD;
-const PORT = Number(env.FTP_PORT ?? 21);
+const USER = cleanValue(env.FTP_USER || env.FTP_USERNAME);
+const PASSWORD = cleanValue(env.FTP_PASSWORD);
+const PORT = Number(cleanValue(env.FTP_PORT) || 21);
 const REMOTE_DIR = env.FTP_REMOTE_DIR ?? "/www";
 const SECURE =
   env.FTP_SECURE === "true" ? true : env.FTP_SECURE === "implicit" ? "implicit" : false;
