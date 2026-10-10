@@ -118,6 +118,7 @@ export function SmartImage({
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [exhausted, setExhausted] = useState(false);
+  const imageRef = useRef<HTMLImageElement | null>(null);
   const reportedRef = useRef<Set<string>>(new Set());
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -142,9 +143,16 @@ export function SmartImage({
   // Sempre que a imagem pedida mudar, recomeça o ciclo de carga.
   useEffect(() => {
     setIndex(0);
-    setLoaded(false);
+    const image = imageRef.current;
+    setLoaded(Boolean(image?.complete && image.naturalWidth > 0));
     setExhausted(false);
   }, [primary, chainKey]);
+
+  // Cached images can finish before hydration attaches onLoad.
+  useEffect(() => {
+    const image = imageRef.current;
+    if (image?.complete && image.naturalWidth > 0) setLoaded(true);
+  }, [current]);
 
   // Limpa o watchdog ao desmontar / trocar de candidato.
   useEffect(() => {
@@ -417,6 +425,7 @@ export function SmartImage({
         />
       )}
       <img
+        ref={imageRef}
         src={displaySrc}
         alt={alt ?? ""}
         loading={loading}
