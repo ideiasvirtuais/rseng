@@ -17,7 +17,7 @@ export const COMPANY = {
   city: "Betim",
   state: "MG",
   address: {
-    street: "Av. Teot├┤nio Parreira Coelho, 613 ÔÇö 6┬║ andar",
+    street: "Av. Teotônio Parreira Coelho, 613 — 6º andar",
     district: "Jardim da Cidade",
     city: "Betim",
     state: "MG",
@@ -32,7 +32,7 @@ export const COMPANY = {
     number: "5531993040342",
     display: "(31) 99304-0342",
     /** Mensagem padr├úo usada no bot├úo flutuante e no aviso do site oficial. */
-    defaultMessage: "Ol├í! Vim pelo site e gostaria de mais informa├º├Áes.",
+    defaultMessage: "Olá! Vim pelo site e gostaria de mais informações.",
     get url() {
       return `https://wa.me/${this.number}?text=${encodeURIComponent(this.defaultMessage)}`;
     },
@@ -53,7 +53,7 @@ export const COMPANY = {
       url: "https://www.facebook.com/rezendesaback",
     },
   },
-  hours: "SegÔÇôSex, 9h ├ás 18h",
+  hours: "Seg–Sex, 9h às 18h",
 } as const;
 
 /** Anos exibidos no site — Desde 2005: 21 anos em 2026 (2 décadas de atuação). */

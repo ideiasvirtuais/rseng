@@ -47,7 +47,7 @@ function ExternalCard({
   );
 }
 
-export function SiteFooter() {
+export function SiteFooter({ fixed = false }: { fixed?: boolean }) {
   const currentYear = new Date().getFullYear();
   const devYear = (DEVELOPER as { year?: unknown } | undefined)?.year;
   const devName = (DEVELOPER as { name?: unknown } | undefined)?.name;
@@ -89,8 +89,26 @@ export function SiteFooter() {
   const fbHandle = typeof company.social?.facebook?.handle === "string" ? company.social.facebook.handle : "/rezendesaback";
   const fbUrl = typeof company.social?.facebook?.url === "string" && company.social.facebook.url ? company.social.facebook.url : "https://www.facebook.com/rezendesaback";
 
+  if (fixed) {
+    return (
+      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-primary-foreground/15 bg-primary text-primary-foreground">
+        <div className="container-x flex min-h-24 flex-col justify-center gap-2 py-3 text-xs">
+          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2">
+            <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{street}, {district}, {addrCity}/{addrState} · CEP {cep}</span>
+          </a>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <a href={emailHref} className="inline-flex items-center gap-2"><Mail className="h-3 w-3" aria-hidden="true" />{emailAddress}</a>
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2"><Phone className="h-3 w-3" aria-hidden="true" />{waDisplay} (WhatsApp)</a>
+          </div>
+          <p className="text-primary-foreground/70">© {displayYear} {companyName} e Incorporadora · {companyHours}. Todos os direitos reservados.</p>
+        </div>
+      </footer>
+    );
+  }
+
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-primary text-primary-foreground">
+    <footer className="relative -mb-px overflow-hidden border-y border-primary-foreground/10 bg-primary pb-px text-primary-foreground">
       {/* Glow decorativo sutil */}
       <div
         aria-hidden="true"

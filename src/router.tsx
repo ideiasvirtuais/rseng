@@ -28,6 +28,7 @@ export const getRouter = () => {
     // desestruturação de `undefined` (tela branca via MatchesInner).
     context: { queryClient },
     scrollRestoration: true,
+    trailingSlash: "preserve",
     defaultPreloadStaleTime: 0,
     // Fallbacks de última linha: se algum match lançar antes do boundary
     // da rota, o router ainda renderiza algo em vez de tela branca.

@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep TanStack Router trailing slashes in `preserve` mode because FTP prerender requests directory-style URLs while existing public links omit the slash.
+- Use the shared header and compact fixed footer on segment pages so navigation and contact remain visible without covering the page content.

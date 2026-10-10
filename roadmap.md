@@ -1,0 +1,4 @@
+- [x] Review recent visible changes across home and segment/project pages.
+- [x] Restore address, hours, and fixed segment header/footer; remove footer gap.
+- [x] Apply required package security update.
+- [x] Verify revised pages in the preview.

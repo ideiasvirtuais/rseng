@@ -61,7 +61,8 @@ export function SegmentPage({ segment }: { segment: Segment }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
+      <SiteHeader fixed />
+      <main className="pb-40 pt-24 md:pb-28">
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
@@ -301,7 +302,8 @@ export function SegmentPage({ segment }: { segment: Segment }) {
         </div>
       </section>
 
-      <SiteFooter />
+      </main>
+      <SiteFooter fixed />
     </div>
   );
 }
