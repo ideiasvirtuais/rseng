@@ -3,8 +3,9 @@ import { Component, useState, type ReactNode } from "react";
 import { ArrowUpRight, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
 import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
+import fundoPhoto from "@/assets/fundo-rs.jpg.asset.json";
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
-import { HERO_FALLBACK_URL, HERO_URL, type AssetJson } from "@/lib/images";
+import { type AssetJson } from "@/lib/images";
 import { projects } from "@/data/projects";
 import { ContactForm } from "@/components/ContactForm";
 import { GoldenMallSpotlight } from "@/components/GoldenMallSpotlight";
@@ -178,8 +179,7 @@ function Index() {
   const emailAddress = COMPANY?.email?.address ?? "";
   const address = COMPANY?.address;
   const hours = (COMPANY as { hours?: string } | undefined)?.hours ?? "";
-  const heroSrc = typeof HERO_URL === "string" ? HERO_URL : "";
-  const heroFallback = typeof HERO_FALLBACK_URL === "string" ? HERO_FALLBACK_URL : "";
+  const heroSrc = fundoPhoto.url;
 
 
   return (
@@ -290,8 +290,7 @@ function Index() {
         <div className="relative h-[92vh] min-h-[640px] w-full">
           <HeroBackground
             src={heroSrc}
-            fallbackSrc={heroFallback}
-            alt="Empreendimento da Rezende Saback no bairro Angola, Betim/MG — foto oficial atualizada"
+            alt="Golden Mall Rosário — fachada do empreendimento da Rezende Saback"
           />
           {/* Overlay de legibilidade: escurece o topo para o texto e faz a
               transição suave para o fundo da página na base — sem cobrir a
