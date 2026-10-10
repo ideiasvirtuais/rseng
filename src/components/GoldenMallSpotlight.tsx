@@ -175,7 +175,7 @@ export function GoldenMallSpotlight() {
             pessoas e veículos e módulos prontos para o seu negócio operar.
           </p>
 
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-8 grid gap-3 sm:grid-cols-1">
             {PERKS.map((perk) => (
               <li
                 key={perk.title}
