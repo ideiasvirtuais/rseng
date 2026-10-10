@@ -56,10 +56,10 @@ jobs:
 
       # Confere se os Secrets existem antes de tentar conectar.
       # Nenhum valor de credencial é impresso no log.
-      - name: "Conferir Secrets de publicação (FTP_HOST, FTP_USER, FTP_PASSWORD)"
+      - name: "Conferir configuração FTP e senha privada"
         env:
-          FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME }}
+          FTP_HOST: ${{ secrets.FTP_HOST || vars.FTP_HOST || 'ftp.rsengenharia.eng.br' }}
+          FTP_USER: ${{ secrets.FTP_USER || secrets.FTP_USERNAME || vars.FTP_USER || vars.FTP_USERNAME || 'rsengenharia' }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD || secrets.PROD_FTP_PASSWORD }}
         run: |
           missing=""
