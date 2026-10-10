@@ -9,40 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as HealthRouteImport } from './routes/health'
-import { Route as GaleriaRouteImport } from './routes/galeria'
-import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
-import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-comerciais'
-import { Route as DeployRouteImport } from './routes/deploy'
-import { Route as CasasDeAltoPadraoRouteImport } from './routes/casas-de-alto-padrao'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CasasDeAltoPadraoRouteImport } from './routes/casas-de-alto-padrao'
+import { Route as DeployRouteImport } from './routes/deploy'
+import { Route as EdificiosComerciaisRouteImport } from './routes/edificios-comerciais'
+import { Route as EdificiosResidenciaisRouteImport } from './routes/edificios-residenciais'
+import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as ObrasSlugRouteImport } from './routes/obras.$slug'
-import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicClientErrorRouteImport } from './routes/api/public/client-error'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 
-const HealthRoute = HealthRouteImport.update({
-  id: '/health',
-  path: '/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GaleriaRoute = GaleriaRouteImport.update({
-  id: '/galeria',
-  path: '/galeria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EdificiosResidenciaisRoute = EdificiosResidenciaisRouteImport.update({
-  id: '/edificios-residenciais',
-  path: '/edificios-residenciais',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EdificiosComerciaisRoute = EdificiosComerciaisRouteImport.update({
-  id: '/edificios-comerciais',
-  path: '/edificios-comerciais',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DeployRoute = DeployRouteImport.update({
-  id: '/deploy',
-  path: '/deploy',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CasasDeAltoPadraoRoute = CasasDeAltoPadraoRouteImport.update({
@@ -50,9 +30,29 @@ const CasasDeAltoPadraoRoute = CasasDeAltoPadraoRouteImport.update({
   path: '/casas-de-alto-padrao',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DeployRoute = DeployRouteImport.update({
+  id: '/deploy',
+  path: '/deploy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdificiosComerciaisRoute = EdificiosComerciaisRouteImport.update({
+  id: '/edificios-comerciais',
+  path: '/edificios-comerciais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdificiosResidenciaisRoute = EdificiosResidenciaisRouteImport.update({
+  id: '/edificios-residenciais',
+  path: '/edificios-residenciais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ObrasSlugRoute = ObrasSlugRouteImport.update({
@@ -60,14 +60,14 @@ const ObrasSlugRoute = ObrasSlugRouteImport.update({
   path: '/obras/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
-  id: '/api/public/health',
-  path: '/api/public/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicClientErrorRoute = ApiPublicClientErrorRouteImport.update({
   id: '/api/public/client-error',
   path: '/api/public/client-error',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -162,39 +162,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/health': {
-      id: '/health'
-      path: '/health'
-      fullPath: '/health'
-      preLoaderRoute: typeof HealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/galeria': {
-      id: '/galeria'
-      path: '/galeria'
-      fullPath: '/galeria'
-      preLoaderRoute: typeof GaleriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/edificios-residenciais': {
-      id: '/edificios-residenciais'
-      path: '/edificios-residenciais'
-      fullPath: '/edificios-residenciais'
-      preLoaderRoute: typeof EdificiosResidenciaisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/edificios-comerciais': {
-      id: '/edificios-comerciais'
-      path: '/edificios-comerciais'
-      fullPath: '/edificios-comerciais'
-      preLoaderRoute: typeof EdificiosComerciaisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/deploy': {
-      id: '/deploy'
-      path: '/deploy'
-      fullPath: '/deploy'
-      preLoaderRoute: typeof DeployRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/casas-de-alto-padrao': {
@@ -204,11 +176,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CasasDeAltoPadraoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/deploy': {
+      id: '/deploy'
+      path: '/deploy'
+      fullPath: '/deploy'
+      preLoaderRoute: typeof DeployRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edificios-comerciais': {
+      id: '/edificios-comerciais'
+      path: '/edificios-comerciais'
+      fullPath: '/edificios-comerciais'
+      preLoaderRoute: typeof EdificiosComerciaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edificios-residenciais': {
+      id: '/edificios-residenciais'
+      path: '/edificios-residenciais'
+      fullPath: '/edificios-residenciais'
+      preLoaderRoute: typeof EdificiosResidenciaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/obras/$slug': {
@@ -218,18 +218,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObrasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/health': {
-      id: '/api/public/health'
-      path: '/api/public/health'
-      fullPath: '/api/public/health'
-      preLoaderRoute: typeof ApiPublicHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/client-error': {
       id: '/api/public/client-error'
       path: '/api/public/client-error'
       fullPath: '/api/public/client-error'
       preLoaderRoute: typeof ApiPublicClientErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
