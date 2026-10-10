@@ -1,0 +1,17 @@
+{
+  "name": "Rezende Saback Engenharia",
+  "short_name": "RS Engenharia",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "lang": "pt-BR",
+  "background_color": "#ffffff",
+  "theme_color": "#2E3192",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,10 +1,40 @@
 # TanStack Start SPA hospedado em Apache (KingHost / Napoleon)
-# index.html deve vir antes de index.php para não cair no WordPress antigo.
+# Dominio canonico: https://rsengenharia.eng.br
+# index.html deve vir antes de index.php para nao cair no WordPress antigo.
 DirectoryIndex index.html _shell.html index.php
+
+# MIME moderno: Apaches antigos da KingHost servem .webp/.avif como
+# application/octet-stream ou text/plain - o browser falha ao decodificar
+# e a imagem "da erro de carregamento". Declaracao explicita corrige.
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType image/avif .avif
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+</IfModule>
 
 RewriteEngine On
 
-# SPA fallback: rotas inexistentes caem no _shell.html
+# -- Dominio canonico https://rsengenharia.eng.br --
+# 1) HTTP -> HTTPS (preserva path + query)
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://rsengenharia.eng.br%{REQUEST_URI} [R=301,L,NE]
+
+# 2) www.rsengenharia.eng.br -> rsengenharia.eng.br (consolida SEO no apex)
+RewriteCond %{HTTP_HOST} ^www\.rsengenharia\.eng\.br$ [NC]
+RewriteRule ^ https://rsengenharia.eng.br%{REQUEST_URI} [R=301,L,NE]
+
+# NUNCA reescreva midia ausente para o _shell.html:
+# sem isso, uma imagem 404 retornava HTML (text/html, status 200) e o
+# browser tentava decodificar HTML como imagem -> erro silencioso de carga.
+# Com a regra abaixo, midia ausente responde 404 de verdade e o
+# SmartImage consegue cair para o fallback local em vez de quebrar.
+# A condicao !-f e obrigatoria: sem ela, o Apache devolve 404 inclusive
+# para imagens que foram corretamente enviadas ao FTP.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule \.(?:png|jpe?g|webp|avif|gif|svg|ico|woff2?)$ - [R=404,L]
+
+# SPA fallback: rotas inexistentes caem no _shell.html (exceto arquivos reais)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ _shell.html [L]
@@ -16,9 +46,27 @@ RewriteRule ^ _shell.html [L]
   <FilesMatch "index\.html$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
   </FilesMatch>
-  <FilesMatch "\.(?:js|css|woff2|woff|svg|png|jpg|jpeg|webp|gif|ico)$">
+  # Assets com hash do Vite (imutáveis — o nome muda a cada build, então
+  # 1 ano de immutable é seguro e acelera a navegação).
+  <FilesMatch "\.(?:js|css|woff2|woff)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
+  # Imagens de public/ NAO tem hash no nome (LOGOMARCA-*.png, hero-*.jpg,
+  # instagram-*.jpg, og-cover.jpg, favicons): a troca de arquivo mantem a
+  # mesma URL. Com immutable de 1 ano o visitante travava na logo/hero
+  # antiga ("atualizacao nao efetivada"). Revalidacao diaria resolve.
+  <FilesMatch "\.(?:png|jpe?g|webp|avif|gif|svg|ico)$">
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
 </IfModule>
 
 <IfModule mod_deflate.c>
