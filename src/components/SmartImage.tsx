@@ -11,9 +11,7 @@ import {
 import {
   STALLED_TIMEOUT_MS,
   clearFailure,
-  didFail,
   markFailed,
-  skipKnownFailures,
 } from "@/lib/image-health";
 import { reportClientError } from "@/lib/client-error-reporter";
 
@@ -37,7 +35,7 @@ type SmartImageProps = Omit<
   sizes?: string;
   /** Prioridade de fetch do browser ("high" para hero/LCP). */
   fetchPriority?: "high" | "low" | "auto";
-  /** Timeout (ms) para considerar a carga "travada" e avançar o fallback. */
+  /** Compatibilidade: a demora não cancela downloads válidos. */
   stalledTimeoutMs?: number;
 };
 
@@ -47,10 +45,8 @@ type SmartImageProps = Omit<
  * - Reseta o estado sempre que `src` muda (corrige galeria/filtros).
  * - Tenta a cadeia: primary → fallbackSrc → webp<->jpg automáticos →
  *   variações de caixa (.JPG↔.jpg) → placeholder SVG.
- * - Watchdog anti-travamento: se o servidor não responder em N ms, avança
- *   sozinho para o próximo candidato (o <img> sozinho nunca daria onError).
- * - Cache global de falhas: URL que já deu 404 nesta sessão é pulada
- *   direto, sem piscar nem gerar nova requisição.
+ * - Avança apenas quando o navegador confirma um erro, nunca por demora.
+ * - Reconhece imagens carregadas antes da hidratação ou vindas do cache.
  * - Nunca quebra o layout e reporta falhas para /api/public/client-error.
  */
 export function SmartImage({
@@ -101,25 +97,18 @@ export function SmartImage({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawSrcKey, rawFallbackKey]);
-  // Pula URLs que já falharam nesta sessão — exceto em retry manual.
+  // A cadeia é determinística no SSR e no cliente; falhas antigas não
+  // descartam imagens que voltaram a ficar disponíveis.
   const [retryTick, setRetryTick] = useState(0);
-  const chain = useMemo(() => {
-    try {
-      if (!Array.isArray(fullChain) || fullChain.length === 0) return [] as string[];
-      if (retryTick > 0) return fullChain;
-      const filtered = skipKnownFailures(fullChain);
-      return Array.isArray(filtered) && filtered.length > 0 ? filtered : fullChain.slice(0, 1);
-    } catch {
-      return Array.isArray(fullChain) ? fullChain : [];
-    }
-  }, [fullChain, retryTick]);
+  const chain = fullChain;
   const primary = chain?.[0] ?? "";
 
   const [index, setIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [exhausted, setExhausted] = useState(false);
   const reportedRef = useRef<Set<string>>(new Set());
-  const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  void stalledTimeoutMs;
 
   const current = (() => {
     try {
@@ -145,20 +134,6 @@ export function SmartImage({
     setLoaded(false);
     setExhausted(false);
   }, [primary, chainKey]);
-
-  // Limpa o watchdog ao desmontar / trocar de candidato.
-  useEffect(() => {
-    return () => {
-      if (watchdogRef.current) clearTimeout(watchdogRef.current);
-    };
-  }, []);
-
-  const clearWatchdog = useCallback(() => {
-    if (watchdogRef.current) {
-      clearTimeout(watchdogRef.current);
-      watchdogRef.current = null;
-    }
-  }, []);
 
   const reportFailure = useCallback(
     (failedUrl: string, isFinal: boolean) => {
@@ -219,7 +194,6 @@ export function SmartImage({
         const len = Array.isArray(chain) ? chain.length : 0;
         const isFinal = !(index + 1 < len);
         reportFailure(failedUrl ?? "", isFinal);
-        clearWatchdog?.();
         if (index + 1 < len) {
           setIndex((i) => i + 1);
           setLoaded(false);
@@ -243,7 +217,7 @@ export function SmartImage({
         }
       }
     },
-    [chain, index, reportFailure, clearWatchdog, onError],
+    [chain, index, reportFailure, onError],
   );
 
   const handleError = useCallback(
@@ -262,37 +236,6 @@ export function SmartImage({
     },
     [chain, index, current, advance],
   );
-
-  // Watchdog anti-travamento: se `current` não carregar nem falhar em N ms,
-  // considera stalled e avança para o próximo candidato.
-  useEffect(() => {
-    try {
-      if (isPlaceholder || !current || loaded) return;
-      clearWatchdog?.();
-      const chainLen = Array.isArray(chain) ? chain.length : 0;
-      watchdogRef.current = setTimeout(() => {
-        try {
-          // Se a URL já está no cache global de falhas, avança sem reportar de novo.
-          if (didFail?.(current)) {
-            if (index + 1 < chainLen) {
-              setIndex((i) => i + 1);
-              setLoaded(false);
-            } else {
-              setExhausted(true);
-              setLoaded(true);
-            }
-            return;
-          }
-          advance(current);
-        } catch {
-          // watchdog nunca quebra render
-        }
-      }, stalledTimeoutMs);
-      return clearWatchdog;
-    } catch {
-      return undefined;
-    }
-  }, [current, loaded, isPlaceholder, index, chain?.length, stalledTimeoutMs, advance, clearWatchdog]);
 
   const handleRetry = useCallback(() => {
     try {
@@ -317,7 +260,7 @@ export function SmartImage({
     }
   }, [fullChain]);
 
-  const displaySrc = (() => {
+  const displaySrc = useMemo(() => {
     try {
       if (!isPlaceholder && retryTick > 0 && index === 0 && current) {
         return withRetryBuster(current) ?? current;
@@ -326,7 +269,19 @@ export function SmartImage({
     } catch {
       return current ?? "";
     }
-  })();
+  }, [isPlaceholder, retryTick, index, current]);
+
+  useEffect(() => {
+    if (isPlaceholder || !displaySrc) return;
+    const image = imageRef.current;
+    if (!image?.complete) return;
+    if (image.naturalWidth > 0) {
+      clearFailure(current);
+      setLoaded(true);
+    } else {
+      advance(current);
+    }
+  }, [displaySrc, isPlaceholder, current, advance]);
 
   if (!displaySrc) {
     const label = fallbackLabel ?? alt ?? "imagem";
@@ -417,6 +372,7 @@ export function SmartImage({
         />
       )}
       <img
+        ref={imageRef}
         src={displaySrc}
         alt={alt ?? ""}
         loading={loading}
@@ -427,7 +383,7 @@ export function SmartImage({
         sizes={sizes}
         {...(fetchPriority ? { fetchPriority } : {})}
         onLoad={(e) => {
-          clearWatchdog();
+          clearFailure(current);
           setLoaded(true);
           onLoad?.(e);
         }}
