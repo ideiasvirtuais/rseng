@@ -148,10 +148,13 @@ function loadOne(url: string, timeoutMs = STALLED_TIMEOUT_MS): Promise<void> {
         resolve();
       };
       const timer = setTimeout(() => {
-        markFailed(url);
+        // A fila pode continuar, mas demora não comprova falha da URL.
         finish();
       }, timeoutMs);
-      img.onload = () => finish();
+      img.onload = () => {
+        clearFailure(url);
+        finish();
+      };
       img.onerror = () => {
         markFailed(url);
         finish();
