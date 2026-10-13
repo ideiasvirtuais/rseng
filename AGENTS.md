@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep TanStack Router trailing slashes in `preserve` mode because FTP prerender requests directory-style URLs while existing public links omit the slash.
+- Advance displayed image fallbacks only on confirmed browser errors, keep retry URLs stable, and check cached image completion after hydration; slow or deferred loading must not discard valid photos.
