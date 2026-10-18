@@ -31,8 +31,8 @@ export const COMPANY = {
   whatsapp: {
     number: "5531993040342",
     display: "(31) 99304-0342",
-    /** Mensagem padr├úo usada no bot├úo flutuante e no aviso do site oficial. */
-    defaultMessage: "Ol├í! Vim pelo site e gostaria de mais informa├º├Áes.",
+    /** Mensagem padrão usada no botão flutuante e no aviso do site oficial. */
+    defaultMessage: "Olá! Vim pelo site e gostaria de mais informações.",
     get url() {
       return `https://wa.me/${this.number}?text=${encodeURIComponent(this.defaultMessage)}`;
     },
