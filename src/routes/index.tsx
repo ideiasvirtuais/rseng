@@ -2,7 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Component, useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 
-import sedePhoto from "@/assets/sede-rezende-saback.webp.asset.json";
+import sobreRs1 from "@/assets/sobre/rs1.jpg.asset.json";
+import sobreRs2 from "@/assets/sobre/rs2.jpg.asset.json";
+import sobreRs3 from "@/assets/sobre/rs3.jpg.asset.json";
+import sobreRs4 from "@/assets/sobre/rs4.jpg.asset.json";
+import sobreRs5 from "@/assets/sobre/rs5.jpg.asset.json";
+
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
 import { HERO_FALLBACK_URL, HERO_URL, type AssetJson } from "@/lib/images";
 import { projects } from "@/data/projects";
@@ -38,13 +43,43 @@ function segmentRouteOf(slug: string): SegmentRoute | "/" {
   return (SEGMENT_ROUTES as Record<string, SegmentRoute>)[slug] ?? "/";
 }
 
-/** URL da foto da sede com acesso defensivo (import pode falhar em HMR). */
-function sedePhotoUrl(): string {
-  const maybe = sedePhoto as AssetJson | { default?: unknown } | undefined | null;
+/** URL de um ponteiro de imagem com acesso defensivo (import pode falhar em HMR). */
+function photoUrl(asset: unknown): string {
+  const maybe = asset as AssetJson | { default?: unknown } | undefined | null;
   if (!maybe) return "";
   if (typeof (maybe as AssetJson).url === "string") return (maybe as AssetJson).url;
   return "";
 }
+
+/**
+ * Fotos da sede enviadas pela construtora (vistas aéreas do prédio em
+ * pastilha azul e branca). SOBRE_MAIN abre a seção "Sobre"; SOBRE_EXTRA
+ * forma a tira de 4 fotos abaixo do texto.
+ */
+const SOBRE_MAIN = {
+  src: photoUrl(sobreRs3),
+  alt: "Fachada do prédio da Rezende Saback Construtora, em pastilha azul e branca — Betim/MG",
+};
+
+const SOBRE_EXTRA = [
+  {
+    src: photoUrl(sobreRs1),
+    alt: "Vista aérea do prédio da Rezende Saback e das ruas do entorno — Betim/MG",
+  },
+  {
+    src: photoUrl(sobreRs2),
+    alt: "Vista aérea da fachada e da cobertura do prédio da Rezende Saback",
+  },
+  {
+    src: photoUrl(sobreRs4),
+    alt: "Detalhe da cobertura do prédio com a marca Rezende Saback Construtora e Incorporadora",
+  },
+  {
+    src: photoUrl(sobreRs5),
+    alt: "Vista aérea do quarteirão do prédio da Rezende Saback — Betim/MG",
+  },
+];
+
 
 
 /**
@@ -473,15 +508,16 @@ function Index() {
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-2">
           <figure className="overflow-hidden rounded-2xl border border-border bg-card">
             <SmartImage
-              src={sedePhotoUrl()}
-              alt="Sede da Rezende Saback Construtora — Edifício Londres, fachada em pastilha azul e branca em Betim/MG"
+              src={SOBRE_MAIN.src}
+              alt={SOBRE_MAIN.alt}
               wrapperClassName="block w-full"
               className="h-full w-full object-cover"
             />
             <figcaption className="px-5 py-3 text-sm text-muted-foreground">
-              Sede da Rezende Saback — Edifício Londres, Betim/MG.
+              Sede da Rezende Saback — Betim/MG.
             </figcaption>
           </figure>
+
 
           <div className="space-y-6 text-lg text-muted-foreground">
             <p>
