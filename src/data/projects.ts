@@ -88,11 +88,12 @@ export const projects: Project[] = [
       "Comércio consolidado e grande potencial de consumo no entorno",
       "Excelente visibilidade para sua marca",
     ],
-    categories: ["Lançamentos", "Comerciais"],
-    gallery: goldenMallImages.map((image, i) => ({
+    categories: ["Lançamentos"],
+    gallery: goldenMallImages.map((image) => ({
       ...image,
-      category: i === goldenMallImages.length - 1 ? "Comerciais" as const : "Lançamentos" as const,
+      category: "Lançamentos" as const,
     })),
+
   },
   {
     slug: "edificio-rosario",
