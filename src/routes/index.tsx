@@ -493,7 +493,21 @@ function Index() {
           </div>
         </div>
 
+        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {SOBRE_EXTRA.map((photo) => (
+            <figure key={photo.src} className="overflow-hidden rounded-xl border border-border bg-card">
+              <SmartImage
+                src={photo.src}
+                alt={photo.alt}
+                wrapperClassName="block w-full"
+                className="h-32 w-full object-cover sm:h-40"
+              />
+            </figure>
+          ))}
+        </div>
+
       </section>
+
 
 
       {/* Nas redes — feed do Instagram (em configuração) */}
