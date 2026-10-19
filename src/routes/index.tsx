@@ -6,7 +6,6 @@ import sobreRs1 from "@/assets/sobre/rs1.jpg.asset.json";
 import sobreRs2 from "@/assets/sobre/rs2.jpg.asset.json";
 import sobreRs3 from "@/assets/sobre/rs3.jpg.asset.json";
 import sobreRs4 from "@/assets/sobre/rs4.jpg.asset.json";
-import sobreRs5 from "@/assets/sobre/rs5.jpg.asset.json";
 
 import { COMPANY, COMPANY_YEARS, SITE_URL } from "@/data/company";
 import { HERO_FALLBACK_URL, HERO_URL, type AssetJson } from "@/lib/images";
@@ -73,10 +72,6 @@ const SOBRE_EXTRA = [
   {
     src: photoUrl(sobreRs4),
     alt: "Detalhe da cobertura do prédio com a marca Rezende Saback Construtora e Incorporadora",
-  },
-  {
-    src: photoUrl(sobreRs5),
-    alt: "Vista aérea do quarteirão do prédio da Rezende Saback — Betim/MG",
   },
 ];
 
@@ -529,7 +524,7 @@ function Index() {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
           {SOBRE_EXTRA.map((photo) => (
             <figure key={photo.src} className="overflow-hidden rounded-xl border border-border bg-card">
               <SmartImage
