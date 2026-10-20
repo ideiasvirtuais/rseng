@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Component, useEffect, useState, type ReactNode } from "react";
-import { ArrowUpRight, Instagram, Mail, MapPin, Menu, Phone, X } from "lucide-react";
+import { ArrowUpRight, Instagram, Mail, MapPin, Menu, Phone, X, ZoomIn } from "lucide-react";
 
 import sobreRs1 from "@/assets/sobre/rs1.jpg.asset.json";
 import sobreRs2 from "@/assets/sobre/rs2.jpg.asset.json";
@@ -21,6 +21,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 // import { AllImagesGallery } from "@/components/AllImagesGallery";
 import { HomeInstagram } from "@/components/HomeInstagram";
 import { SmartImage } from "@/components/SmartImage";
+import { Lightbox, type LightboxPhoto } from "@/components/Lightbox";
 import { Logo } from "@/components/Logo";
 import { segmentNav, type SegmentRoute } from "@/components/segments";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -74,6 +75,21 @@ const SOBRE_EXTRA = [
     alt: "Detalhe da cobertura do prédio com a marca Rezende Saback Construtora e Incorporadora",
   },
 ];
+
+/**
+ * Ordem das fotos no visualizador ampliado da seção "Sobre": a foto grande
+ * abre (índice 0) e a tira abaixo continua a sequência, para as setas ← →
+ * percorrerem exatamente o que a pessoa acabou de ver.
+ */
+const SOBRE_PHOTOS: LightboxPhoto[] = [
+  { src: SOBRE_MAIN.src, alt: SOBRE_MAIN.alt, eyebrow: "Sobre a construtora", title: "Sede — Betim/MG" },
+  ...SOBRE_EXTRA.map((photo) => ({
+    src: photo.src,
+    alt: photo.alt,
+    eyebrow: "Sobre a construtora",
+    title: "Sede — Betim/MG",
+  })),
+].filter((photo) => Boolean(photo.src));
 
 
 
@@ -188,6 +204,8 @@ class SectionGuard extends Component<{ children: ReactNode }, { failed: boolean 
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Foto ampliada da seção "Sobre" (índice em SOBRE_PHOTOS; null = fechado).
+  const [sobreLightbox, setSobreLightbox] = useState<number | null>(null);
   // Home leve: sem pré-carregamento das 50 fotos (só hero + covers via lazy).
   // O catálogo completo carrega apenas em `/galeria`.
 
