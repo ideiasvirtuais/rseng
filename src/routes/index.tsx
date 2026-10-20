@@ -519,13 +519,23 @@ function Index() {
         </div>
 
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-2">
-          <figure className="overflow-hidden rounded-2xl border border-border bg-card">
-            <SmartImage
-              src={SOBRE_MAIN.src}
-              alt={SOBRE_MAIN.alt}
-              wrapperClassName="block w-full"
-              className="h-full w-full object-cover"
-            />
+          <figure className="group relative overflow-hidden rounded-2xl border border-border bg-card">
+            <button
+              type="button"
+              onClick={() => setSobreLightbox(0)}
+              aria-label={`Ampliar foto: ${SOBRE_MAIN.alt}`}
+              className="relative block w-full cursor-zoom-in text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+            >
+              <SmartImage
+                src={SOBRE_MAIN.src}
+                alt={SOBRE_MAIN.alt}
+                wrapperClassName="block w-full"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
+              />
+              <span className="pointer-events-none absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100 group-focus-within:opacity-100">
+                <ZoomIn className="h-5 w-5" aria-hidden="true" />
+              </span>
+            </button>
             <figcaption className="px-5 py-3 text-sm text-muted-foreground">
               Sede da Rezende Saback — Betim/MG.
             </figcaption>
@@ -543,18 +553,34 @@ function Index() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {SOBRE_EXTRA.map((photo) => (
-            <figure key={photo.src} className="overflow-hidden rounded-xl border border-border bg-card">
-              <SmartImage
-                src={photo.src}
-                alt={photo.alt}
-                wrapperClassName="block w-full"
-                className="h-32 w-full object-cover sm:h-40"
-              />
+          {SOBRE_EXTRA.map((photo, i) => (
+            <figure key={photo.src} className="group relative overflow-hidden rounded-xl border border-border bg-card">
+              <button
+                type="button"
+                onClick={() => setSobreLightbox(i + 1)}
+                aria-label={`Ampliar foto: ${photo.alt}`}
+                className="relative block w-full cursor-zoom-in text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+              >
+                <SmartImage
+                  src={photo.src}
+                  alt={photo.alt}
+                  wrapperClassName="block w-full"
+                  className="h-32 w-full object-cover transition duration-700 group-hover:scale-[1.04] sm:h-40"
+                />
+                <span className="pointer-events-none absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100 group-focus-within:opacity-100">
+                  <ZoomIn className="h-4 w-4" aria-hidden="true" />
+                </span>
+              </button>
             </figure>
           ))}
         </div>
 
+        <Lightbox
+          photos={SOBRE_PHOTOS}
+          index={sobreLightbox}
+          onClose={() => setSobreLightbox(null)}
+          onNavigate={setSobreLightbox}
+        />
       </section>
 
 
