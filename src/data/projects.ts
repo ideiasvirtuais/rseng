@@ -98,7 +98,7 @@ export const projects: Project[] = [
   {
     slug: "edificio-rosario",
     name: "Edifício Rosário",
-    tag: "Lançamento",
+    tag: "Pronto para morar",
     type: "Business & Home · Flat",
     address: "Rua do Rosário, 446 — Angola",
     year: "2025",
@@ -110,10 +110,10 @@ export const projects: Project[] = [
       "A torre combina flats residenciais com salas comerciais, hall de entrada assinado, elevadores de alta performance e uma cobertura pensada para o convívio dos moradores.",
     ],
     info: [
-      { label: "Status", value: "Em construção" },
+      { label: "Status", value: "Concluído" },
       { label: "Tipologia", value: "Flat + Comercial" },
       { label: "Endereço", value: "Rua do Rosário, 446 — Angola, Betim/MG" },
-      { label: "Entrega prevista", value: "2025" },
+      { label: "Entrega", value: "2025" },
     ],
     highlights: [
       "Hall de entrada com pé-direito duplo",
