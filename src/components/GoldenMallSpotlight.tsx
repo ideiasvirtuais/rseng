@@ -159,20 +159,23 @@ export function GoldenMallSpotlight() {
           </p>
 
           <h2 id="golden-mall-spotlight-title" className="mt-5 text-primary-foreground">
-            Receba as chaves com o seu imóvel <span className="text-accent">já pronto</span>
+            Seu imóvel pronto para o <span className="text-accent">seu negócio!</span>
             <span className="mt-3 block text-[1.1rem] font-medium leading-snug tracking-normal text-primary-foreground/85">
-              no lançamento Golden Mall Rosário — Angola, Betim.
+              Golden Mall Rosário — Angola, Betim.
             </span>
           </h2>
 
           <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-primary-foreground/90">
-            Planta customizada e instalações elétricas e hidráulicas sob medida. Você
-            entra em um apartamento pensado exatamente do jeito que sempre quis.
+            Lojas com plantas personalizadas e instalações elétricas e hidráulicas
+            sob medida.
+            <br />
+            Localização estratégica, excelente visibilidade e alto fluxo de pessoas e
+            veículos.
           </p>
           <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-primary-foreground/75">
-            No Golden Mall Rosário, esse mesmo padrão de personalização se traduz em
-            lojas para locação e venda — com excelente visibilidade, alto fluxo de
-            pessoas e veículos e módulos prontos para o seu negócio operar.
+            Seu espaço planejado para o sucesso do seu negócio!
+            <br />
+            Lojas disponíveis para venda e locação.
           </p>
 
           <ul className="mt-8 grid gap-3 sm:grid-cols-1">
