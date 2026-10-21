@@ -1,5 +1,5 @@
 /**
- * Vendorisa os assets do CDN Lovable (src/assets/**/*.asset.json)
+ * Vendorisa os assets do CDN Lovable (src/assets (todos os .asset.json))
  * para public/__l5e/... de modo que as imagens funcionem em
  * qualquer ambiente: `vite dev`, preview, build estático e FTP.
  *
